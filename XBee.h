@@ -20,10 +20,14 @@
 #ifndef XBee_h
 #define XBee_h
 
-#include "HardwareSerial.h"
+#include <WProgram.h>
+#include <inttypes.h>
 
 #define SERIES_1
 #define SERIES_2
+
+// set to ATAP value of XBee. AP=2 is recommended
+#define ATAP 2
 
 #define START_BYTE 0x7e
 #define ESCAPE 0x7d
@@ -31,6 +35,9 @@
 #define XOFF 0x13
 
 #define MAX_PACKET_SIZE 100
+
+#define BROADCAST_ADDRESS 0xffff
+#define ZB_BROADCAST_ADDRESS 0xfffe
 
 // the constant size of the api frame (not including frame id or api id or variable data size for packets that support payload)
 #define ZB_TX_API_LENGTH 12
@@ -103,24 +110,6 @@
 
 #define ZB_TX_UNICAST 0
 #define ZB_TX_BROADCAST 8
-
-#ifdef ECLIPSE
-class HardwareSerial {
-public:
-	HardwareSerial();
-	HardwareSerial(uint8_t* fakePacket, uint8_t size);
-	bool available();
-	uint8_t read();
-	void flush();
-	void begin(int baud);
-	void print(uint8_t b, bool t);
-	uint8_t* _pseudopacket;
-	uint8_t _size;
-	// keeps track of fake serial read position
-	uint8_t _pos;
-	bool _available;
-};
-#endif
 
 class XBeeResponse {
 public:
@@ -328,7 +317,7 @@ private:
  */
 class XBee {
 public:
-	XBee(HardwareSerial &serial);
+	XBee();
 	// reads all available serial bytes until a packet has been parsed or it runs out of serial data
 	// this method most always returns quickly since it does not wait for serial data to arrive
 	// you will want to use this method if you are doing other timely stuff in your loop
@@ -356,7 +345,6 @@ private:
 	void sendByte(uint8_t &b, bool escape);
 	void resetResponse();
 	XBeeResponse _response;
-	HardwareSerial _serial;
 	bool _escape;
 	// current packet position for response.  just a state variable for packet parsing and has no relevance for the response otherwise
 	uint8_t _pos;
@@ -389,7 +377,6 @@ private:
 
 class Tx64Request : public XBeeRequest {
 public:
-	// TODO use reference for address
 	Tx64Request(XBeeAddress64 &addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId);
 	void assembleFrame();
 private:
@@ -404,6 +391,7 @@ private:
 
 class ZBTxRequest : public XBeeRequest {
 public:
+	// TODO abbreviated constructors and set/get methods
 	ZBTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId);
 protected:
 	// why do I have to declare this when it's defined in the superclass?

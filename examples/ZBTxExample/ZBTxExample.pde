@@ -24,13 +24,13 @@ Sends a ZB TX request with the value of analogRead(pin5) and checks the status r
 */
 
 // create the XBee object
-XBee xbee = XBee(Serial);
+XBee xbee = XBee();
 
 uint8_t payload[] = { 0, 0 };
 
 // SH + SL Address of receiving XBee
 XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x403e0f30);
-ZBTxRequest zbTx = ZBTxRequest(addr64, 0xfffe, ZB_BROADCAST_RADIUS_MAX_HOPS, ZB_TX_UNICAST, payload, sizeof(payload), DEFAULT_FRAME_ID);
+ZBTxRequest zbTx = ZBTxRequest(addr64, ZB_BROADCAST_ADDRESS, ZB_BROADCAST_RADIUS_MAX_HOPS, ZB_TX_UNICAST, payload, sizeof(payload), DEFAULT_FRAME_ID);
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
 int pin5 = 0;

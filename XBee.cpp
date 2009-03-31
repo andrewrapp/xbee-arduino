@@ -18,9 +18,8 @@
  */
 
 #include "XBee.h"
-#include "WConstants.h"
+#include "WProgram.h"
 #include "HardwareSerial.h"
-
 
 XBeeResponse::XBeeResponse() {
 
@@ -241,8 +240,6 @@ uint8_t RxResponse::getDataLength() {
 }
 
 uint8_t RxResponse::getDataOffset() {
-	//TODO constant
-	// data starts at byte 9 minus 4 (start/length(2)/apiId) - 1 (index starts at zero)
 	return getRssiOffset() + 2;
 }
 
@@ -334,8 +331,7 @@ void XBee::resetResponse() {
 	_response.reset();
 }
 
-XBee::XBee(HardwareSerial &serial): _response(XBeeResponse()) {
-	_serial = serial;
+XBee::XBee(): _response(XBeeResponse()) {
 	_pos = 0;
 	_escape = false;
 	_checksumTotal = 0;
@@ -358,7 +354,7 @@ uint8_t XBee::getNextFrameId() {
 }
 
 void XBee::begin(int baud) {
-	_serial.begin(baud);
+	Serial.begin(baud);
 }
 
 XBeeResponse& XBee::getResponse() {
@@ -410,42 +406,22 @@ void XBee::readPacket() {
 		resetResponse();
 	}
 
-    while (_serial.available()) {
+    while (Serial.available()) {
 
-#ifdef DEBUG
-    	std::cout << "pos is " << static_cast<unsigned int>(_pos) << std::endl;
-#endif
-        b = _serial.read();
+        b = Serial.read();
 
-        if (_pos > 0 && b == START_BYTE) {
-#ifdef WARN
-        	std::cout << "found start byte at pos " << static_cast<unsigned int>(_pos) << " resetting" << std::endl;
-#endif
+        if (_pos > 0 && b == START_BYTE && ATAP == 2) {
         	// new packet start before previous packeted completed -- discard previous packet and start over
         	// TODO set warn byte
-        	// TODO ATAP must be set to 2
         	resetResponse();
         }
 
-#ifdef DEBUG
-        std::cout << "read " << static_cast<unsigned int>(b) << " from serial\n";
-#endif
-
 		if (_pos > 0 && b == ESCAPE) {
-#ifdef DEBUG
-			std::cout << "escape byte\n";
-#endif
-			if (_serial.available()) {
-				b = _serial.read();
+			if (Serial.available()) {
+				b = Serial.read();
 				b = 0x20 ^ b;
-#ifdef DEBUG
-				std::cout << "un-escaped byte is" << b << "\n";
-#endif
 			} else {
 				// escape byte.  next byte will be
-#ifdef DEBUG
-				std::cout << "next byte will be un-escaped\n";
-#endif
 				_escape = true;
 				continue;
 			}
@@ -454,30 +430,17 @@ void XBee::readPacket() {
 		if (_escape == true) {
 			b = 0x20 ^ b;
 			_escape = false;
-#ifdef DEBUG
-			std::cout << "un-escaped next byte is " << static_cast<unsigned int>(b) << "\n";
-#endif
 		}
 
 		// checksum includes all bytes starting with api id
 		if (_pos >= API_ID_INDEX) {
 			_checksumTotal+= b;
-#ifdef DEBUG
-			std::cout << "adding to checksum " << static_cast<unsigned int>(b) << ", total is " << static_cast<unsigned int>(_checksumTotal) << std::endl;
-#endif
 		}
 
         switch(_pos) {
 			case 0:
 		        if (b == START_BYTE) {
 		        	_pos++;
-#ifdef DEBUG
-		        	std::cout << "found start byte\n";
-#endif
-		        } else {
-#ifdef WARN
-		        	std::cout << "ignoring non-start byte\n";
-#endif
 		        }
 
 		        break;
@@ -485,32 +448,23 @@ void XBee::readPacket() {
 				// length msb
 				_response.setMsbLength(b);
 				_pos++;
-#ifdef DEBUG
-				std::cout << "read msb length\n";
-#endif
+
 				break;
 			case 2:
 				// length lsb
 				_response.setLsbLength(b);
 				_pos++;
-#ifdef DEBUG
-				std::cout << "read lsb length\n";
-#endif
+
 				break;
 			case 3:
 				_response.setApiId(b);
 				_pos++;
-#ifdef DEBUG
-				std::cout << "read apiId\n";
-#endif
+
 				break;
 			default:
 
 				if (_pos > MAX_PACKET_SIZE) {
-					// exceed max size.  should never occur.  reset
-#ifdef ERROR
-					std::cout << "exceeded max packet size.  resetting" << std::endl;
-#endif
+					// exceed max size.  should never occur
 					_response.setError(true);
 					return;
 				}
@@ -518,26 +472,13 @@ void XBee::readPacket() {
 				// check if we're at the end of the packet
 				// packet length does not include start, length, or checksum bytes, so add 3
 				if (_pos == (_response.getPacketLength() + 3)) {
-#ifdef DEBUG
-					std::cout << "reached end of packet\n";
-#endif
 					// verify checksum
 					if ((_checksumTotal & 0xff) == 0xff) {
-#ifdef DEBUG
-						std::cout << "verified checksum at pos " << static_cast<unsigned int>(_pos) << "\n";
-#endif
-						// perhaps not very useful but set the checksum anyhow
-#ifdef DEBUG
-						std::cout << "readPacket: checksum is " << static_cast<unsigned int>(b) << "\n";
-#endif
 						_response.setChecksum(b);
 						_response.setAvailable(true);
 					} else {
 						// checksum failed
 						_response.setError(true);
-#ifdef ERROR
-						std::cout << "checksum failed\n";
-#endif
 					}
 
 					// minus 4 because we start after start,msb,lsb,api
@@ -551,44 +492,12 @@ void XBee::readPacket() {
 					return;
 				} else {
 					// add to packet array, starting with the fourth byte of the apiFrame
-#ifdef DEBUG
-					std::cout << "applying frame data to pos: " << static_cast<unsigned int>(_pos - 4) << " to " << static_cast<unsigned int>(b) << "\n";
-#endif
 					_response.getFrameData()[_pos - 4] = b;
 					_pos++;
 				}
         }
     }
-
-#ifdef DEBUG
-    std::cout << "exiting readPacket" << std::endl;
-#endif
 }
-
-//// make static function?
-//// compute checksum on pre-escaped frame data only
-//uint8_t XBeeRequest::computeChecksum(uint8_t* arr, int len, int offset) {
-//		int checksum = 0;
-//
-//		for (int i = 0; i < len; i++) {
-//			checksum+= *(arr + i + offset);
-//		}
-//
-//#ifdef ECLIPSE
-//		std::cout << "checksum total is " << checksum << "\n";
-//#endif
-//
-//		checksum = 0xff & checksum;
-//
-//		// perform 2s complement
-//		checksum = 0xff - checksum;
-//
-//#ifdef DEBUG
-//		std::cout << "checksum is " << checksum << "\n";
-//#endif
-//
-//		return checksum;
-//}
 
 XBeeRequest::XBeeRequest(uint8_t apiId, uint8_t frameId, uint16_t frameDataLength, uint8_t* payloadPtr, uint8_t payloadLength) {
 	_apiId = apiId;
@@ -742,9 +651,6 @@ void Tx64Request::assembleFrame() {
 
 void XBeeRequest::assemblePacket() {
 
-#ifdef DEBUG
-		std::cout << "assemblePacket(): frameDataLength is " <<  static_cast<unsigned int>(getFrameDataLength()) << ", payloadLen is " <<  static_cast<unsigned int>(getPayloadLength()) << "\n";
-#endif
 		getPacket()[0] = START_BYTE;
 		// compute packet length
 		// frameData length does not include apiId and frameId, so add 2
@@ -770,25 +676,12 @@ void XBeeRequest::assemblePacket() {
 		// add payload to checksum
 		if (getPayloadLength() > 0) {
 			for (int i = 0; i < getPayloadLength(); i++) {
-#ifdef DEBUG
-//		std::cout << "adding payload to checksum\n";
-#endif
 				checksum+= getPayload()[i];
 			}
 		}
 
-#ifdef DEBUG
-		std::cout << "checksum total is " << static_cast<unsigned int>(checksum) << "\n";
-#endif
-
-		//checksum = 0xff & checksum;
-
 		// perform 2s complement
 		checksum = 0xff - checksum;
-
-#ifdef DEBUG
-		std::cout << "checksum is " << static_cast<unsigned int>(checksum) << "\n";
-#endif
 
 		// set checksum as last byte in packet
 		getPacket()[getFrameDataLength() + PACKET_OVERHEAD_LENGTH - 1] = checksum;
@@ -825,10 +718,6 @@ void XBee::send(XBeeRequest &request) {
 
 	// first send everything but the checksum
 	for (int i = 0; i < request.getFrameDataLength() + PACKET_OVERHEAD_LENGTH - 1; i++) {
-
-#ifdef DEBUG
-		std::cout << "XBee send: packet["<< i << "] is " << static_cast<unsigned int>(request.getPacket()[i]) << "\n";
-#endif
 		if (i == 0) {
 			// escape special bytes, but not the start byte!
 			sendByte(request.getPacket()[i], false);
@@ -839,10 +728,6 @@ void XBee::send(XBeeRequest &request) {
 
 	// if payload exists, send it now
 	if (request.getPayloadLength() > 0) {
-
-#ifdef DEBUG
-//		std::cout << "XBee send: payload exists and is size " << static_cast<unsigned int>(request.getPayloadLength()) << std::endl;
-#endif
 		for (int i = 0; i < request.getPayloadLength(); i++) {
 			sendByte(request.getPayload()[i], true);
 		}
@@ -852,21 +737,15 @@ void XBee::send(XBeeRequest &request) {
 	sendByte(request.getPacket()[request.getFrameDataLength() + PACKET_OVERHEAD_LENGTH - 1], true);
 
 	// send packet
-	_serial.flush();
+	Serial.flush();
 }
 
 void XBee::sendByte(uint8_t &b, bool escape) {
 
-#ifdef DEBUG
-		std::cout << "XBee sendByte, byte is " << static_cast<unsigned int>(b) << std::endl;
-#endif
-
 	if (escape && (b == START_BYTE || b == ESCAPE || b == XON || b == XOFF)) {
-		// output ESCAPE
-		// output 0x20 ^ packet[i];
-		_serial.print(ESCAPE, BYTE);
-		_serial.print(b ^ 0x20, BYTE);
+		Serial.print(ESCAPE, BYTE);
+		Serial.print(b ^ 0x20, BYTE);
 	} else {
-		_serial.print(b, BYTE);
+		Serial.print(b, BYTE);
 	}
 }

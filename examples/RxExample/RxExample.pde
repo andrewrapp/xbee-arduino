@@ -24,7 +24,7 @@ Receives either a RX16 or RX64 packet and sets a PWM value based on packet data.
 Error led is flashed if an unexpected packet is received
 */
 
-XBee xbee = XBee(Serial);
+XBee xbee = XBee();
 XBeeResponse response = XBeeResponse();
 // create reusable response objects for responses we expect to handle 
 Rx16Response rx16 = Rx16Response();

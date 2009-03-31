@@ -24,7 +24,7 @@ Sends a TX16 or TX64 request with the value of analogRead(pin5) and checks the s
 Note: In my testing it took about 15 seconds for the XBee to start reporting success, so I've added a startup delay
 */
 
-XBee xbee = XBee(Serial);
+XBee xbee = XBee();
 
 unsigned long start = millis();
 
