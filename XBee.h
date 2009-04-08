@@ -65,6 +65,9 @@
 #define ZB_BROADCAST_PACKET 0x02
 
 // not everything is implemented!
+/**
+ * Api Id constants
+ */
 #define TX_64_REQUEST 0x0
 #define TX_16_REQUEST 0x1
 #define AT_COMMAND 0x08
@@ -86,7 +89,9 @@
 #define ZB_IO_SAMPLE_RESPONSE 0x92
 #define ZB_IO_NODE_IDENTIFIER_RESPONSE 0x95
 
-// TX STATUS
+/**
+ * TX STATUS constants
+ */
 #define	SUCCESS 0x0
 #define CCA_FAILURE 0x2
 #define INVALID_DESTINATION_ENDPOINT_SUCCESS 0x15
@@ -111,40 +116,103 @@
 #define ZB_TX_UNICAST 0
 #define ZB_TX_BROADCAST 8
 
+/**
+ * The super class of all XBee responses (RX packets)
+ */
 class XBeeResponse {
 public:
 	//static const int MODEM_STATUS = 0x8a;
+	/**
+	 * Default constructor
+	 */
 	XBeeResponse();
+	/**
+	 * Returns Api Id of the response
+	 */
 	uint8_t getApiId();
 	void setApiId(uint8_t apiId);
+	/**
+	 * Returns the MSB length of the packet
+	 */
 	uint8_t& getMsbLength();
 	void setMsbLength(uint8_t msbLength);
+	/**
+	 * Returns the LSB length of the packet
+	 */
 	uint8_t& getLsbLength();
 	void setLsbLength(uint8_t lsbLength);
+	/**
+	 * Returns the packet checksum
+	 */
 	uint8_t& getChecksum();
 	void setChecksum(uint8_t checksum);
+	/**
+	 * Returns the length of the frame data
+	 */
 	uint8_t getFrameDataLength();
 	void setFrameLength(uint8_t frameLength);
 	// to support future 65535 byte packets I guess
+	/**
+	 * Returns the length of the packet
+	 */
 	uint16_t getPacketLength();
+	/**
+	 * Resets the response to default values
+	 */
 	void reset();
+	/**
+	 * Initializes the response
+	 */
 	void init();
 #ifdef SERIES_2
+	/**
+	 * Call with instance of ZBTxStatusResponse class only if getApiId() == ZB_TX_STATUS_RESPONSE
+	 * to populate response
+	 */
 	void getZBTxStatusResponse(XBeeResponse &response);
+	/**
+	 * Call with instance of ZBRxResponse class only if getApiId() == ZB_RX_RESPONSE
+	 * to populate response
+	 */
 	void getZBRxResponse(XBeeResponse &response);
 #endif
 #ifdef SERIES_1
+	/**
+	 * Call with instance of TxStatusResponse class only if getApiId() == TX_STATUS_RESPONSE
+	 * to populate response
+	 */
 	void getTxStatusResponse(XBeeResponse &response);
+	/**
+	 * Call with instance of Rx16Response class only if getApiId() == RX_16_RESPONSE
+	 * to populate response
+	 */
 	void getRx16Response(XBeeResponse &response);
+	/**
+	 * Call with instance of Rx64Response class only if getApiId() == RX_64_RESPONSE
+	 * to populate response
+	 */
 	void getRx64Response(XBeeResponse &response);
 #endif
+	/**
+	 * Call with instance of ModemStatusResponse class only if getApiId() == MODEM_STATUS_RESPONSE
+	 * to populate response
+	 */
 	void getModemStatusResponse(XBeeResponse &response);
+	/**
+	 * Returns true if the response has been successfully parsed and is complete and ready for use
+	 */
 	bool isAvailable();
 	void setAvailable(bool complete);
+	/**
+	 * Returns true if the response contains errors
+	 */
 	bool isError();
 	void setError(bool error);
 	void setFrameData(uint8_t* frameDataPtr);
-	// returns the buffer that contains the response.  starts with byte that follows API ID and includes all bytes prior to the checksum
+	/**
+	 * Returns the buffer that contains the response.
+	 * Starts with byte that follows API ID and includes all bytes prior to the checksum
+	 */
 	uint8_t* getFrameData();
 protected:
 	// pointer to frameData
@@ -165,6 +233,9 @@ public:
 	XBeeAddress();
 };
 
+/**
+ * Represents a 64-bit XBee Address
+ */
 class XBeeAddress64 : public XBeeAddress {
 public:
 	XBeeAddress64(uint32_t msb, uint32_t lsb);
@@ -188,11 +259,19 @@ private:
 //	uint16_t _addr;
 //};
 
+/**
+ * Common functionality for both Series 1 and 2 data RX data packets
+ */
 class RxDataResponse : public XBeeResponse {
 public:
 	RxDataResponse();
-	// returns the data value at given index (0 : getDataLength() - 1)
+	/**
+	 * Returns the byte at the position <i>index</i> where the <i>index</i> may be 0 to (getDataLength() - 1)
+	 */
 	uint8_t& getData(int index);
+	/**
+	 * Returns the position in the frame data where the data begins
+	 */
 	virtual uint8_t getDataOffset() = 0;
 };
 
@@ -202,6 +281,9 @@ public:
 
 #ifdef SERIES_2
 // WTF: this can't be defined above XBeeResponse so it can't be referenced in the XBeeResponse class???
+/**
+ * Represents a Series 2 TX status packet
+ */
 class ZBTxStatusResponse : public XBeeResponse {
 	public:
 		ZBTxStatusResponse();
@@ -212,6 +294,9 @@ class ZBTxStatusResponse : public XBeeResponse {
 		uint8_t getDiscoveryStatus();
 };
 
+/**
+ * Represents a Series 2 RX packet
+ */
 class ZBRxResponse : public RxDataResponse {
 public:
 	ZBRxResponse();
@@ -228,7 +313,9 @@ private:
 #endif
 
 #ifdef SERIES_1
-
+/**
+ * Represents a Series 1 TX Status packet
+ */
 class TxStatusResponse : public XBeeResponse {
 	public:
 		TxStatusResponse();
@@ -236,6 +323,9 @@ class TxStatusResponse : public XBeeResponse {
 		uint8_t getStatus();
 };
 
+/**
+ * Represents a Series 1 RX packet
+ */
 class RxResponse : public RxDataResponse {
 public:
 	RxResponse();
@@ -253,6 +343,9 @@ public:
 //	XBeeAddress _remoteAddress;
 };
 
+/**
+ * Represents a Series 1 16-bit address RX packet
+ */
 class Rx16Response : public RxResponse {
 public:
 	Rx16Response();
@@ -262,6 +355,9 @@ protected:
 	uint16_t _remoteAddress;
 };
 
+/**
+ * Represents a Series 1 64-bit address RX packet
+ */
 class Rx64Response : public RxResponse {
 public:
 	Rx64Response();
@@ -272,25 +368,57 @@ private:
 };
 #endif
 
+/**
+ * Represents a Modem Status RX packet
+ */
 class ModemStatusResponse : public XBeeResponse {
 public:
 	ModemStatusResponse();
 	uint8_t& getStatus();
 };
 
+/**
+ * Super class of all XBee requests (TX packets)
+ */
 class XBeeRequest {
 public:
+	/**
+	 * Constructor
+	 * TODO make protected
+	 */
 	XBeeRequest(uint8_t apiId, uint8_t frameId, uint16_t frameDataLength, uint8_t* _payloadPtr, uint8_t _payloadLength);
-	// called in XBee.send()
+	/**
+	 * This is called by the XBee class in XBee.send().  Users should never need to call this directly
+	 */
 	void assemblePacket();
-	// size of the api frame (not including frame id or api id or variable data size for packets that support payload)
+	/**
+	 * Returns the size of the api frame (not including frame id or api id or variable data size for packets that support payload)
+	 */
 	uint8_t getFrameDataLength();
+	/**
+	 * Returns the raw packet
+	 */
 	uint8_t* getPacket();
+	/**
+	 * Provides the array to contain the packet.  Called by the XBee class.
+	 * Users should never need to call this.
+	 */
 	void setPacket(uint8_t* frameDataPtr);
-	// returns the payload array, if not null
+	/**
+	 * Returns the payload of the packet, if not null
+	 */
 	uint8_t* getPayload();
+	/**
+	 * Returns the length of the payload
+	 */
 	uint8_t getPayloadLength();
+	/**
+	 * Sets the frame id.  Must be between 1 and 255 inclusive to get a TX status response.
+	 */
 	void setFrameId(uint8_t frameId);
+	/**
+	 * Returns the frame id
+	 */
 	uint8_t getFrameId();
 protected:
 	uint8_t computeChecksum(uint8_t* arr, int len, int offset);
@@ -309,37 +437,71 @@ private:
 
 // TODO add reset/clear method since responses are often reused
 /**
- * Concept of operation:
+ * Primary interface for communicating with an XBee Radio.
+ * This class provides methods for sending and receiving packets with an XBee radio via the serial port.
+ * The XBee radio must be configured in API (packet) mode (AP=2)
+ * in order to use this software.
  *
  * Since this code runs on a microcontroller, with only one thread, you are responsible for reading the
  * data off the serial buffer in a timely manner.  This involves a call to a variant of readPacket(...).
- * If your serial port is receiving data faster than you are reading, you can expect to lose packets
+ * If your serial port is receiving data faster than you are reading, you can expect to lose packets.
+ * Arduino only has a 128 byte serial buffer so it can easily overflow if two or more packets arrive
+ * without a call to readPacket(...)
+ *
+ * In order to conserve resources, this class only supports storing one response packet in memory at a time.
+ * This means that you must fully consume the packet prior to calling readPacket(...), since when
+ * this occurs, the contents of the response will be overwritten with the next response.
+ *
+ * This class creates an array of size MAX_PACKET_SIZE for storing the response packet
+ *
+ * \author Andrew Rapp
  */
 class XBee {
 public:
 	XBee();
-	// reads all available serial bytes until a packet has been parsed or it runs out of serial data
-	// this method most always returns quickly since it does not wait for serial data to arrive
-	// you will want to use this method if you are doing other timely stuff in your loop
-	// NOTE: calling this method resets the current response, so make sure you consume the response before calling this
+	/**
+	 * Reads all available serial bytes until a packet is complete or the buffer is empty.
+	 * You may call <i>xbee</i>.getResponse().isAvailable() after calling this method to determine if
+	 * a packet is ready.
+	 * This method should always return quickly since it does not wait for serial data to arrive.
+	 * You will want to use this method if you are doing other timely stuff in your loop, where
+	 * a delay would cause problems.
+	 * NOTE: calling this method resets the current response, so make sure you first consume the
+	 * current response
+	 */
 	void readPacket();
-	// waits a maximum of timeout milliseconds for a response packet before timing out; returns true if packet is read before timeout
+	/**
+	 * Waits a maximum of <i>timeout</i> milliseconds for a response packet before timing out; returns true if packet is read before timeout
+	 */
 	bool readPacket(int timeout);
-	// reads until a packet is received
-	// Caution: use this carefully since if you don't get a response, your Arduino code will hang on this call forever!! often it's better to use a timeout: readPacket(int)
+	/**
+	 * Reads until a packet is received
+	 * Caution: use this carefully since if you don't get a response, your Arduino code will hang on this
+	 * call forever!! often it's better to use a timeout: readPacket(int)
+	 */
 	void readPacketUntilAvailable();
-	// start your serial connection at the supplied baud rate
+	/**
+	 * Starts the serial connection at the supplied baud rate
+	 */
 	void begin(int baud);
-	// call this method only after response.isAvailable() returns true
-	// supply a subclass of XBeeResponse that is appropriate for response.getApiId()
-	// after calling this method, your subclass will be populated
+	//Clones the current response.
+	// Call this method only after response.isAvailable() returns true,
+	//indicating a response packet has been parsed
+	// UNTESTED
 	void getResponse(XBeeResponse &response);
-	// returns a reference to the current response
+	/**
+	 * Returns a reference to the current response
+	 * Note: once readPacket is called again this response will be overwritten!
+	 */
 	XBeeResponse& getResponse();
-	// sends a TX request out the serial port
+	/**
+	 * Sends a XBeeRequest (TX packet) out the serial port
+	 */
 	void send(XBeeRequest &request);
 	//uint8_t sendAndWaitForResponse(XBeeRequest &request, int timeout);
-	// returns frame id between 1 and 255
+	/**
+	 * Returns a sequential frame id between 1 and 255
+	 */
 	uint8_t getNextFrameId();
 private:
 	void sendByte(uint8_t &b, bool escape);
@@ -366,6 +528,9 @@ private:
 
 // TODO super class to share common variables
 
+/**
+ * Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST
+ */
 class Tx16Request : public XBeeRequest {
 public:
 	Tx16Request(uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId);
@@ -375,6 +540,9 @@ private:
 	uint8_t _option;
 };
 
+/**
+ * Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST
+ */
 class Tx64Request : public XBeeRequest {
 public:
 	Tx64Request(XBeeAddress64 &addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId);
@@ -389,6 +557,9 @@ private:
 
 #ifdef SERIES_2
 
+/**
+ * Represents a Series 2 TX packet that corresponds to Api Id: ZB_TX_REQUEST
+ */
 class ZBTxRequest : public XBeeRequest {
 public:
 	// TODO abbreviated constructors and set/get methods
