@@ -37,7 +37,7 @@ uint8_t payload[] = { 0, 0 };
 // This is the SH + SL address of remote XBee
 XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x4008b490);
 // unless you have set DH/DL for 64 bit this will be received as a RX16 packet
-Tx64Request tx = Tx64Request(addr64, ACK_OPTION, payload, sizeof(payload), DEFAULT_FRAME_ID);
+Tx64Request tx = Tx64Request(addr64, payload, sizeof(payload));
 
 TxStatusResponse txStatus = TxStatusResponse();
 
