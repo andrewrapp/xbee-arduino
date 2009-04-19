@@ -117,8 +117,13 @@ uint8_t ZBTxStatusResponse::getTxRetryCount() {
 uint8_t ZBTxStatusResponse::getDeliveryStatus() {
 	return getFrameData()[4];
 }
+
 uint8_t ZBTxStatusResponse::getDiscoveryStatus() {
 	return getFrameData()[5];
+}
+
+bool ZBTxStatusResponse::isSuccess() {
+	return getDeliveryStatus() == SUCCESS;
 }
 
 void XBeeResponse::getZBTxStatusResponse(XBeeResponse &zbXBeeResponse) {
@@ -208,6 +213,10 @@ uint8_t TxStatusResponse::getFrameId() {
 
 uint8_t TxStatusResponse::getStatus() {
 	return getFrameData()[1];
+}
+
+bool TxStatusResponse::isSuccess() {
+	return getStatus() == SUCCESS;
 }
 
 void XBeeResponse::getTxStatusResponse(XBeeResponse &txResponse) {
@@ -592,6 +601,13 @@ ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadca
 	_option = option;
 }
 
+ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength): XBeeRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, ZB_TX_API_LENGTH, data, dataLength) {
+	_addr64 = addr64;
+	_addr16 = ZB_BROADCAST_ADDRESS;
+	_broadcastRadius = ZB_BROADCAST_RADIUS_MAX_HOPS;
+	_option = ZB_TX_UNICAST;
+}
+
 void ZBTxRequest::assembleFrame() {
 		// build frame data from components and returns
 		XBeeRequest::getPacket()[5] = (_addr64.getMsb() >> 24) & 0xff;
@@ -608,12 +624,49 @@ void ZBTxRequest::assembleFrame() {
 		XBeeRequest::getPacket()[16] = _option;
 }
 
+XBeeAddress64& ZBTxRequest::getAddress64() {
+	return _addr64;
+}
+
+uint16_t ZBTxRequest::getAddress16() {
+	return _addr16;
+}
+
+uint8_t ZBTxRequest::getBroadcastRadius() {
+	return _broadcastRadius;
+}
+
+uint8_t ZBTxRequest::getOption() {
+	return _option;
+}
+
+void ZBTxRequest::setAddress64(XBeeAddress64& addr64) {
+	_addr64 = addr64;
+}
+
+void ZBTxRequest::setAddress16(uint16_t addr16) {
+	_addr16 = addr16;
+}
+
+void ZBTxRequest::setBroadcastRadius(uint8_t broadcastRadius) {
+	_broadcastRadius = broadcastRadius;
+}
+
+void ZBTxRequest::setOption(uint8_t option) {
+	_option = option;
+}
+
 #endif
 
 #ifdef SERIES_1
 Tx16Request::Tx16Request(uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId) : XBeeRequest(TX_16_REQUEST, frameId, TX_16_API_LENGTH, data, dataLength) {
 	_addr16 = addr16;
 	_option = option;
+}
+
+Tx16Request::Tx16Request(uint16_t addr16, uint8_t *data, uint8_t dataLength) : XBeeRequest(TX_16_REQUEST, DEFAULT_FRAME_ID, TX_16_API_LENGTH, data, dataLength) {
+	_addr16 = addr16;
+	_option = ACK_OPTION;
 }
 
 void Tx16Request::assembleFrame() {
@@ -623,9 +676,31 @@ void Tx16Request::assembleFrame() {
 	XBeeRequest::getPacket()[7] = _option;
 }
 
+uint16_t Tx16Request::getAddress16() {
+	return _addr16;
+}
+
+void Tx16Request::setAddress16(uint16_t addr16) {
+	_addr16 = addr16;
+}
+
+uint8_t Tx16Request::getOption() {
+	return _option;
+}
+
+void Tx16Request::setOption(uint8_t option) {
+	_option = option;
+}
+
+
 Tx64Request::Tx64Request(XBeeAddress64 &addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId) : XBeeRequest(TX_64_REQUEST, frameId, TX_64_API_LENGTH, data, dataLength) {
 	_addr64 = addr64;
 	_option = option;
+}
+
+Tx64Request::Tx64Request(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength) : XBeeRequest(TX_64_REQUEST, DEFAULT_FRAME_ID, TX_64_API_LENGTH, data, dataLength) {
+	_addr64 = addr64;
+	_option = ACK_OPTION;
 }
 
 void Tx64Request::assembleFrame() {
@@ -642,6 +717,22 @@ void Tx64Request::assembleFrame() {
 	XBeeRequest::getPacket()[13] = _option;
 }
 
+
+XBeeAddress64& Tx64Request::getAddress64() {
+	return _addr64;
+}
+
+void Tx64Request::setAddress64(XBeeAddress64& addr64) {
+	_addr64 = addr64;
+}
+
+uint8_t Tx64Request::getOption() {
+	return _option;
+}
+
+void Tx64Request::setOption(uint8_t option) {
+	_option = option;
+}
 
 #endif
 

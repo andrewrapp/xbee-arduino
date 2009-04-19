@@ -22,7 +22,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>XBeeResponse Class Reference</h1><!-- doxytag: class="XBeeResponse" -->The super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> responses (RX packets).  
+<h1>XBeeResponse Class Reference</h1><!-- doxytag: class="XBeeResponse" -->The super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> responses (RX packets) Users should never attempt to create an instance of this class; instead create an instance of a subclass It is recommend to reuse subclasses to conserve memory.  
 <a href="#_details">More...</a>
 <p>
 <code>#include &lt;<a class="el" href="_x_bee_8h-source.html">XBee.h</a>&gt;</code>
@@ -106,22 +106,21 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#4c0edfc6be81349237956531a006d3ab">getZBRxResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_z_b_rx_response.html" title="Represents a Series 2 RX packet.">ZBRxResponse</a> class only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == ZB_RX_RESPONSE to populate response. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2fd9882d767d48e679a7595b780c2a2d"></a><!-- doxytag: member="XBeeResponse::getTxStatusResponse" ref="2fd9882d767d48e679a7595b780c2a2d" args="(XBeeResponse &amp;response)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#2fd9882d767d48e679a7595b780c2a2d">getTxStatusResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#2fd9882d767d48e679a7595b780c2a2d">getTxStatusResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a> class only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == TX_STATUS_RESPONSE to populate response. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == TX_STATUS_RESPONSE.  <a href="#2fd9882d767d48e679a7595b780c2a2d"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b85f25eac3e57d665e2189d84cb5d2e3"></a><!-- doxytag: member="XBeeResponse::getRx16Response" ref="b85f25eac3e57d665e2189d84cb5d2e3" args="(XBeeResponse &amp;response)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#b85f25eac3e57d665e2189d84cb5d2e3">getRx16Response</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_rx16_response.html" title="Represents a Series 1 16-bit address RX packet.">Rx16Response</a> class only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == RX_16_RESPONSE to populate response. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_rx16_response.html" title="Represents a Series 1 16-bit address RX packet.">Rx16Response</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == RX_16_RESPONSE. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="72e5b863c14a9ec0a4f1cdeba5f24e58"></a><!-- doxytag: member="XBeeResponse::getRx64Response" ref="72e5b863c14a9ec0a4f1cdeba5f24e58" args="(XBeeResponse &amp;response)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#72e5b863c14a9ec0a4f1cdeba5f24e58">getRx64Response</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_rx64_response.html" title="Represents a Series 1 64-bit address RX packet.">Rx64Response</a> class only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == RX_64_RESPONSE to populate response. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_rx64_response.html" title="Represents a Series 1 64-bit address RX packet.">Rx64Response</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == RX_64_RESPONSE. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="d93317521b52825c32b43d34a0f189d1"></a><!-- doxytag: member="XBeeResponse::getModemStatusResponse" ref="d93317521b52825c32b43d34a0f189d1" args="(XBeeResponse &amp;response)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#d93317521b52825c32b43d34a0f189d1">getModemStatusResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_modem_status_response.html" title="Represents a Modem Status RX packet.">ModemStatusResponse</a> class only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == MODEM_STATUS_RESPONSE to populate response. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_modem_status_response.html" title="Represents a Modem Status RX packet.">ModemStatusResponse</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == MODEM_STATUS_RESPONSE. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b60b2cc9e32fa88dee132f410cc8331d"></a><!-- doxytag: member="XBeeResponse::isAvailable" ref="b60b2cc9e32fa88dee132f410cc8331d" args="()" -->
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#b60b2cc9e32fa88dee132f410cc8331d">isAvailable</a> ()</td></tr>
 
@@ -148,7 +147,7 @@ uint8_t *&nbsp;</td><td class="memItemRight" valign="bottom"><b>_frameDataPtr</b
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-The super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> responses (RX packets). <hr><h2>Constructor &amp; Destructor Documentation</h2>
+The super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> responses (RX packets) Users should never attempt to create an instance of this class; instead create an instance of a subclass It is recommend to reuse subclasses to conserve memory. <hr><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" name="03a6ea7651a40062c22ca0a37fbf512f"></a><!-- doxytag: member="XBeeResponse::XBeeResponse" ref="03a6ea7651a40062c22ca0a37fbf512f" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -197,10 +196,32 @@ Returns the buffer that contains the response.
 Starts with byte that follows API ID and includes all bytes prior to the checksum 
 </div>
 </div><p>
+<a class="anchor" name="2fd9882d767d48e679a7595b780c2a2d"></a><!-- doxytag: member="XBeeResponse::getTxStatusResponse" ref="2fd9882d767d48e679a7595b780c2a2d" args="(XBeeResponse &amp;response)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void XBeeResponse::getTxStatusResponse           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;&nbsp;</td>
+          <td class="paramname"> <em>response</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Call with instance of <a class="el" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == TX_STATUS_RESPONSE. 
+<p>
+
+</div>
+</div><p>
 <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Apr 7 19:49:22 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

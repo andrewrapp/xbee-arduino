@@ -44,15 +44,34 @@ Inheritance diagram for Tx16Request:</div>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f9e141d3cb32df8ad33370e219ce3a31"></a><!-- doxytag: member="Tx16Request::Tx16Request" ref="f9e141d3cb32df8ad33370e219ce3a31" args="(uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>Tx16Request</b> (uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="0aea3d6ae473d33e250a2a68c86a6310"></a><!-- doxytag: member="Tx16Request::Tx16Request" ref="0aea3d6ae473d33e250a2a68c86a6310" args="(uint16_t addr16, uint8_t *data, uint8_t dataLength)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx16_request.html#0aea3d6ae473d33e250a2a68c86a6310">Tx16Request</a> (uint16_t addr16, uint8_t *data, uint8_t dataLength)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Creates a unicast <a class="el" href="class_tx16_request.html" title="Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST.">Tx16Request</a> with the ACK option and DEFAULT_FRAME_ID. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="deb9cf2989e2c86992f6a652a92bd648"></a><!-- doxytag: member="Tx16Request::getAddress16" ref="deb9cf2989e2c86992f6a652a92bd648" args="()" -->
+uint16_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getAddress16</b> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="c28c597252a64d47df3bb61dd8251ee4"></a><!-- doxytag: member="Tx16Request::setAddress16" ref="c28c597252a64d47df3bb61dd8251ee4" args="(uint16_t addr16)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setAddress16</b> (uint16_t addr16)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="448d4a28812d6cc67a7c45138ba6061c"></a><!-- doxytag: member="Tx16Request::getOption" ref="448d4a28812d6cc67a7c45138ba6061c" args="()" -->
+uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getOption</b> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="fc0792e586ddb3c9d62efb787a5956d9"></a><!-- doxytag: member="Tx16Request::setOption" ref="fc0792e586ddb3c9d62efb787a5956d9" args="(uint8_t option)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setOption</b> (uint8_t option)</td></tr>
+
+<tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2a4ab3279aef622e91cb4fee25c2ac60"></a><!-- doxytag: member="Tx16Request::assembleFrame" ref="2a4ab3279aef622e91cb4fee25c2ac60" args="()" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>assembleFrame</b> ()</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST. <hr>The documentation for this class was generated from the following files:<ul>
+Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST. 
+<p>
+Be careful not to send a data array larger than the max packet size of your radio. This class does not perform any validation of packet size and there will be no indication if the packet is too large, other than you will not get a TX Status response. The datasheet says 100 bytes is the maximum although that could change in future firmware. <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Apr 7 19:49:22 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

@@ -57,7 +57,7 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><b>getResponse</b> (<a c
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="802387f468be8622941d16739ac848f2"></a><!-- doxytag: member="XBee::send" ref="802387f468be8622941d16739ac848f2" args="(XBeeRequest &amp;request)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#802387f468be8622941d16739ac848f2">send</a> (<a class="el" href="class_x_bee_request.html">XBeeRequest</a> &amp;request)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Sends a <a class="el" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets).">XBeeRequest</a> (TX packet) out the serial port. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Sends a <a class="el" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> (TX packet) out the serial port. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="25bd226e41517e8a66a13e531d31438d"></a><!-- doxytag: member="XBee::getNextFrameId" ref="25bd226e41517e8a66a13e531d31438d" args="()" -->
 uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#25bd226e41517e8a66a13e531d31438d">getNextFrameId</a> ()</td></tr>
 
@@ -67,7 +67,7 @@ uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 Primary interface for communicating with an <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> Radio. 
 <p>
 This class provides methods for sending and receiving packets with an <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> radio via the serial port. The <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> radio must be configured in API (packet) mode (AP=2) in order to use this software.<p>
-Since this code runs on a microcontroller, with only one thread, you are responsible for reading the data off the serial buffer in a timely manner. This involves a call to a variant of readPacket(...). If your serial port is receiving data faster than you are reading, you can expect to lose packets. Arduino only has a 128 byte serial buffer so it can easily overflow if two or more packets arrive without a call to readPacket(...)<p>
+Since this code is designed to run on a microcontroller, with only one thread, you are responsible for reading the data off the serial buffer in a timely manner. This involves a call to a variant of readPacket(...). If your serial port is receiving data faster than you are reading, you can expect to lose packets. Arduino only has a 128 byte serial buffer so it can easily overflow if two or more packets arrive without a call to readPacket(...)<p>
 In order to conserve resources, this class only supports storing one response packet in memory at a time. This means that you must fully consume the packet prior to calling readPacket(...), since when this occurs, the contents of the response will be overwritten with the next response.<p>
 This class creates an array of size MAX_PACKET_SIZE for storing the response packet<p>
 <dl class="author" compact><dt><b>Author:</b></dt><dd>Andrew Rapp </dd></dl>
@@ -96,7 +96,7 @@ You may call <em>xbee</em>.<a class="el" href="class_x_bee.html#18250def80e8b643
 <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Apr 7 19:49:22 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

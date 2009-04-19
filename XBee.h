@@ -118,6 +118,9 @@
 
 /**
  * The super class of all XBee responses (RX packets)
+ * Users should never attempt to create an instance of this class; instead
+ * create an instance of a subclass
+ * It is recommend to reuse subclasses to conserve memory
  */
 class XBeeResponse {
 public:
@@ -178,24 +181,21 @@ public:
 #endif
 #ifdef SERIES_1
 	/**
-	 * Call with instance of TxStatusResponse class only if getApiId() == TX_STATUS_RESPONSE
-	 * to populate response
+	 * Call with instance of TxStatusResponse only if getApiId() == TX_STATUS_RESPONSE
+	 *
 	 */
 	void getTxStatusResponse(XBeeResponse &response);
 	/**
-	 * Call with instance of Rx16Response class only if getApiId() == RX_16_RESPONSE
-	 * to populate response
+	 * Call with instance of Rx16Response only if getApiId() == RX_16_RESPONSE
 	 */
 	void getRx16Response(XBeeResponse &response);
 	/**
-	 * Call with instance of Rx64Response class only if getApiId() == RX_64_RESPONSE
-	 * to populate response
+	 * Call with instance of Rx64Response only if getApiId() == RX_64_RESPONSE
 	 */
 	void getRx64Response(XBeeResponse &response);
 #endif
 	/**
-	 * Call with instance of ModemStatusResponse class only if getApiId() == MODEM_STATUS_RESPONSE
-	 * to populate response
+	 * Call with instance of ModemStatusResponse only if getApiId() == MODEM_STATUS_RESPONSE
 	 */
 	void getModemStatusResponse(XBeeResponse &response);
 	/**
@@ -292,6 +292,7 @@ class ZBTxStatusResponse : public XBeeResponse {
 		uint8_t getTxRetryCount();
 		uint8_t getDeliveryStatus();
 		uint8_t getDiscoveryStatus();
+		bool isSuccess();
 };
 
 /**
@@ -321,6 +322,7 @@ class TxStatusResponse : public XBeeResponse {
 		TxStatusResponse();
 		uint8_t getFrameId();
 		uint8_t getStatus();
+		bool isSuccess();
 };
 
 /**
@@ -379,6 +381,8 @@ public:
 
 /**
  * Super class of all XBee requests (TX packets)
+ * Users should never create an instance of this class; instead use an subclass of this class
+ * It is recommended to reuse Subclasses of the class to conserve memory
  */
 class XBeeRequest {
 public:
@@ -442,7 +446,7 @@ private:
  * The XBee radio must be configured in API (packet) mode (AP=2)
  * in order to use this software.
  *
- * Since this code runs on a microcontroller, with only one thread, you are responsible for reading the
+ * Since this code is designed to run on a microcontroller, with only one thread, you are responsible for reading the
  * data off the serial buffer in a timely manner.  This involves a call to a variant of readPacket(...).
  * If your serial port is receiving data faster than you are reading, you can expect to lose packets.
  * Arduino only has a 128 byte serial buffer so it can easily overflow if two or more packets arrive
@@ -526,14 +530,26 @@ private:
 
 #ifdef SERIES_1
 
-// TODO super class to share common variables
-
 /**
  * Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST
+ *
+ * Be careful not to send a data array larger than the max packet size of your radio.
+ * This class does not perform any validation of packet size and there will be no indication
+ * if the packet is too large, other than you will not get a TX Status response.
+ * The datasheet says 100 bytes is the maximum although that could change in future firmware.
  */
 class Tx16Request : public XBeeRequest {
 public:
 	Tx16Request(uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId);
+	/**
+	 * Creates a unicast Tx16Request with the ACK option and DEFAULT_FRAME_ID
+	 */
+	Tx16Request(uint16_t addr16, uint8_t *data, uint8_t dataLength);
+	uint16_t getAddress16();
+	void setAddress16(uint16_t addr16);
+	uint8_t getOption();
+	void setOption(uint8_t option);
+protected:
 	void assembleFrame();
 private:
 	uint16_t _addr16;
@@ -542,10 +558,25 @@ private:
 
 /**
  * Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST
+ *
+ * Be careful not to send a data array larger than the max packet size of your radio.
+ * This class does not perform any validation of packet size and there will be no indication
+ * if the packet is too large, other than you will not get a TX Status response.
+ * The datasheet says 100 bytes is the maximum although that could change in future firmware.
  */
 class Tx64Request : public XBeeRequest {
 public:
 	Tx64Request(XBeeAddress64 &addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId);
+	/**
+	 * Creates a unicast Tx64Request with the ACK option and DEFAULT_FRAME_ID
+	 */
+	Tx64Request(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength);
+	XBeeAddress64& getAddress64();
+	void setAddress64(XBeeAddress64& addr64);
+	// TODO move option to superclass
+	uint8_t getOption();
+	void setOption(uint8_t option);
+protected:
 	void assembleFrame();
 private:
 	XBeeAddress64 _addr64;
@@ -559,11 +590,31 @@ private:
 
 /**
  * Represents a Series 2 TX packet that corresponds to Api Id: ZB_TX_REQUEST
+ *
+ * Be careful not to send a data array larger than the max packet size of your radio.
+ * This class does not perform any validation of packet size and there will be no indication
+ * if the packet is too large, other than you will not get a TX Status response.
+ * The datasheet says 72 bytes is the maximum for ZNet firmware and ZB Pro firmware provides
+ * the ATNP command to get the max supported payload size.  This command is useful since the
+ * maximum payload size varies according to certain settings, such as encryption.
+ * ZB Pro firmware provides a PAYLOAD_TOO_LARGE that is returned if payload size
+ * exceeds the maximum.
  */
 class ZBTxRequest : public XBeeRequest {
 public:
-	// TODO abbreviated constructors and set/get methods
+	/**
+	 * Creates a unicast ZBTxRequest with the ACK option and DEFAULT_FRAME_ID
+	 */
+	ZBTxRequest(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength);
 	ZBTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId);
+	XBeeAddress64& getAddress64();
+	uint16_t getAddress16();
+	uint8_t getBroadcastRadius();
+	uint8_t getOption();
+	void setAddress64(XBeeAddress64& addr64);
+	void setAddress16(uint16_t addr16);
+	void setBroadcastRadius(uint8_t broadcastRadius);
+	void setOption(uint8_t option);
 protected:
 	// why do I have to declare this when it's defined in the superclass?
 	void assembleFrame();

@@ -41,8 +41,36 @@ Inheritance diagram for ZBTxRequest:</div>
 <a href="class_z_b_tx_request-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2c5d736ee4bb6170bd36c0d0d6ed4d9d"></a><!-- doxytag: member="ZBTxRequest::ZBTxRequest" ref="2c5d736ee4bb6170bd36c0d0d6ed4d9d" args="(XBeeAddress64 &amp;addr64, uint8_t *data, uint8_t dataLength)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_z_b_tx_request.html#2c5d736ee4bb6170bd36c0d0d6ed4d9d">ZBTxRequest</a> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64, uint8_t *data, uint8_t dataLength)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Creates a unicast <a class="el" href="class_z_b_tx_request.html" title="Represents a Series 2 TX packet that corresponds to Api Id: ZB_TX_REQUEST.">ZBTxRequest</a> with the ACK option and DEFAULT_FRAME_ID. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="40a9101f7357c252c544e4926425315c"></a><!-- doxytag: member="ZBTxRequest::ZBTxRequest" ref="40a9101f7357c252c544e4926425315c" args="(XBeeAddress64 &amp;addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>ZBTxRequest</b> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="dbd44bb9801c9cba0c9ea4e87ed8efa5"></a><!-- doxytag: member="ZBTxRequest::getAddress64" ref="dbd44bb9801c9cba0c9ea4e87ed8efa5" args="()" -->
+<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;&nbsp;</td><td class="memItemRight" valign="bottom"><b>getAddress64</b> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="c75b0c6db3b6c9b54c3df2891b267950"></a><!-- doxytag: member="ZBTxRequest::getAddress16" ref="c75b0c6db3b6c9b54c3df2891b267950" args="()" -->
+uint16_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getAddress16</b> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="6c4a33cab93ff1d18703c8ddd4db4056"></a><!-- doxytag: member="ZBTxRequest::getBroadcastRadius" ref="6c4a33cab93ff1d18703c8ddd4db4056" args="()" -->
+uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getBroadcastRadius</b> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4b97981c2a07afdeeacff09e479b7d45"></a><!-- doxytag: member="ZBTxRequest::getOption" ref="4b97981c2a07afdeeacff09e479b7d45" args="()" -->
+uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getOption</b> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="32725cca51a846b716308497d066b7a7"></a><!-- doxytag: member="ZBTxRequest::setAddress64" ref="32725cca51a846b716308497d066b7a7" args="(XBeeAddress64 &amp;addr64)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setAddress64</b> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="a1ae1761a27f335d353428de9c986aff"></a><!-- doxytag: member="ZBTxRequest::setAddress16" ref="a1ae1761a27f335d353428de9c986aff" args="(uint16_t addr16)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setAddress16</b> (uint16_t addr16)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2d2825234b6d42385998df927d0fe0cb"></a><!-- doxytag: member="ZBTxRequest::setBroadcastRadius" ref="2d2825234b6d42385998df927d0fe0cb" args="(uint8_t broadcastRadius)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setBroadcastRadius</b> (uint8_t broadcastRadius)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="32b2ea4b2c457396a7463e2add7e14f6"></a><!-- doxytag: member="ZBTxRequest::setOption" ref="32b2ea4b2c457396a7463e2add7e14f6" args="(uint8_t option)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setOption</b> (uint8_t option)</td></tr>
 
 <tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b8f701283bfe4ce666b860ab642427fc"></a><!-- doxytag: member="ZBTxRequest::assembleFrame" ref="b8f701283bfe4ce666b860ab642427fc" args="()" -->
@@ -50,10 +78,12 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><b>assembleFrame</b> ()<
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Represents a Series 2 TX packet that corresponds to Api Id: ZB_TX_REQUEST. <hr>The documentation for this class was generated from the following files:<ul>
+Represents a Series 2 TX packet that corresponds to Api Id: ZB_TX_REQUEST. 
+<p>
+Be careful not to send a data array larger than the max packet size of your radio. This class does not perform any validation of packet size and there will be no indication if the packet is too large, other than you will not get a TX Status response. The datasheet says 72 bytes is the maximum for ZNet firmware and ZB Pro firmware provides the ATNP command to get the max supported payload size. This command is useful since the maximum payload size varies according to certain settings, such as encryption. ZB Pro firmware provides a PAYLOAD_TOO_LARGE that is returned if payload size exceeds the maximum. <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Apr 7 19:49:22 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

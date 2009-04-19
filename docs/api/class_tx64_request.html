@@ -44,15 +44,34 @@ Inheritance diagram for Tx64Request:</div>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="42253ae58f3e05f8067f401727100dd2"></a><!-- doxytag: member="Tx64Request::Tx64Request" ref="42253ae58f3e05f8067f401727100dd2" args="(XBeeAddress64 &amp;addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>Tx64Request</b> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="afe06b8c6738e2929a798da8a88a458b"></a><!-- doxytag: member="Tx64Request::Tx64Request" ref="afe06b8c6738e2929a798da8a88a458b" args="(XBeeAddress64 &amp;addr64, uint8_t *data, uint8_t dataLength)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx64_request.html#afe06b8c6738e2929a798da8a88a458b">Tx64Request</a> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64, uint8_t *data, uint8_t dataLength)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Creates a unicast <a class="el" href="class_tx64_request.html" title="Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST.">Tx64Request</a> with the ACK option and DEFAULT_FRAME_ID. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8f6970aa54b8504be65e05ce1f52e8e4"></a><!-- doxytag: member="Tx64Request::getAddress64" ref="8f6970aa54b8504be65e05ce1f52e8e4" args="()" -->
+<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;&nbsp;</td><td class="memItemRight" valign="bottom"><b>getAddress64</b> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="863a993ad01c08b5c9835e9d7288bedd"></a><!-- doxytag: member="Tx64Request::setAddress64" ref="863a993ad01c08b5c9835e9d7288bedd" args="(XBeeAddress64 &amp;addr64)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setAddress64</b> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ac90589d46191868f19713aea49a421f"></a><!-- doxytag: member="Tx64Request::getOption" ref="ac90589d46191868f19713aea49a421f" args="()" -->
+uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getOption</b> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7f6987e3910d97dd8f77f58184dc17c9"></a><!-- doxytag: member="Tx64Request::setOption" ref="7f6987e3910d97dd8f77f58184dc17c9" args="(uint8_t option)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setOption</b> (uint8_t option)</td></tr>
+
+<tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5d59ec358f1c747fcf0bb953f31154ed"></a><!-- doxytag: member="Tx64Request::assembleFrame" ref="5d59ec358f1c747fcf0bb953f31154ed" args="()" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>assembleFrame</b> ()</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST. <hr>The documentation for this class was generated from the following files:<ul>
+Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST. 
+<p>
+Be careful not to send a data array larger than the max packet size of your radio. This class does not perform any validation of packet size and there will be no indication if the packet is too large, other than you will not get a TX Status response. The datasheet says 100 bytes is the maximum although that could change in future firmware. <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Apr 7 19:49:22 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>
