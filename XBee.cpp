@@ -74,11 +74,15 @@ void XBeeResponse::setAvailable(bool complete) {
 }
 
 bool XBeeResponse::isError() {
-	return _error;
+	return _errorCode > 0;
 }
 
-void XBeeResponse::setError(bool error) {
-	_error = error;
+uint8_t XBeeResponse::getErrorCode() {
+	return _errorCode;
+}
+
+void XBeeResponse::setErrorCode(uint8_t errorCode) {
+	_errorCode = errorCode;
 }
 
 // copy common fields from xbee response to target response
@@ -86,7 +90,7 @@ void XBeeResponse::setCommon(XBeeResponse &target) {
 	target.setApiId(getApiId());
 	target.setAvailable(isAvailable());
 	target.setChecksum(getChecksum());
-	target.setError(isError());
+	target.setErrorCode(getErrorCode());
 	target.setFrameLength(getFrameDataLength());
 	target.setMsbLength(getMsbLength());
 	target.setLsbLength(getLsbLength());
@@ -94,16 +98,8 @@ void XBeeResponse::setCommon(XBeeResponse &target) {
 
 #ifdef SERIES_2
 
-ZBRxResponse::ZBRxResponse(): RxDataResponse() {
-	_remoteAddress64 = XBeeAddress64();
-}
+ZBTxStatusResponse::ZBTxStatusResponse() : FrameIdResponse() {
 
-ZBTxStatusResponse::ZBTxStatusResponse() : XBeeResponse() {
-
-}
-
-uint8_t ZBTxStatusResponse::getFrameId() {
-	return getFrameData()[0];
 }
 
 uint16_t ZBTxStatusResponse::getRemoteAddress() {
@@ -135,8 +131,8 @@ void XBeeResponse::getZBTxStatusResponse(XBeeResponse &zbXBeeResponse) {
 	setCommon(zbXBeeResponse);
 }
 
-XBeeAddress64& ZBRxResponse::getRemoteAddress64() {
-	return _remoteAddress64;
+ZBRxResponse::ZBRxResponse(): RxDataResponse() {
+	_remoteAddress64 = XBeeAddress64();
 }
 
 uint16_t ZBRxResponse::getRemoteAddress16() {
@@ -156,9 +152,12 @@ uint8_t ZBRxResponse::getDataLength() {
 	return getPacketLength() - getDataOffset() - 1;
 }
 
+XBeeAddress64& ZBRxResponse::getRemoteAddress64() {
+	return _remoteAddress64;
+}
+
 void XBeeResponse::getZBRxResponse(XBeeResponse &rxResponse) {
 
-	// way off?
 	ZBRxResponse* zb = static_cast<ZBRxResponse*>(&rxResponse);
 
 	//TODO verify response api id matches this api for this response
@@ -171,15 +170,95 @@ void XBeeResponse::getZBRxResponse(XBeeResponse &rxResponse) {
 	zb->getRemoteAddress64().setLsb((uint32_t(getFrameData()[4]) << 24) + (uint32_t(getFrameData()[5]) << 16) + (uint16_t(getFrameData()[6]) << 8) + (getFrameData()[7]));
 }
 
+
+ZBRxIoSampleResponse::ZBRxIoSampleResponse() : ZBRxResponse() {
+
+}
+
+// 64 + 16 addresses, sample size, option = 12 (index 11), so this starts at 12
+uint8_t ZBRxIoSampleResponse::getDigitalMaskMsb() {
+	return getFrameData()[12] & 0x1c;
+}
+
+uint8_t ZBRxIoSampleResponse::getDigitalMaskLsb() {
+	return getFrameData()[13];
+}
+
+uint8_t ZBRxIoSampleResponse::getAnalogMask() {
+	return getFrameData()[14] & 0x8f;
+}
+
+bool ZBRxIoSampleResponse::containsAnalog() {
+	return getAnalogMask() > 0;
+}
+
+bool ZBRxIoSampleResponse::containsDigital() {
+	return getDigitalMaskMsb() > 0 || getDigitalMaskLsb() > 0;
+}
+
+bool ZBRxIoSampleResponse::isAnalogEnabled(uint8_t pin) {
+	return ((getAnalogMask() >> pin) & 1) == 1;
+}
+
+bool ZBRxIoSampleResponse::isDigitalEnabled(uint8_t pin) {
+	if (pin <= 7) {
+		// added extra parens to calm avr compiler
+		return ((getDigitalMaskLsb() >> pin) & 1) == 1;
+	} else {
+		return ((getDigitalMaskMsb() >> (pin - 8)) & 1) == 1;
+	}
+}
+
+uint16_t ZBRxIoSampleResponse::getAnalog(uint8_t pin) {
+	// analog starts 13 bytes after sample size, if no dio enabled
+	uint8_t start = 15;
+
+	if (containsDigital()) {
+		// make room for digital i/o
+		start+=2;
+	}
+
+//	std::cout << "spacing is " << static_cast<unsigned int>(spacing) << std::endl;
+
+	// start depends on how many pins before this pin are enabled
+	for (int i = 0; i < pin; i++) {
+		if (isAnalogEnabled(pin)) {
+			start+=2;
+		}
+	}
+
+//	std::cout << "start for analog pin ["<< static_cast<unsigned int>(pin) << "]/sample " << static_cast<unsigned int>(sample) << " is " << static_cast<unsigned int>(start) << std::endl;
+
+//	std::cout << "returning index " << static_cast<unsigned int>(getSampleOffset() + start) << " and index " <<  static_cast<unsigned int>(getSampleOffset() + start + 1) << ", val is " << static_cast<unsigned int>(getFrameData()[getSampleOffset() + start] << 8) <<  " and " <<  + static_cast<unsigned int>(getFrameData()[getSampleOffset() + start + 1]) << std::endl;
+
+	return (uint16_t)((getFrameData()[start] << 8) + getFrameData()[start + 1]);
+}
+
+bool ZBRxIoSampleResponse::isDigitalOn(uint8_t pin) {
+	if (pin <= 7) {
+		// D0-7
+		// DIO LSB is index 5
+		return ((getFrameData()[16] >> pin) & 1) == 1;
+	} else {
+		// D10-12
+		// DIO MSB is index 4
+		return ((getFrameData()[15] >> (pin - 8)) & 1) == 1;
+	}
+}
+
+void XBeeResponse::getZBRxIoSampleResponse(XBeeResponse &response) {
+	ZBRxIoSampleResponse* zb = static_cast<ZBRxIoSampleResponse*>(&response);
+
+
+	// pass pointer array to subclass
+	zb->setFrameData(getFrameData());
+	setCommon(response);
+
+	zb->getRemoteAddress64().setMsb((uint32_t(getFrameData()[0]) << 24) + (uint32_t(getFrameData()[1]) << 16) + (uint16_t(getFrameData()[2]) << 8) + getFrameData()[3]);
+	zb->getRemoteAddress64().setLsb((uint32_t(getFrameData()[4]) << 24) + (uint32_t(getFrameData()[5]) << 16) + (uint16_t(getFrameData()[6]) << 8) + (getFrameData()[7]));
+}
+
 #endif
-
-RxDataResponse::RxDataResponse() : XBeeResponse() {
-
-}
-
-uint8_t& RxDataResponse::getData(int index) {
-	return getFrameData()[getDataOffset() + index];
-}
 
 #ifdef SERIES_1
 
@@ -203,12 +282,139 @@ Rx16Response::Rx16Response() : RxResponse() {
 
 }
 
-TxStatusResponse::TxStatusResponse() : XBeeResponse() {
+RxIoSampleBaseResponse::RxIoSampleBaseResponse() : RxResponse() {
 
 }
 
-uint8_t TxStatusResponse::getFrameId() {
-	return getFrameData()[0];
+uint8_t RxIoSampleBaseResponse::getSampleOffset() {
+	// sample starts 2 bytes after rssi
+	return getRssiOffset() + 2;
+}
+
+
+uint8_t RxIoSampleBaseResponse::getSampleSize() {
+	return getFrameData()[getSampleOffset()];
+}
+
+bool RxIoSampleBaseResponse::containsAnalog() {
+	return (getFrameData()[getSampleOffset() + 1] & 0x7e) > 0;
+}
+
+bool RxIoSampleBaseResponse::containsDigital() {
+	return (getFrameData()[getSampleOffset() + 1] & 0x1) > 0 || getFrameData()[getSampleOffset() + 2] > 0;
+}
+
+//uint16_t RxIoSampleBaseResponse::getAnalog0(uint8_t sample) {
+//	return getAnalog(0, sample);
+//}
+
+bool RxIoSampleBaseResponse::isAnalogEnabled(uint8_t pin) {
+	return (((getFrameData()[getSampleOffset() + 1] >> (pin + 1)) & 1) == 1);
+}
+
+bool RxIoSampleBaseResponse::isDigitalEnabled(uint8_t pin) {
+	if (pin < 8) {
+		return ((getFrameData()[getSampleOffset() + 4] >> pin) & 1) == 1;
+	} else {
+		return (getFrameData()[getSampleOffset() + 3] & 1) == 1;
+	}
+}
+
+uint16_t RxIoSampleBaseResponse::getAnalog(uint8_t pin, uint8_t sample) {
+
+	// analog starts 3 bytes after sample size, if no dio enabled
+	uint8_t start = 3;
+
+	if (containsDigital()) {
+		// make room for digital i/o sample (2 bytes per sample)
+		start+=2*(sample + 1);
+	}
+
+	uint8_t spacing = 0;
+
+	// spacing between samples depends on how many are enabled. add one for each analog that's enabled
+	for (int i = 0; i <= 5; i++) {
+		if (isAnalogEnabled(i)) {
+			// each analog is two bytes
+			spacing+=2;
+		}
+	}
+
+//	std::cout << "spacing is " << static_cast<unsigned int>(spacing) << std::endl;
+
+	// start depends on how many pins before this pin are enabled
+	for (int i = 0; i < pin; i++) {
+		if (isAnalogEnabled(pin)) {
+			start+=2;
+		}
+	}
+
+	start+= sample * spacing;
+
+//	std::cout << "start for analog pin ["<< static_cast<unsigned int>(pin) << "]/sample " << static_cast<unsigned int>(sample) << " is " << static_cast<unsigned int>(start) << std::endl;
+
+//	std::cout << "returning index " << static_cast<unsigned int>(getSampleOffset() + start) << " and index " <<  static_cast<unsigned int>(getSampleOffset() + start + 1) << ", val is " << static_cast<unsigned int>(getFrameData()[getSampleOffset() + start] << 8) <<  " and " <<  + static_cast<unsigned int>(getFrameData()[getSampleOffset() + start + 1]) << std::endl;
+
+	return (uint16_t)((getFrameData()[getSampleOffset() + start] << 8) + getFrameData()[getSampleOffset() + start + 1]);
+}
+
+bool RxIoSampleBaseResponse::isDigitalOn(uint8_t pin, uint8_t sample) {
+	if (pin < 8) {
+		return ((getFrameData()[getSampleOffset() + 4] >> pin) & 1) == 1;
+	} else {
+		return (getFrameData()[getSampleOffset() + 3] & 1) == 1;
+	}
+}
+
+
+//bool RxIoSampleBaseResponse::isDigital0On(uint8_t sample) {
+//	return isDigitalOn(0, sample);
+//}
+
+Rx16IoSampleResponse::Rx16IoSampleResponse() : RxIoSampleBaseResponse() {
+
+}
+
+uint16_t Rx16IoSampleResponse::getRemoteAddress16() {
+	return (uint16_t)((getFrameData()[0] << 8) + getFrameData()[1]);
+}
+
+uint8_t Rx16IoSampleResponse::getRssiOffset() {
+	return 2;
+}
+
+void XBeeResponse::getRx16IoSampleResponse(XBeeResponse &response) {
+	Rx16IoSampleResponse* rx = static_cast<Rx16IoSampleResponse*>(&response);
+
+	rx->setFrameData(getFrameData());
+	setCommon(response);
+}
+
+
+Rx64IoSampleResponse::Rx64IoSampleResponse() : RxIoSampleBaseResponse() {
+	_remoteAddress = XBeeAddress64();
+}
+
+XBeeAddress64& Rx64IoSampleResponse::getRemoteAddress64() {
+	return _remoteAddress;
+}
+
+uint8_t Rx64IoSampleResponse::getRssiOffset() {
+	return 8;
+}
+
+void XBeeResponse::getRx64IoSampleResponse(XBeeResponse &response) {
+	Rx64IoSampleResponse* rx = static_cast<Rx64IoSampleResponse*>(&response);
+
+	rx->setFrameData(getFrameData());
+	setCommon(response);
+
+	rx->getRemoteAddress64().setMsb((uint32_t(getFrameData()[0]) << 24) + (uint32_t(getFrameData()[1]) << 16) + (uint16_t(getFrameData()[2]) << 8) + getFrameData()[3]);
+	rx->getRemoteAddress64().setLsb((uint32_t(getFrameData()[4]) << 24) + (uint32_t(getFrameData()[5]) << 16) + (uint16_t(getFrameData()[6]) << 8) + getFrameData()[7]);
+}
+
+TxStatusResponse::TxStatusResponse() : FrameIdResponse() {
+
 }
 
 uint8_t TxStatusResponse::getStatus() {
@@ -285,6 +491,76 @@ void XBeeResponse::getRx64Response(XBeeResponse &rx64Response) {
 
 #endif
 
+RemoteAtCommandResponse::RemoteAtCommandResponse() : AtCommandResponse() {
+
+}
+
+uint8_t* RemoteAtCommandResponse::getCommand() {
+	return getFrameData() + 11;
+}
+
+uint8_t RemoteAtCommandResponse::getStatus() {
+	return getFrameData()[13];
+}
+
+bool RemoteAtCommandResponse::isOk() {
+	// weird c++ behavior.  w/o this method, it calls AtCommandResponse::isOk(), which calls the AtCommandResponse::getStatus, not this.getStatus!!!
+	return getStatus() == AT_OK;
+}
+
+uint8_t RemoteAtCommandResponse::getValueLength() {
+	return getFrameDataLength() - 14;
+}
+
+uint8_t* RemoteAtCommandResponse::getValue() {
+	if (getValueLength() > 0) {
+		// value is only included for query commands.  set commands does not return a value
+		return getFrameData() + 14;
+	}
+
+	return NULL;
+}
+
+uint16_t RemoteAtCommandResponse::getRemoteAddress16() {
+	return uint16_t((getFrameData()[9] << 8) + getFrameData()[10]);
+}
+
+XBeeAddress64& RemoteAtCommandResponse::getRemoteAddress64() {
+	return _remoteAddress64;
+}
+
+void XBeeResponse::getRemoteAtCommandResponse(XBeeResponse &response) {
+
+	// TODO no real need to cast.  change arg to match expected class
+	RemoteAtCommandResponse* at = static_cast<RemoteAtCommandResponse*>(&response);
+
+	// pass pointer array to subclass
+	at->setFrameData(getFrameData());
+	setCommon(response);
+
+	at->getRemoteAddress64().setMsb((uint32_t(getFrameData()[1]) << 24) + (uint32_t(getFrameData()[2]) << 16) + (uint16_t(getFrameData()[3]) << 8) + getFrameData()[4]);
+	at->getRemoteAddress64().setLsb((uint32_t(getFrameData()[5]) << 24) + (uint32_t(getFrameData()[6]) << 16) + (uint16_t(getFrameData()[7]) << 8) + (getFrameData()[8]));
+
+}
+
+RxDataResponse::RxDataResponse() : XBeeResponse() {
+
+}
+
+uint8_t& RxDataResponse::getData(int index) {
+	return getFrameData()[getDataOffset() + index];
+}
+
+
+FrameIdResponse::FrameIdResponse() {
+
+}
+
+uint8_t FrameIdResponse::getFrameId() {
+	return getFrameData()[0];
+}
+
+
 ModemStatusResponse::ModemStatusResponse() {
 
 }
@@ -303,6 +579,44 @@ void XBeeResponse::getModemStatusResponse(XBeeResponse &modemStatusResponse) {
 
 }
 
+AtCommandResponse::AtCommandResponse() {
+
+}
+
+uint8_t* AtCommandResponse::getCommand() {
+	return getFrameData() + 1;
+}
+
+uint8_t AtCommandResponse::getStatus() {
+	return getFrameData()[3];
+}
+
+uint8_t AtCommandResponse::getValueLength() {
+	return getFrameDataLength() - 4;
+}
+
+uint8_t* AtCommandResponse::getValue() {
+	if (getValueLength() > 0) {
+		// value is only included for query commands.  set commands does not return a value
+		return getFrameData() + 4;
+	}
+
+	return NULL;
+}
+
+bool AtCommandResponse::isOk() {
+	return getStatus() == AT_OK;
+}
+
+void XBeeResponse::getAtCommandResponse(XBeeResponse &atCommandResponse) {
+
+	AtCommandResponse* at = static_cast<AtCommandResponse*>(&atCommandResponse);
+
+	// pass pointer array to subclass
+	at->setFrameData(getFrameData());
+	setCommon(atCommandResponse);
+}
+
 uint16_t XBeeResponse::getPacketLength() {
 	return ((_msbLength << 8) & 0xff) + (_lsbLength & 0xff);
 }
@@ -317,7 +631,7 @@ void XBeeResponse::setFrameData(uint8_t* frameDataPtr) {
 
 void XBeeResponse::init() {
 	_complete = false;
-	_error = false;
+	_errorCode = NO_ERROR;
 	_checksum = 0;
 }
 
@@ -329,7 +643,7 @@ void XBeeResponse::reset() {
 	_checksum = 0;
 	_frameLength = 0;
 
-	for (int i = 0; i < MAX_PACKET_SIZE; i++) {
+	for (int i = 0; i < MAX_FRAME_DATA_SIZE; i++) {
 		getFrameData()[i] = 0;
 	}
 }
@@ -362,8 +676,12 @@ uint8_t XBee::getNextFrameId() {
 	return _nextFrameId;
 }
 
-void XBee::begin(int baud) {
+void XBee::begin(long baud) {
 	Serial.begin(baud);
+}
+
+void XBee::setSerial(HardwareSerial serial) {
+	Serial = serial;
 }
 
 XBeeResponse& XBee::getResponse() {
@@ -371,7 +689,6 @@ XBeeResponse& XBee::getResponse() {
 }
 
 // TODO how to convert response to proper subclass?
-// TODO clone response?
 void XBee::getResponse(XBeeResponse &response) {
 
 	response.setMsbLength(_response.getMsbLength());
@@ -383,7 +700,7 @@ void XBee::getResponse(XBeeResponse &response) {
 }
 
 void XBee::readPacketUntilAvailable() {
-	while (!getResponse().isAvailable()) {
+	while (!(getResponse().isAvailable() || getResponse().isError())) {
 		// read some more
 		readPacket();
 	}
@@ -403,15 +720,19 @@ bool XBee::readPacket(int timeout) {
 
      	if (getResponse().isAvailable()) {
      		return true;
+     	} else if (getResponse().isError()) {
+     		return false;
      	}
     }
 
     // timed out
     return false;
 }
+
 void XBee::readPacket() {
 	// reset previous response
 	if (_response.isAvailable() || _response.isError()) {
+		// discard previous packet and start over
 		resetResponse();
 	}
 
@@ -421,8 +742,8 @@ void XBee::readPacket() {
 
         if (_pos > 0 && b == START_BYTE && ATAP == 2) {
         	// new packet start before previous packeted completed -- discard previous packet and start over
-        	// TODO set warn byte
-        	resetResponse();
+        	_response.setErrorCode(UNEXPECTED_START_BYTE);
+        	return;
         }
 
 		if (_pos > 0 && b == ESCAPE) {
@@ -471,10 +792,11 @@ void XBee::readPacket() {
 
 				break;
 			default:
+				// starts at fifth byte
 
-				if (_pos > MAX_PACKET_SIZE) {
+				if (_pos > MAX_FRAME_DATA_SIZE) {
 					// exceed max size.  should never occur
-					_response.setError(true);
+					_response.setErrorCode(PACKET_EXCEEDS_BYTE_ARRAY_LENGTH);
 					return;
 				}
 
@@ -482,15 +804,21 @@ void XBee::readPacket() {
 				// packet length does not include start, length, or checksum bytes, so add 3
 				if (_pos == (_response.getPacketLength() + 3)) {
 					// verify checksum
+
+					//std::cout << "read checksum " << static_cast<unsigned int>(b) << " at pos " << static_cast<unsigned int>(_pos) << std::endl;
+
 					if ((_checksumTotal & 0xff) == 0xff) {
 						_response.setChecksum(b);
 						_response.setAvailable(true);
+
+						_response.setErrorCode(NO_ERROR);
 					} else {
 						// checksum failed
-						_response.setError(true);
+						_response.setErrorCode(CHECKSUM_FAILURE);
 					}
 
-					// minus 4 because we start after start,msb,lsb,api
+					// minus 4 because we start after start,msb,lsb,api and up to but not including checksum
+					// e.g. if frame was one byte, _pos=4 would be the byte, pos=5 is the checksum, where end stop reading
 					_response.setFrameLength(_pos - 4);
 
 					// reset state vars
@@ -508,12 +836,11 @@ void XBee::readPacket() {
     }
 }
 
-XBeeRequest::XBeeRequest(uint8_t apiId, uint8_t frameId, uint16_t frameDataLength, uint8_t* payloadPtr, uint8_t payloadLength) {
+// it's peanut butter jelly time!!
+
+XBeeRequest::XBeeRequest(uint8_t apiId, uint8_t frameId) {
 	_apiId = apiId;
 	_frameId = frameId;
-	_frameDataLength = frameDataLength;
-	_payloadPtr = payloadPtr;
-	_payloadLength = payloadLength;
 }
 
 void XBeeRequest::setFrameId(uint8_t frameId) {
@@ -524,47 +851,52 @@ uint8_t XBeeRequest::getFrameId() {
 	return _frameId;
 }
 
-uint8_t* XBeeRequest::getPayload() {
+uint8_t XBeeRequest::getApiId() {
+	return _apiId;
+}
+
+void XBeeRequest::setApiId(uint8_t apiId) {
+	_apiId = apiId;
+}
+
+//void XBeeRequest::reset() {
+//	_frameId = DEFAULT_FRAME_ID;
+//}
+
+//uint8_t XBeeRequest::getPayloadOffset() {
+//	return _payloadOffset;
+//}
+//
+//uint8_t XBeeRequest::setPayloadOffset(uint8_t payloadOffset) {
+//	_payloadOffset = payloadOffset;
+//}
+
+
+PayloadRequest::PayloadRequest(uint8_t apiId, uint8_t frameId, uint8_t *payload, uint8_t payloadLength) : XBeeRequest(apiId, frameId) {
+	_payloadPtr = payload;
+	_payloadLength = payloadLength;
+}
+
+uint8_t* PayloadRequest::getPayload() {
 	return _payloadPtr;
 }
 
-uint8_t XBeeRequest::getPayloadLength() {
+void PayloadRequest::setPayload(uint8_t* payload) {
+	_payloadPtr = payload;
+}
+
+uint8_t PayloadRequest::getPayloadLength() {
 	return _payloadLength;
 }
 
-void XBeeRequest::setPacket(uint8_t* packetPtr) {
-	_packetPtr = packetPtr;
+void PayloadRequest::setPayloadLength(uint8_t payloadLength) {
+	_payloadLength = payloadLength;
 }
 
-uint8_t* XBeeRequest::getPacket() {
-	return _packetPtr;
-}
-
-// TODO make pointer?
-uint8_t XBeeRequest::getFrameDataLength() {
-	return _frameDataLength;
-}
 
 XBeeAddress::XBeeAddress() {
 
 }
-
-//XBeeAddress16::XBeeAddress16() : XBeeAddress() {
-//
-//}
-
-//XBeeAddress16::XBeeAddress16(uint16_t addr) : XBeeAddress() {
-//	_addr = addr;
-//}
-//
-//uint16_t XBeeAddress16::getAddress() {
-//	return _addr;
-//}
-//
-//void XBeeAddress16::setAddress(uint16_t addr) {
-//	_addr = addr;
-//}
-
 
 XBeeAddress64::XBeeAddress64() : XBeeAddress() {
 
@@ -593,35 +925,57 @@ void XBeeAddress64::setLsb(uint32_t lsb) {
 
 
 #ifdef SERIES_2
-// calls superclass constructor
-ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId): XBeeRequest(ZB_TX_REQUEST, frameId, ZB_TX_API_LENGTH, data, dataLength) {
+
+ZBTxRequest::ZBTxRequest() : PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, NULL, 0) {
+
+}
+
+ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId): PayloadRequest(ZB_TX_REQUEST, frameId, data, dataLength) {
 	_addr64 = addr64;
 	_addr16 = addr16;
 	_broadcastRadius = broadcastRadius;
 	_option = option;
 }
 
-ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength): XBeeRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, ZB_TX_API_LENGTH, data, dataLength) {
+ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength): PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, data, dataLength) {
 	_addr64 = addr64;
 	_addr16 = ZB_BROADCAST_ADDRESS;
 	_broadcastRadius = ZB_BROADCAST_RADIUS_MAX_HOPS;
 	_option = ZB_TX_UNICAST;
 }
 
-void ZBTxRequest::assembleFrame() {
-		// build frame data from components and returns
-		XBeeRequest::getPacket()[5] = (_addr64.getMsb() >> 24) & 0xff;
-		XBeeRequest::getPacket()[6] = (_addr64.getMsb() >> 16) & 0xff;
-		XBeeRequest::getPacket()[7] = (_addr64.getMsb() >> 8) & 0xff;
-		XBeeRequest::getPacket()[8] = _addr64.getMsb() & 0xff;
-		XBeeRequest::getPacket()[9] = (_addr64.getLsb() >> 24) & 0xff;
-		XBeeRequest::getPacket()[10] = (_addr64.getLsb() >> 16) & 0xff;
-		XBeeRequest::getPacket()[11] = (_addr64.getLsb() >> 8) & 0xff;
-		XBeeRequest::getPacket()[12] = _addr64.getLsb() & 0xff;
-		XBeeRequest::getPacket()[13] = (_addr16 >> 8) & 0xff;
-		XBeeRequest::getPacket()[14] = _addr16 & 0xff;
-		XBeeRequest::getPacket()[15] = _broadcastRadius;
-		XBeeRequest::getPacket()[16] = _option;
+uint8_t ZBTxRequest::getFrameData(uint8_t pos) {
+	if (pos == 0) {
+		return (_addr64.getMsb() >> 24) & 0xff;
+	} else if (pos == 1) {
+		return (_addr64.getMsb() >> 16) & 0xff;
+	} else if (pos == 2) {
+		return (_addr64.getMsb() >> 8) & 0xff;
+	} else if (pos == 3) {
+		return _addr64.getMsb() & 0xff;
+	} else if (pos == 4) {
+		return (_addr64.getLsb() >> 24) & 0xff;
+	} else if (pos == 5) {
+		return  (_addr64.getLsb() >> 16) & 0xff;
+	} else if (pos == 6) {
+		return (_addr64.getLsb() >> 8) & 0xff;
+	} else if (pos == 7) {
+		return _addr64.getLsb() & 0xff;
+	} else if (pos == 8) {
+		return (_addr16 >> 8) & 0xff;
+	} else if (pos == 9) {
+		return _addr16 & 0xff;
+	} else if (pos == 10) {
+		return _broadcastRadius;
+	} else if (pos == 11) {
+		return _option;
+	} else {
+		return getPayload()[pos - ZB_TX_API_LENGTH];
+	}
+}
+
+uint8_t ZBTxRequest::getFrameDataLength() {
+	return ZB_TX_API_LENGTH + getPayloadLength();
 }
 
 XBeeAddress64& ZBTxRequest::getAddress64() {
@@ -659,21 +1013,36 @@ void ZBTxRequest::setOption(uint8_t option) {
 #endif
 
 #ifdef SERIES_1
-Tx16Request::Tx16Request(uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId) : XBeeRequest(TX_16_REQUEST, frameId, TX_16_API_LENGTH, data, dataLength) {
+
+Tx16Request::Tx16Request() : PayloadRequest(TX_16_REQUEST, DEFAULT_FRAME_ID, NULL, 0) {
+
+}
+
+Tx16Request::Tx16Request(uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId) : PayloadRequest(TX_16_REQUEST, frameId, data, dataLength) {
 	_addr16 = addr16;
 	_option = option;
 }
 
-Tx16Request::Tx16Request(uint16_t addr16, uint8_t *data, uint8_t dataLength) : XBeeRequest(TX_16_REQUEST, DEFAULT_FRAME_ID, TX_16_API_LENGTH, data, dataLength) {
+Tx16Request::Tx16Request(uint16_t addr16, uint8_t *data, uint8_t dataLength) : PayloadRequest(TX_16_REQUEST, DEFAULT_FRAME_ID, data, dataLength) {
 	_addr16 = addr16;
 	_option = ACK_OPTION;
 }
 
-void Tx16Request::assembleFrame() {
-	// build frame data
-	XBeeRequest::getPacket()[5] = (_addr16 >> 8) & 0xff;
-	XBeeRequest::getPacket()[6] = _addr16 & 0xff;
-	XBeeRequest::getPacket()[7] = _option;
+uint8_t Tx16Request::getFrameData(uint8_t pos) {
+
+	if (pos == 0) {
+		return (_addr16 >> 8) & 0xff;
+	} else if (pos == 1) {
+		return _addr16 & 0xff;
+	} else if (pos == 2) {
+		return _option;
+	} else {
+		return getPayload()[pos - TX_16_API_LENGTH];
+	}
+}
+
+uint8_t Tx16Request::getFrameDataLength() {
+	return TX_16_API_LENGTH + getPayloadLength();
 }
 
 uint16_t Tx16Request::getAddress16() {
@@ -692,31 +1061,48 @@ void Tx16Request::setOption(uint8_t option) {
 	_option = option;
 }
 
+Tx64Request::Tx64Request() : PayloadRequest(TX_64_REQUEST, DEFAULT_FRAME_ID, NULL, 0) {
 
-Tx64Request::Tx64Request(XBeeAddress64 &addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId) : XBeeRequest(TX_64_REQUEST, frameId, TX_64_API_LENGTH, data, dataLength) {
+}
+
+Tx64Request::Tx64Request(XBeeAddress64 &addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId) : PayloadRequest(TX_64_REQUEST, frameId, data, dataLength) {
 	_addr64 = addr64;
 	_option = option;
 }
 
-Tx64Request::Tx64Request(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength) : XBeeRequest(TX_64_REQUEST, DEFAULT_FRAME_ID, TX_64_API_LENGTH, data, dataLength) {
+Tx64Request::Tx64Request(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength) : PayloadRequest(TX_64_REQUEST, DEFAULT_FRAME_ID, data, dataLength) {
 	_addr64 = addr64;
 	_option = ACK_OPTION;
 }
 
-void Tx64Request::assembleFrame() {
-	// build frame data
-	XBeeRequest::getPacket()[5] = (_addr64.getMsb() >> 24) & 0xff;
-	XBeeRequest::getPacket()[6] = (_addr64.getMsb() >> 16) & 0xff;
-	XBeeRequest::getPacket()[7] = (_addr64.getMsb() >> 8) & 0xff;
-	XBeeRequest::getPacket()[8] = _addr64.getMsb() & 0xff;
-	XBeeRequest::getPacket()[9] = (_addr64.getLsb() >> 24) & 0xff;
-	XBeeRequest::getPacket()[10] = (_addr64.getLsb() >> 16) & 0xff;
-	XBeeRequest::getPacket()[11] = (_addr64.getLsb() >> 8) & 0xff;
-	XBeeRequest::getPacket()[12] = _addr64.getLsb() & 0xff;
+uint8_t Tx64Request::getFrameData(uint8_t pos) {
 
-	XBeeRequest::getPacket()[13] = _option;
+	if (pos == 0) {
+		return (_addr64.getMsb() >> 24) & 0xff;
+	} else if (pos == 1) {
+		return (_addr64.getMsb() >> 16) & 0xff;
+	} else if (pos == 2) {
+		return (_addr64.getMsb() >> 8) & 0xff;
+	} else if (pos == 3) {
+		return _addr64.getMsb() & 0xff;
+	} else if (pos == 4) {
+		return (_addr64.getLsb() >> 24) & 0xff;
+	} else if (pos == 5) {
+		return (_addr64.getLsb() >> 16) & 0xff;
+	} else if (pos == 6) {
+		return(_addr64.getLsb() >> 8) & 0xff;
+	} else if (pos == 7) {
+		return _addr64.getLsb() & 0xff;
+	} else if (pos == 8) {
+		return _option;
+	} else {
+		return getPayload()[pos - TX_64_API_LENGTH];
+	}
 }
 
+uint8_t Tx64Request::getFrameDataLength() {
+	return TX_64_API_LENGTH + getPayloadLength();
+}
 
 XBeeAddress64& Tx64Request::getAddress64() {
 	return _addr64;
@@ -736,107 +1122,225 @@ void Tx64Request::setOption(uint8_t option) {
 
 #endif
 
+AtCommandRequest::AtCommandRequest() : XBeeRequest(AT_COMMAND_REQUEST, DEFAULT_FRAME_ID) {
+	_command = NULL;
+	clearCommandValue();
+}
+
+AtCommandRequest::AtCommandRequest(uint8_t *command, uint8_t *commandValue, uint8_t commandValueLength) : XBeeRequest(AT_COMMAND_REQUEST, DEFAULT_FRAME_ID) {
+	_command = command;
+	_commandValue = commandValue;
+	_commandValueLength = commandValueLength;
+}
+
+AtCommandRequest::AtCommandRequest(uint8_t *command) : XBeeRequest(AT_COMMAND_REQUEST, DEFAULT_FRAME_ID) {
+	_command = command;
+	clearCommandValue();
+}
+
+uint8_t* AtCommandRequest::getCommand() {
+	return _command;
+}
+
+uint8_t* AtCommandRequest::getCommandValue() {
+	return _commandValue;
+}
+
+uint8_t AtCommandRequest::getCommandValueLength() {
+	return _commandValueLength;
+}
+
+void AtCommandRequest::setCommand(uint8_t* command) {
+	_command = command;
+}
+
+void AtCommandRequest::setCommandValue(uint8_t* value) {
+	_commandValue = value;
+}
+
+void AtCommandRequest::setCommandValueLength(uint8_t length) {
+	_commandValueLength = length;
+}
+
+uint8_t AtCommandRequest::getFrameData(uint8_t pos) {
+
+	if (pos == 0) {
+		return _command[0];
+	} else if (pos == 1) {
+		return _command[1];
+	} else {
+		return _commandValue[pos - AT_COMMAND_API_LENGTH];
+	}
+}
+
+void AtCommandRequest::clearCommandValue() {
+	_commandValue = NULL;
+	_commandValueLength = 0;
+}
+
+//void AtCommandRequest::reset() {
+//	 XBeeRequest::reset();
+//}
+
+uint8_t AtCommandRequest::getFrameDataLength() {
+	// command is 2 byte + length of value
+	return AT_COMMAND_API_LENGTH + _commandValueLength;
+}
+
+XBeeAddress64 RemoteAtCommandRequest::broadcastAddress64 = XBeeAddress64(0x0, BROADCAST_ADDRESS);
+
+RemoteAtCommandRequest::RemoteAtCommandRequest() : AtCommandRequest(NULL, NULL, 0) {
+	_remoteAddress16 = 0;
+	_applyChanges = false;
+	setApiId(REMOTE_AT_REQUEST);
+}
+
+RemoteAtCommandRequest::RemoteAtCommandRequest(uint16_t remoteAddress16, uint8_t *command, uint8_t *commandValue, uint8_t commandValueLength) : AtCommandRequest(command, commandValue, commandValueLength) {
+	_remoteAddress64 = broadcastAddress64;
+	_remoteAddress16 = remoteAddress16;
+	_applyChanges = true;
+	setApiId(REMOTE_AT_REQUEST);
+}
+
+RemoteAtCommandRequest::RemoteAtCommandRequest(uint16_t remoteAddress16, uint8_t *command) : AtCommandRequest(command, NULL, 0) {
+	_remoteAddress64 = broadcastAddress64;
+	_remoteAddress16 = remoteAddress16;
+	_applyChanges = false;
+	setApiId(REMOTE_AT_REQUEST);
+}
+
+RemoteAtCommandRequest::RemoteAtCommandRequest(XBeeAddress64 &remoteAddress64, uint8_t *command, uint8_t *commandValue, uint8_t commandValueLength) : AtCommandRequest(command, commandValue, commandValueLength) {
+	_remoteAddress64 = remoteAddress64;
+	// don't worry.. works for series 1 too!
+	_remoteAddress16 = ZB_BROADCAST_ADDRESS;
+	_applyChanges = true;
+	setApiId(REMOTE_AT_REQUEST);
+}
+
+RemoteAtCommandRequest::RemoteAtCommandRequest(XBeeAddress64 &remoteAddress64, uint8_t *command) : AtCommandRequest(command, NULL, 0) {
+	_remoteAddress64 = remoteAddress64;
+	_remoteAddress16 = ZB_BROADCAST_ADDRESS;
+	_applyChanges = false;
+	setApiId(REMOTE_AT_REQUEST);
+}
+
+uint16_t RemoteAtCommandRequest::getRemoteAddress16() {
+	return _remoteAddress16;
+}
+
+void RemoteAtCommandRequest::setRemoteAddress16(uint16_t remoteAddress16) {
+	_remoteAddress16 = remoteAddress16;
+}
+
+XBeeAddress64& RemoteAtCommandRequest::getRemoteAddress64() {
+	return _remoteAddress64;
+}
+
+void RemoteAtCommandRequest::setRemoteAddress64(XBeeAddress64 &remoteAddress64) {
+	_remoteAddress64 = remoteAddress64;
+}
+
+bool RemoteAtCommandRequest::getApplyChanges() {
+	return _applyChanges;
+}
+
+void RemoteAtCommandRequest::setApplyChanges(bool applyChanges) {
+	_applyChanges = applyChanges;
+}
+
+
+uint8_t RemoteAtCommandRequest::getFrameData(uint8_t pos) {
+	if (pos == 0) {
+		return (_remoteAddress64.getMsb() >> 24) & 0xff;
+	} else if (pos == 1) {
+		return (_remoteAddress64.getMsb() >> 16) & 0xff;
+	} else if (pos == 2) {
+		return (_remoteAddress64.getMsb() >> 8) & 0xff;
+	} else if (pos == 3) {
+		return _remoteAddress64.getMsb() & 0xff;
+	} else if (pos == 4) {
+		return (_remoteAddress64.getLsb() >> 24) & 0xff;
+	} else if (pos == 5) {
+		return (_remoteAddress64.getLsb() >> 16) & 0xff;
+	} else if (pos == 6) {
+		return(_remoteAddress64.getLsb() >> 8) & 0xff;
+	} else if (pos == 7) {
+		return _remoteAddress64.getLsb() & 0xff;
+	} else if (pos == 8) {
+		return (_remoteAddress16 >> 8) & 0xff;
+	} else if (pos == 9) {
+		return _remoteAddress16 & 0xff;
+	} else if (pos == 10) {
+		return _applyChanges;
+	} else if (pos == 11) {
+		return getCommand()[0];
+	} else if (pos == 12) {
+		return getCommand()[1];
+	} else {
+		return getCommandValue()[pos - REMOTE_AT_COMMAND_API_LENGTH];
+	}
+}
+
+uint8_t RemoteAtCommandRequest::getFrameDataLength() {
+	return REMOTE_AT_COMMAND_API_LENGTH + getCommandValueLength();
+}
+
+
+// TODO
 //GenericRequest::GenericRequest(uint8_t* frame, uint8_t len, uint8_t apiId): XBeeRequest(apiId, *(frame), len) {
 //	_frame = frame;
 //}
 
-void XBeeRequest::assemblePacket() {
-
-		getPacket()[0] = START_BYTE;
-		// compute packet length
-		// frameData length does not include apiId and frameId, so add 2
-		getPacket()[1] = ((getPayloadLength() + getFrameDataLength() + 2) >> 8) & 0xff;
-		getPacket()[2] = (getPayloadLength() + getFrameDataLength() + 2) & 0xff;
-
-		// calls subclass
-		assembleFrame();
-
-		getPacket()[3] = _apiId;
-		getPacket()[4] = _frameId;
-
-		// checksum includes all bytes except start/length and of course checksum
-		//uint8_t checksum = computeChecksum(getPacket(), _frameDataLength + 2, 3);
-
-		uint8_t checksum = 0;
-
-		// compute checksum, start at api id
-		for (int i = 0; i < getFrameDataLength() + 2; i++) {
-			checksum+= getPacket()[i + API_ID_INDEX];
-		}
-
-		// add payload to checksum
-		if (getPayloadLength() > 0) {
-			for (int i = 0; i < getPayloadLength(); i++) {
-				checksum+= getPayload()[i];
-			}
-		}
-
-		// perform 2s complement
-		checksum = 0xff - checksum;
-
-		// set checksum as last byte in packet
-		getPacket()[getFrameDataLength() + PACKET_OVERHEAD_LENGTH - 1] = checksum;
-}
-
-// TODO need subclass of XBeeRequest that supports frame id and
-// to get frame id from response subclass, if exists;
-//int XBee::sendAndWaitForResponse(XBeeRequest &request, int timeout) {
-//	// TODO first check if this request api type results in a response w/ frame id
-//	send(request);
-//
-//	unsigned long start = millis();
-//
-//	// read packet until response matches frame id or timeout occurs
-//	do {
-//		if (readPacket(timeout) && (_response.getFrameId() == request.getFrameId())) {
-//			return 0;
-//		} else if (_response.isAvailable()) {
-//			// got a response
-//			return 1;
-//		}
-//	} while ((millis() - start) > timeout);
-//
-//	// timeout
-//	return 2;
-//}
-
 void XBee::send(XBeeRequest &request) {
+	// the new new deal
 
-	// provide request with buffer
-	request.setPacket(_requestPacket);
+	sendByte(START_BYTE, false);
 
-	request.assemblePacket();
+	// send length
+	uint8_t msbLen = ((request.getFrameDataLength() + 2) >> 8) & 0xff;
+	uint8_t lsbLen = (request.getFrameDataLength() + 2) & 0xff;
 
-	// first send everything but the checksum
-	for (int i = 0; i < request.getFrameDataLength() + PACKET_OVERHEAD_LENGTH - 1; i++) {
-		if (i == 0) {
-			// escape special bytes, but not the start byte!
-			sendByte(request.getPacket()[i], false);
-		} else {
-			sendByte(request.getPacket()[i], true);
-		}
+	sendByte(msbLen, true);
+	sendByte(lsbLen, true);
+
+	// api id
+	sendByte(request.getApiId(), true);
+	sendByte(request.getFrameId(), true);
+
+	uint8_t checksum = 0;
+
+	// compute checksum, start at api id
+	checksum+= request.getApiId();
+	checksum+= request.getFrameId();
+
+	//std::cout << "frame length is " << static_cast<unsigned int>(request.getFrameDataLength()) << std::endl;
+
+	for (int i = 0; i < request.getFrameDataLength(); i++) {
+//		std::cout << "sending byte [" << static_cast<unsigned int>(i) << "] " << std::endl;
+		sendByte(request.getFrameData(i), true);
+		checksum+= request.getFrameData(i);
 	}
 
-	// if payload exists, send it now
-	if (request.getPayloadLength() > 0) {
-		for (int i = 0; i < request.getPayloadLength(); i++) {
-			sendByte(request.getPayload()[i], true);
-		}
-	}
+	// perform 2s complement
+	checksum = 0xff - checksum;
+
+//	std::cout << "checksum is " << static_cast<unsigned int>(checksum) << std::endl;
 
 	// send checksum
-	sendByte(request.getPacket()[request.getFrameDataLength() + PACKET_OVERHEAD_LENGTH - 1], true);
+	sendByte(checksum, true);
 
 	// send packet
 	Serial.flush();
 }
 
-void XBee::sendByte(uint8_t &b, bool escape) {
+void XBee::sendByte(uint8_t b, bool escape) {
 
 	if (escape && (b == START_BYTE || b == ESCAPE || b == XON || b == XOFF)) {
+//		std::cout << "escaping byte [" << toHexString(b) << "] " << std::endl;
 		Serial.print(ESCAPE, BYTE);
 		Serial.print(b ^ 0x20, BYTE);
 	} else {
 		Serial.print(b, BYTE);
 	}
 }
+

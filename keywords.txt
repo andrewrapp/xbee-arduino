@@ -1,0 +1,10 @@
+# imcomplete!
+XBee	KEYWORD1
+
+readPacket	KEYWORD2
+readPacketUntilAvailable	KEYWORD2
+begin	KEYWORD2
+send	KEYWORD2
+
+
+
