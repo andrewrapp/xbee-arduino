@@ -16,26 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with XBee-Arduino.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+ 
 #include <XBee.h>
 
 /*
-Receives either a RX16 or RX64 packet and sets a PWM value based on packet data.
+This example is for Series 2 XBee
+Receives a ZB RX packet and sets a PWM value based on packet data.
 Error led is flashed if an unexpected packet is received
 */
 
 XBee xbee = XBee();
 XBeeResponse response = XBeeResponse();
 // create reusable response objects for responses we expect to handle 
-Rx16Response rx16 = Rx16Response();
-Rx64Response rx64 = Rx64Response();
+ZBRxResponse rx = ZBRxResponse();
+ModemStatusResponse msr = ModemStatusResponse();
 
-int statusLed = 11;
-int errorLed = 12;
-int dataLed = 10;
-
-uint8_t option = 0;
-uint8_t data = 0;
+int statusLed = 13;
+int errorLed = 13;
+int dataLed = 13;
 
 void flashLed(int pin, int times, int wait) {
     
@@ -61,7 +59,7 @@ void setup() {
   flashLed(statusLed, 3, 50);
 }
 
-// continuously reads packets, looking for RX16 or RX64
+// continuously reads packets, looking for ZB Receive or Modem Status
 void loop() {
     
     xbee.readPacket();
@@ -69,24 +67,35 @@ void loop() {
     if (xbee.getResponse().isAvailable()) {
       // got something
       
-      if (xbee.getResponse().getApiId() == RX_16_RESPONSE || xbee.getResponse().getApiId() == RX_64_RESPONSE) {
-        // got a rx packet
+      if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+        // got a zb rx packet
         
-        if (xbee.getResponse().getApiId() == RX_16_RESPONSE) {
-                xbee.getResponse().getRx16Response(rx16);
-        	option = rx16.getOption();
-        	data = rx16.getData(0);
+        // now fill our zb rx class
+        xbee.getResponse().getZBRxResponse(rx);
+            
+        if (rx.getOption() == ZB_PACKET_ACKNOWLEDGED) {
+            // the sender got an ACK
+            flashLed(statusLed, 10, 10);
         } else {
-                xbee.getResponse().getRx64Response(rx64);
-        	option = rx64.getOption();
-        	data = rx64.getData(0);
+            // we got it (obviously) but sender didn't get an ACK
+            flashLed(errorLed, 2, 20);
         }
-        
-        // TODO check option, rssi bytes    
-        flashLed(statusLed, 1, 10);
-        
         // set dataLed PWM to value of the first byte in the data
-        analogWrite(dataLed, data);
+        analogWrite(dataLed, rx.getData(0));
+      } else if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
+        xbee.getResponse().getModemStatusResponse(msr);
+        // the local XBee sends this response on certain events, like association/dissociation
+        
+        if (msr.getStatus() == ASSOCIATED) {
+          // yay this is great.  flash led
+          flashLed(statusLed, 10, 10);
+        } else if (msr.getStatus() == DISASSOCIATED) {
+          // this is awful.. flash led to show our discontent
+          flashLed(errorLed, 10, 10);
+        } else {
+          // another status
+          flashLed(statusLed, 5, 10);
+        }
       } else {
       	// not something we were expecting
         flashLed(errorLed, 1, 25);    

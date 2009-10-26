@@ -16,35 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with XBee-Arduino.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #include <XBee.h>
 
 /*
-Sends a TX16 or TX64 request with the value of analogRead(pin5) and checks the status response for success
-Note: In my testing it took about 15 seconds for the XBee to start reporting success, so I've added a startup delay
+This example is for Series 2 XBee
+Sends a ZB TX request with the value of analogRead(pin5) and checks the status response for success
 */
 
+// create the XBee object
 XBee xbee = XBee();
 
-unsigned long start = millis();
-
-// allocate two bytes for to hold a 10-bit analog reading
 uint8_t payload[] = { 0, 0 };
 
-// Enter address of remote XBee, typically the coordinator
-//Tx16Request tx = Tx16Request(0x1874, ACK_OPTION, payload, sizeof(payload), DEFAULT_FRAME_ID);
-
-// This is the SH + SL address of remote XBee
-XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x4008b490);
-// unless you have set DH/DL for 64 bit this will be received as a RX16 packet
-Tx64Request tx = Tx64Request(addr64, payload, sizeof(payload));
-
-TxStatusResponse txStatus = TxStatusResponse();
+// SH + SL Address of receiving XBee
+XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x403e0f30);
+ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
+ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
 int pin5 = 0;
 
-int statusLed = 11;
-int errorLed = 12;
+int statusLed = 13;
+int errorLed = 13;
 
 void flashLed(int pin, int times, int wait) {
     
@@ -59,6 +52,7 @@ void flashLed(int pin, int times, int wait) {
     }
 }
 
+
 void setup() {
   pinMode(statusLed, OUTPUT);
   pinMode(errorLed, OUTPUT);
@@ -66,32 +60,31 @@ void setup() {
   xbee.begin(9600);
 }
 
-void loop() {
-   
-   // start transmitting after a startup delay.  Note: this will rollover to 0 eventually so not best way to handle
-    if (millis() - start > 15000) {
-      // break down 10-bit reading into two bytes and place in payload
-      pin5 = analogRead(5);
-      payload[0] = pin5 >> 8 & 0xff;
-      payload[1] = pin5 & 0xff;
-      
-      xbee.send(tx);
 
-      // flash TX indicator
-      flashLed(statusLed, 1, 100);
-    }
+
+void loop()
+{   
+    // break down 10-bit reading into two bytes and place in payload
+    pin5 = analogRead(5);
+    payload[0] = pin5 >> 8 & 0xff;
+    payload[1] = pin5 & 0xff;
+    
+    xbee.send(zbTx);
   
+    // flash TX indicator
+    flashLed(statusLed, 1, 100);
+    
     // after sending a tx request, we expect a status response
-    // wait up to 5 seconds for the status response
-    if (xbee.readPacket(5000)) {
+    // wait up to half second for the status response
+    if (xbee.readPacket(500)) {
         // got a response!
 
         // should be a znet tx status            	
-    	if (xbee.getResponse().getApiId() == TX_STATUS_RESPONSE) {
+    	if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
     	   xbee.getResponse().getZBTxStatusResponse(txStatus);
     		
     	   // get the delivery status, the fifth byte
-           if (txStatus.getStatus() == SUCCESS) {
+           if (txStatus.getDeliveryStatus() == SUCCESS) {
             	// success.  time to celebrate
              	flashLed(statusLed, 5, 50);
            } else {
@@ -103,4 +96,6 @@ void loop() {
       // local XBee did not provide a timely TX Status Response -- should not happen
       flashLed(errorLed, 2, 50);
     }
+    
+    delay(1000);
 }
