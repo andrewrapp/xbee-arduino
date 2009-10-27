@@ -139,11 +139,11 @@
 <a name="l00152"></a>00152 <span class="comment"></span>      <a class="code" href="class_x_bee_response.html#03a6ea7651a40062c22ca0a37fbf512f" title="Default constructor.">XBeeResponse</a>();
 <a name="l00156"></a>00156       uint8_t <a class="code" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId</a>();
 <a name="l00157"></a>00157       <span class="keywordtype">void</span> setApiId(uint8_t apiId);
-<a name="l00161"></a>00161       uint8_t&amp; <a class="code" href="class_x_bee_response.html#fabdd5448494cc5c677fb0f017057aae" title="Returns the MSB length of the packet.">getMsbLength</a>();
+<a name="l00161"></a>00161       uint8_t <a class="code" href="class_x_bee_response.html#ae9f85f70cbcb92cfcc278295a947952" title="Returns the MSB length of the packet.">getMsbLength</a>();
 <a name="l00162"></a>00162       <span class="keywordtype">void</span> setMsbLength(uint8_t msbLength);
-<a name="l00166"></a>00166       uint8_t&amp; <a class="code" href="class_x_bee_response.html#b960691d787a6a5cfbfebeec8cc07289" title="Returns the LSB length of the packet.">getLsbLength</a>();
+<a name="l00166"></a>00166       uint8_t <a class="code" href="class_x_bee_response.html#cb1b40edafa22461776b75bd5d7caadf" title="Returns the LSB length of the packet.">getLsbLength</a>();
 <a name="l00167"></a>00167       <span class="keywordtype">void</span> setLsbLength(uint8_t lsbLength);
-<a name="l00171"></a>00171       uint8_t&amp; <a class="code" href="class_x_bee_response.html#c8a0500349a92971e3298bd9e45938a9" title="Returns the packet checksum.">getChecksum</a>();
+<a name="l00171"></a>00171       uint8_t <a class="code" href="class_x_bee_response.html#a8f34253bb77196366ea8ac9bc318734" title="Returns the packet checksum.">getChecksum</a>();
 <a name="l00172"></a>00172       <span class="keywordtype">void</span> setChecksum(uint8_t checksum);
 <a name="l00177"></a>00177       uint8_t <a class="code" href="class_x_bee_response.html#6205be340c4f0397a68dadbdca36a091" title="Returns the length of the frame data: all bytes after the api id, and prior to the...">getFrameDataLength</a>();
 <a name="l00178"></a>00178       <span class="keywordtype">void</span> setFrameData(uint8_t* frameDataPtr);
@@ -230,334 +230,336 @@
 <a name="l00328"></a><a class="code" href="class_rx_data_response.html">00328</a> <span class="keyword">class </span><a class="code" href="class_rx_data_response.html" title="Common functionality for both Series 1 and 2 data RX data packets.">RxDataResponse</a> : <span class="keyword">public</span> <a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a> {
 <a name="l00329"></a>00329 <span class="keyword">public</span>:
 <a name="l00330"></a>00330       <a class="code" href="class_rx_data_response.html" title="Common functionality for both Series 1 and 2 data RX data packets.">RxDataResponse</a>();
-<a name="l00334"></a>00334       uint8_t&amp; <a class="code" href="class_rx_data_response.html#9c631458d545375b0c7fdd7fc86391b3" title="Returns the byte at the position index where the index may be 0 to (getDataLength()...">getData</a>(<span class="keywordtype">int</span> index);
-<a name="l00338"></a>00338       <span class="keyword">virtual</span> uint8_t <a class="code" href="class_rx_data_response.html#9e4b6bf4f1bfd9ccec45d190a204f61a" title="Returns the position in the frame data where the data begins.">getDataOffset</a>() = 0;
-<a name="l00339"></a>00339 };
-<a name="l00340"></a>00340 
-<a name="l00341"></a>00341 <span class="comment">// getResponse to return the proper subclass:</span>
-<a name="l00342"></a>00342 <span class="comment">// we maintain a pointer to each type of response, when a response is parsed, it is allocated only if NULL</span>
-<a name="l00343"></a>00343 <span class="comment">// can we allocate an object in a function?</span>
-<a name="l00344"></a>00344 
-<a name="l00345"></a>00345 <span class="preprocessor">#ifdef SERIES_2</span>
-<a name="l00346"></a>00346 <span class="preprocessor"></span>
-<a name="l00349"></a><a class="code" href="class_z_b_tx_status_response.html">00349</a> <span class="keyword">class </span><a class="code" href="class_z_b_tx_status_response.html" title="Represents a Series 2 TX status packet.">ZBTxStatusResponse</a> : <span class="keyword">public</span> <a class="code" href="class_frame_id_response.html" title="This class is extended by all Responses that include a frame id.">FrameIdResponse</a> {
-<a name="l00350"></a>00350       <span class="keyword">public</span>:
-<a name="l00351"></a>00351             <a class="code" href="class_z_b_tx_status_response.html" title="Represents a Series 2 TX status packet.">ZBTxStatusResponse</a>();
-<a name="l00352"></a>00352             uint16_t getRemoteAddress();
-<a name="l00353"></a>00353             uint8_t getTxRetryCount();
-<a name="l00354"></a>00354             uint8_t getDeliveryStatus();
-<a name="l00355"></a>00355             uint8_t getDiscoveryStatus();
-<a name="l00356"></a>00356             <span class="keywordtype">bool</span> isSuccess();
-<a name="l00357"></a>00357 };
-<a name="l00358"></a>00358 
-<a name="l00362"></a><a class="code" href="class_z_b_rx_response.html">00362</a> <span class="keyword">class </span><a class="code" href="class_z_b_rx_response.html" title="Represents a Series 2 RX packet.">ZBRxResponse</a> : <span class="keyword">public</span> <a class="code" href="class_rx_data_response.html" title="Common functionality for both Series 1 and 2 data RX data packets.">RxDataResponse</a> {
-<a name="l00363"></a>00363 <span class="keyword">public</span>:
-<a name="l00364"></a>00364       <a class="code" href="class_z_b_rx_response.html" title="Represents a Series 2 RX packet.">ZBRxResponse</a>();
-<a name="l00365"></a>00365       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getRemoteAddress64();
-<a name="l00366"></a>00366       uint16_t getRemoteAddress16();
-<a name="l00367"></a>00367       uint8_t getOption();
-<a name="l00368"></a>00368       uint8_t getDataLength();
-<a name="l00369"></a>00369       <span class="comment">// frame position where data starts</span>
-<a name="l00370"></a>00370       uint8_t <a class="code" href="class_z_b_rx_response.html#d54e6ff3008f79d0ed32a78cc3d69151" title="Returns the position in the frame data where the data begins.">getDataOffset</a>();
-<a name="l00371"></a>00371 <span class="keyword">private</span>:
-<a name="l00372"></a>00372       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress64;
-<a name="l00373"></a>00373 };
-<a name="l00374"></a>00374 
-<a name="l00378"></a><a class="code" href="class_z_b_rx_io_sample_response.html">00378</a> <span class="keyword">class </span><a class="code" href="class_z_b_rx_io_sample_response.html" title="Represents a Series 2 RX I/O Sample packet.">ZBRxIoSampleResponse</a> : <span class="keyword">public</span> <a class="code" href="class_z_b_rx_response.html" title="Represents a Series 2 RX packet.">ZBRxResponse</a> {
-<a name="l00379"></a>00379 <span class="keyword">public</span>:
-<a name="l00380"></a>00380       <a class="code" href="class_z_b_rx_io_sample_response.html" title="Represents a Series 2 RX I/O Sample packet.">ZBRxIoSampleResponse</a>();
-<a name="l00381"></a>00381       <span class="keywordtype">bool</span> containsAnalog();
-<a name="l00382"></a>00382       <span class="keywordtype">bool</span> containsDigital();
-<a name="l00386"></a>00386       <span class="keywordtype">bool</span> <a class="code" href="class_z_b_rx_io_sample_response.html#d0e444cc8854c996517c1ecde033a9c8" title="Returns true if the pin is enabled.">isAnalogEnabled</a>(uint8_t pin);
-<a name="l00390"></a>00390       <span class="keywordtype">bool</span> <a class="code" href="class_z_b_rx_io_sample_response.html#946c653da11f62b319c3ca6606f8edff" title="Returns true if the pin is enabled.">isDigitalEnabled</a>(uint8_t pin);
-<a name="l00395"></a>00395       uint16_t <a class="code" href="class_z_b_rx_io_sample_response.html#a74edf46988bd3e50ce4037350cbb91e" title="Returns the 10-bit analog reading of the specified pin.">getAnalog</a>(uint8_t pin);
-<a name="l00400"></a>00400       <span class="keywordtype">bool</span> <a class="code" href="class_z_b_rx_io_sample_response.html#c94f045360d7dbb009ac16bc437cbbd5" title="Returns true if the specified pin is high/on.">isDigitalOn</a>(uint8_t pin);
-<a name="l00401"></a>00401       uint8_t getDigitalMaskMsb();
-<a name="l00402"></a>00402       uint8_t getDigitalMaskLsb();
-<a name="l00403"></a>00403       uint8_t getAnalogMask();
-<a name="l00404"></a>00404 };
-<a name="l00405"></a>00405 
-<a name="l00406"></a>00406 <span class="preprocessor">#endif</span>
-<a name="l00407"></a>00407 <span class="preprocessor"></span>
-<a name="l00408"></a>00408 <span class="preprocessor">#ifdef SERIES_1</span>
-<a name="l00409"></a>00409 <span class="preprocessor"></span>
-<a name="l00412"></a><a class="code" href="class_tx_status_response.html">00412</a> <span class="keyword">class </span><a class="code" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a> : <span class="keyword">public</span> <a class="code" href="class_frame_id_response.html" title="This class is extended by all Responses that include a frame id.">FrameIdResponse</a> {
-<a name="l00413"></a>00413       <span class="keyword">public</span>:
-<a name="l00414"></a>00414             <a class="code" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a>();
-<a name="l00415"></a>00415             uint8_t getStatus();
-<a name="l00416"></a>00416             <span class="keywordtype">bool</span> isSuccess();
-<a name="l00417"></a>00417 };
-<a name="l00418"></a>00418 
-<a name="l00422"></a><a class="code" href="class_rx_response.html">00422</a> <span class="keyword">class </span><a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a> : <span class="keyword">public</span> <a class="code" href="class_rx_data_response.html" title="Common functionality for both Series 1 and 2 data RX data packets.">RxDataResponse</a> {
-<a name="l00423"></a>00423 <span class="keyword">public</span>:
-<a name="l00424"></a>00424       <a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a>();
-<a name="l00425"></a>00425       <span class="comment">// remember rssi is negative but this is unsigned byte so it's up to you to convert</span>
-<a name="l00426"></a>00426       uint8_t getRssi();
-<a name="l00427"></a>00427       uint8_t getOption();
-<a name="l00428"></a>00428       <span class="keywordtype">bool</span> isAddressBroadcast();
-<a name="l00429"></a>00429       <span class="keywordtype">bool</span> isPanBroadcast();
-<a name="l00430"></a>00430       uint8_t getDataLength();
-<a name="l00431"></a>00431       uint8_t <a class="code" href="class_rx_response.html#37fd3ee455f2157fa3894e710e668409" title="Returns the position in the frame data where the data begins.">getDataOffset</a>();
-<a name="l00432"></a>00432       <span class="keyword">virtual</span> uint8_t getRssiOffset() = 0;
-<a name="l00433"></a>00433 };
-<a name="l00434"></a>00434 
-<a name="l00438"></a><a class="code" href="class_rx16_response.html">00438</a> <span class="keyword">class </span><a class="code" href="class_rx16_response.html" title="Represents a Series 1 16-bit address RX packet.">Rx16Response</a> : <span class="keyword">public</span> <a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a> {
-<a name="l00439"></a>00439 <span class="keyword">public</span>:
-<a name="l00440"></a>00440       <a class="code" href="class_rx16_response.html" title="Represents a Series 1 16-bit address RX packet.">Rx16Response</a>();
-<a name="l00441"></a>00441       uint8_t getRssiOffset();
-<a name="l00442"></a>00442       uint16_t getRemoteAddress16();
-<a name="l00443"></a>00443 <span class="keyword">protected</span>:
-<a name="l00444"></a>00444       uint16_t _remoteAddress;
-<a name="l00445"></a>00445 };
-<a name="l00446"></a>00446 
-<a name="l00450"></a><a class="code" href="class_rx64_response.html">00450</a> <span class="keyword">class </span><a class="code" href="class_rx64_response.html" title="Represents a Series 1 64-bit address RX packet.">Rx64Response</a> : <span class="keyword">public</span> <a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a> {
-<a name="l00451"></a>00451 <span class="keyword">public</span>:
-<a name="l00452"></a>00452       <a class="code" href="class_rx64_response.html" title="Represents a Series 1 64-bit address RX packet.">Rx64Response</a>();
-<a name="l00453"></a>00453       uint8_t getRssiOffset();
-<a name="l00454"></a>00454       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getRemoteAddress64();
-<a name="l00455"></a>00455 <span class="keyword">private</span>:
-<a name="l00456"></a>00456       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress;
-<a name="l00457"></a>00457 };
-<a name="l00458"></a>00458 
-<a name="l00462"></a><a class="code" href="class_rx_io_sample_base_response.html">00462</a> <span class="keyword">class </span><a class="code" href="class_rx_io_sample_base_response.html" title="Represents a Series 1 RX I/O Sample packet.">RxIoSampleBaseResponse</a> : <span class="keyword">public</span> <a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a> {
-<a name="l00463"></a>00463       <span class="keyword">public</span>:
-<a name="l00464"></a>00464             <a class="code" href="class_rx_io_sample_base_response.html" title="Represents a Series 1 RX I/O Sample packet.">RxIoSampleBaseResponse</a>();
-<a name="l00468"></a>00468             uint8_t <a class="code" href="class_rx_io_sample_base_response.html#44ce66a6751e7e39c8908fe179a21d24" title="Returns the number of samples in this packet.">getSampleSize</a>();
-<a name="l00469"></a>00469             <span class="keywordtype">bool</span> containsAnalog();
-<a name="l00470"></a>00470             <span class="keywordtype">bool</span> containsDigital();
-<a name="l00474"></a>00474             <span class="keywordtype">bool</span> <a class="code" href="class_rx_io_sample_base_response.html#d8fc07932c2e011b83814082b1d82400" title="Returns true if the specified analog pin is enabled.">isAnalogEnabled</a>(uint8_t pin);
-<a name="l00478"></a>00478             <span class="keywordtype">bool</span> <a class="code" href="class_rx_io_sample_base_response.html#a897267985b5b8c02abd68b50f954de7" title="Returns true if the specified digital pin is enabled.">isDigitalEnabled</a>(uint8_t pin);
-<a name="l00483"></a>00483             uint16_t <a class="code" href="class_rx_io_sample_base_response.html#81e98b2eab33f62e6af6b3b4014e841a" title="Returns the 10-bit analog reading of the specified pin.">getAnalog</a>(uint8_t pin, uint8_t sample);
-<a name="l00488"></a>00488             <span class="keywordtype">bool</span> <a class="code" href="class_rx_io_sample_base_response.html#d4ffc0eb84c685fe45618d6b73a20ce2" title="Returns true if the specified pin is high/on.">isDigitalOn</a>(uint8_t pin, uint8_t sample);
-<a name="l00489"></a>00489             uint8_t getSampleOffset();
-<a name="l00490"></a>00490       <span class="keyword">private</span>:
-<a name="l00491"></a>00491 };
-<a name="l00492"></a>00492 
-<a name="l00493"></a>00493 <span class="keyword">class </span>Rx16IoSampleResponse : <span class="keyword">public</span> <a class="code" href="class_rx_io_sample_base_response.html" title="Represents a Series 1 RX I/O Sample packet.">RxIoSampleBaseResponse</a> {
-<a name="l00494"></a>00494 <span class="keyword">public</span>:
-<a name="l00495"></a>00495       Rx16IoSampleResponse();
-<a name="l00496"></a>00496       uint16_t getRemoteAddress16();
-<a name="l00497"></a>00497       uint8_t getRssiOffset();
-<a name="l00498"></a>00498 
-<a name="l00499"></a>00499 };
-<a name="l00500"></a>00500 
-<a name="l00501"></a>00501 <span class="keyword">class </span>Rx64IoSampleResponse : <span class="keyword">public</span> <a class="code" href="class_rx_io_sample_base_response.html" title="Represents a Series 1 RX I/O Sample packet.">RxIoSampleBaseResponse</a> {
-<a name="l00502"></a>00502 <span class="keyword">public</span>:
-<a name="l00503"></a>00503       Rx64IoSampleResponse();
-<a name="l00504"></a>00504       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getRemoteAddress64();
-<a name="l00505"></a>00505       uint8_t getRssiOffset();
-<a name="l00506"></a>00506 <span class="keyword">private</span>:
-<a name="l00507"></a>00507       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress;
+<a name="l00335"></a>00335       uint8_t <a class="code" href="class_rx_data_response.html#e0f858fe479a07c7122a8d414c60517e" title="Returns the payload array.">getData</a>(<span class="keywordtype">int</span> index);
+<a name="l00339"></a>00339       uint8_t* <a class="code" href="class_rx_data_response.html#e0f858fe479a07c7122a8d414c60517e" title="Returns the payload array.">getData</a>();
+<a name="l00343"></a>00343       <span class="keyword">virtual</span> uint8_t <a class="code" href="class_rx_data_response.html#5845e6a0719fd0bf52675e47053a704e" title="Returns the length of the payload.">getDataLength</a>() = 0;
+<a name="l00347"></a>00347       <span class="keyword">virtual</span> uint8_t <a class="code" href="class_rx_data_response.html#9e4b6bf4f1bfd9ccec45d190a204f61a" title="Returns the position in the frame data where the data begins.">getDataOffset</a>() = 0;
+<a name="l00348"></a>00348 };
+<a name="l00349"></a>00349 
+<a name="l00350"></a>00350 <span class="comment">// getResponse to return the proper subclass:</span>
+<a name="l00351"></a>00351 <span class="comment">// we maintain a pointer to each type of response, when a response is parsed, it is allocated only if NULL</span>
+<a name="l00352"></a>00352 <span class="comment">// can we allocate an object in a function?</span>
+<a name="l00353"></a>00353 
+<a name="l00354"></a>00354 <span class="preprocessor">#ifdef SERIES_2</span>
+<a name="l00355"></a>00355 <span class="preprocessor"></span>
+<a name="l00358"></a><a class="code" href="class_z_b_tx_status_response.html">00358</a> <span class="keyword">class </span><a class="code" href="class_z_b_tx_status_response.html" title="Represents a Series 2 TX status packet.">ZBTxStatusResponse</a> : <span class="keyword">public</span> <a class="code" href="class_frame_id_response.html" title="This class is extended by all Responses that include a frame id.">FrameIdResponse</a> {
+<a name="l00359"></a>00359       <span class="keyword">public</span>:
+<a name="l00360"></a>00360             <a class="code" href="class_z_b_tx_status_response.html" title="Represents a Series 2 TX status packet.">ZBTxStatusResponse</a>();
+<a name="l00361"></a>00361             uint16_t getRemoteAddress();
+<a name="l00362"></a>00362             uint8_t getTxRetryCount();
+<a name="l00363"></a>00363             uint8_t getDeliveryStatus();
+<a name="l00364"></a>00364             uint8_t getDiscoveryStatus();
+<a name="l00365"></a>00365             <span class="keywordtype">bool</span> isSuccess();
+<a name="l00366"></a>00366 };
+<a name="l00367"></a>00367 
+<a name="l00371"></a><a class="code" href="class_z_b_rx_response.html">00371</a> <span class="keyword">class </span><a class="code" href="class_z_b_rx_response.html" title="Represents a Series 2 RX packet.">ZBRxResponse</a> : <span class="keyword">public</span> <a class="code" href="class_rx_data_response.html" title="Common functionality for both Series 1 and 2 data RX data packets.">RxDataResponse</a> {
+<a name="l00372"></a>00372 <span class="keyword">public</span>:
+<a name="l00373"></a>00373       <a class="code" href="class_z_b_rx_response.html" title="Represents a Series 2 RX packet.">ZBRxResponse</a>();
+<a name="l00374"></a>00374       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getRemoteAddress64();
+<a name="l00375"></a>00375       uint16_t getRemoteAddress16();
+<a name="l00376"></a>00376       uint8_t getOption();
+<a name="l00377"></a>00377       uint8_t <a class="code" href="class_z_b_rx_response.html#9d2b73060d611bbdd581e0ceb195fd31" title="Returns the length of the payload.">getDataLength</a>();
+<a name="l00378"></a>00378       <span class="comment">// frame position where data starts</span>
+<a name="l00379"></a>00379       uint8_t <a class="code" href="class_z_b_rx_response.html#d54e6ff3008f79d0ed32a78cc3d69151" title="Returns the position in the frame data where the data begins.">getDataOffset</a>();
+<a name="l00380"></a>00380 <span class="keyword">private</span>:
+<a name="l00381"></a>00381       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress64;
+<a name="l00382"></a>00382 };
+<a name="l00383"></a>00383 
+<a name="l00387"></a><a class="code" href="class_z_b_rx_io_sample_response.html">00387</a> <span class="keyword">class </span><a class="code" href="class_z_b_rx_io_sample_response.html" title="Represents a Series 2 RX I/O Sample packet.">ZBRxIoSampleResponse</a> : <span class="keyword">public</span> <a class="code" href="class_z_b_rx_response.html" title="Represents a Series 2 RX packet.">ZBRxResponse</a> {
+<a name="l00388"></a>00388 <span class="keyword">public</span>:
+<a name="l00389"></a>00389       <a class="code" href="class_z_b_rx_io_sample_response.html" title="Represents a Series 2 RX I/O Sample packet.">ZBRxIoSampleResponse</a>();
+<a name="l00390"></a>00390       <span class="keywordtype">bool</span> containsAnalog();
+<a name="l00391"></a>00391       <span class="keywordtype">bool</span> containsDigital();
+<a name="l00395"></a>00395       <span class="keywordtype">bool</span> <a class="code" href="class_z_b_rx_io_sample_response.html#d0e444cc8854c996517c1ecde033a9c8" title="Returns true if the pin is enabled.">isAnalogEnabled</a>(uint8_t pin);
+<a name="l00399"></a>00399       <span class="keywordtype">bool</span> <a class="code" href="class_z_b_rx_io_sample_response.html#946c653da11f62b319c3ca6606f8edff" title="Returns true if the pin is enabled.">isDigitalEnabled</a>(uint8_t pin);
+<a name="l00404"></a>00404       uint16_t <a class="code" href="class_z_b_rx_io_sample_response.html#a74edf46988bd3e50ce4037350cbb91e" title="Returns the 10-bit analog reading of the specified pin.">getAnalog</a>(uint8_t pin);
+<a name="l00409"></a>00409       <span class="keywordtype">bool</span> <a class="code" href="class_z_b_rx_io_sample_response.html#c94f045360d7dbb009ac16bc437cbbd5" title="Returns true if the specified pin is high/on.">isDigitalOn</a>(uint8_t pin);
+<a name="l00410"></a>00410       uint8_t getDigitalMaskMsb();
+<a name="l00411"></a>00411       uint8_t getDigitalMaskLsb();
+<a name="l00412"></a>00412       uint8_t getAnalogMask();
+<a name="l00413"></a>00413 };
+<a name="l00414"></a>00414 
+<a name="l00415"></a>00415 <span class="preprocessor">#endif</span>
+<a name="l00416"></a>00416 <span class="preprocessor"></span>
+<a name="l00417"></a>00417 <span class="preprocessor">#ifdef SERIES_1</span>
+<a name="l00418"></a>00418 <span class="preprocessor"></span>
+<a name="l00421"></a><a class="code" href="class_tx_status_response.html">00421</a> <span class="keyword">class </span><a class="code" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a> : <span class="keyword">public</span> <a class="code" href="class_frame_id_response.html" title="This class is extended by all Responses that include a frame id.">FrameIdResponse</a> {
+<a name="l00422"></a>00422       <span class="keyword">public</span>:
+<a name="l00423"></a>00423             <a class="code" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a>();
+<a name="l00424"></a>00424             uint8_t getStatus();
+<a name="l00425"></a>00425             <span class="keywordtype">bool</span> isSuccess();
+<a name="l00426"></a>00426 };
+<a name="l00427"></a>00427 
+<a name="l00431"></a><a class="code" href="class_rx_response.html">00431</a> <span class="keyword">class </span><a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a> : <span class="keyword">public</span> <a class="code" href="class_rx_data_response.html" title="Common functionality for both Series 1 and 2 data RX data packets.">RxDataResponse</a> {
+<a name="l00432"></a>00432 <span class="keyword">public</span>:
+<a name="l00433"></a>00433       <a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a>();
+<a name="l00434"></a>00434       <span class="comment">// remember rssi is negative but this is unsigned byte so it's up to you to convert</span>
+<a name="l00435"></a>00435       uint8_t getRssi();
+<a name="l00436"></a>00436       uint8_t getOption();
+<a name="l00437"></a>00437       <span class="keywordtype">bool</span> isAddressBroadcast();
+<a name="l00438"></a>00438       <span class="keywordtype">bool</span> isPanBroadcast();
+<a name="l00439"></a>00439       uint8_t <a class="code" href="class_rx_response.html#dd3478a1ce5667aad315f6a6c218011a" title="Returns the length of the payload.">getDataLength</a>();
+<a name="l00440"></a>00440       uint8_t <a class="code" href="class_rx_response.html#37fd3ee455f2157fa3894e710e668409" title="Returns the position in the frame data where the data begins.">getDataOffset</a>();
+<a name="l00441"></a>00441       <span class="keyword">virtual</span> uint8_t getRssiOffset() = 0;
+<a name="l00442"></a>00442 };
+<a name="l00443"></a>00443 
+<a name="l00447"></a><a class="code" href="class_rx16_response.html">00447</a> <span class="keyword">class </span><a class="code" href="class_rx16_response.html" title="Represents a Series 1 16-bit address RX packet.">Rx16Response</a> : <span class="keyword">public</span> <a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a> {
+<a name="l00448"></a>00448 <span class="keyword">public</span>:
+<a name="l00449"></a>00449       <a class="code" href="class_rx16_response.html" title="Represents a Series 1 16-bit address RX packet.">Rx16Response</a>();
+<a name="l00450"></a>00450       uint8_t getRssiOffset();
+<a name="l00451"></a>00451       uint16_t getRemoteAddress16();
+<a name="l00452"></a>00452 <span class="keyword">protected</span>:
+<a name="l00453"></a>00453       uint16_t _remoteAddress;
+<a name="l00454"></a>00454 };
+<a name="l00455"></a>00455 
+<a name="l00459"></a><a class="code" href="class_rx64_response.html">00459</a> <span class="keyword">class </span><a class="code" href="class_rx64_response.html" title="Represents a Series 1 64-bit address RX packet.">Rx64Response</a> : <span class="keyword">public</span> <a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a> {
+<a name="l00460"></a>00460 <span class="keyword">public</span>:
+<a name="l00461"></a>00461       <a class="code" href="class_rx64_response.html" title="Represents a Series 1 64-bit address RX packet.">Rx64Response</a>();
+<a name="l00462"></a>00462       uint8_t getRssiOffset();
+<a name="l00463"></a>00463       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getRemoteAddress64();
+<a name="l00464"></a>00464 <span class="keyword">private</span>:
+<a name="l00465"></a>00465       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress;
+<a name="l00466"></a>00466 };
+<a name="l00467"></a>00467 
+<a name="l00471"></a><a class="code" href="class_rx_io_sample_base_response.html">00471</a> <span class="keyword">class </span><a class="code" href="class_rx_io_sample_base_response.html" title="Represents a Series 1 RX I/O Sample packet.">RxIoSampleBaseResponse</a> : <span class="keyword">public</span> <a class="code" href="class_rx_response.html" title="Represents a Series 1 RX packet.">RxResponse</a> {
+<a name="l00472"></a>00472       <span class="keyword">public</span>:
+<a name="l00473"></a>00473             <a class="code" href="class_rx_io_sample_base_response.html" title="Represents a Series 1 RX I/O Sample packet.">RxIoSampleBaseResponse</a>();
+<a name="l00477"></a>00477             uint8_t <a class="code" href="class_rx_io_sample_base_response.html#44ce66a6751e7e39c8908fe179a21d24" title="Returns the number of samples in this packet.">getSampleSize</a>();
+<a name="l00478"></a>00478             <span class="keywordtype">bool</span> containsAnalog();
+<a name="l00479"></a>00479             <span class="keywordtype">bool</span> containsDigital();
+<a name="l00483"></a>00483             <span class="keywordtype">bool</span> <a class="code" href="class_rx_io_sample_base_response.html#d8fc07932c2e011b83814082b1d82400" title="Returns true if the specified analog pin is enabled.">isAnalogEnabled</a>(uint8_t pin);
+<a name="l00487"></a>00487             <span class="keywordtype">bool</span> <a class="code" href="class_rx_io_sample_base_response.html#a897267985b5b8c02abd68b50f954de7" title="Returns true if the specified digital pin is enabled.">isDigitalEnabled</a>(uint8_t pin);
+<a name="l00492"></a>00492             uint16_t <a class="code" href="class_rx_io_sample_base_response.html#81e98b2eab33f62e6af6b3b4014e841a" title="Returns the 10-bit analog reading of the specified pin.">getAnalog</a>(uint8_t pin, uint8_t sample);
+<a name="l00497"></a>00497             <span class="keywordtype">bool</span> <a class="code" href="class_rx_io_sample_base_response.html#d4ffc0eb84c685fe45618d6b73a20ce2" title="Returns true if the specified pin is high/on.">isDigitalOn</a>(uint8_t pin, uint8_t sample);
+<a name="l00498"></a>00498             uint8_t getSampleOffset();
+<a name="l00499"></a>00499       <span class="keyword">private</span>:
+<a name="l00500"></a>00500 };
+<a name="l00501"></a>00501 
+<a name="l00502"></a>00502 <span class="keyword">class </span>Rx16IoSampleResponse : <span class="keyword">public</span> <a class="code" href="class_rx_io_sample_base_response.html" title="Represents a Series 1 RX I/O Sample packet.">RxIoSampleBaseResponse</a> {
+<a name="l00503"></a>00503 <span class="keyword">public</span>:
+<a name="l00504"></a>00504       Rx16IoSampleResponse();
+<a name="l00505"></a>00505       uint16_t getRemoteAddress16();
+<a name="l00506"></a>00506       uint8_t getRssiOffset();
+<a name="l00507"></a>00507 
 <a name="l00508"></a>00508 };
 <a name="l00509"></a>00509 
-<a name="l00510"></a>00510 <span class="preprocessor">#endif</span>
-<a name="l00511"></a>00511 <span class="preprocessor"></span>
-<a name="l00515"></a><a class="code" href="class_modem_status_response.html">00515</a> <span class="keyword">class </span><a class="code" href="class_modem_status_response.html" title="Represents a Modem Status RX packet.">ModemStatusResponse</a> : <span class="keyword">public</span> <a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a> {
-<a name="l00516"></a>00516 <span class="keyword">public</span>:
-<a name="l00517"></a>00517       <a class="code" href="class_modem_status_response.html" title="Represents a Modem Status RX packet.">ModemStatusResponse</a>();
-<a name="l00518"></a>00518       uint8_t&amp; getStatus();
-<a name="l00519"></a>00519 };
-<a name="l00520"></a>00520 
-<a name="l00524"></a><a class="code" href="class_at_command_response.html">00524</a> <span class="keyword">class </span><a class="code" href="class_at_command_response.html" title="Represents an AT Command RX packet.">AtCommandResponse</a> : <span class="keyword">public</span> <a class="code" href="class_frame_id_response.html" title="This class is extended by all Responses that include a frame id.">FrameIdResponse</a> {
-<a name="l00525"></a>00525       <span class="keyword">public</span>:
-<a name="l00526"></a>00526             <a class="code" href="class_at_command_response.html" title="Represents an AT Command RX packet.">AtCommandResponse</a>();
-<a name="l00530"></a>00530             uint8_t* <a class="code" href="class_at_command_response.html#20f1bf08ba77f2bc74f009318a6fd133" title="Returns an array containing the two character command.">getCommand</a>();
-<a name="l00535"></a>00535             uint8_t <a class="code" href="class_at_command_response.html#340822cacf6eed3ef29955dc9610c09f" title="Returns the command status code.">getStatus</a>();
-<a name="l00540"></a>00540             uint8_t* <a class="code" href="class_at_command_response.html#d1e2a0b6f8988536c570b116f103e7f9" title="Returns an array containing the command value.">getValue</a>();
-<a name="l00544"></a>00544             uint8_t <a class="code" href="class_at_command_response.html#d7d6159fa1777144e94a9ccfeaf83662" title="Returns the length of the command value array.">getValueLength</a>();
-<a name="l00548"></a>00548             <span class="keywordtype">bool</span> <a class="code" href="class_at_command_response.html#b606b3dc93f809b828b54e98a79711d8" title="Returns true if status equals AT_OK.">isOk</a>();
-<a name="l00549"></a>00549 };
-<a name="l00550"></a>00550 
-<a name="l00554"></a><a class="code" href="class_remote_at_command_response.html">00554</a> <span class="keyword">class </span><a class="code" href="class_remote_at_command_response.html" title="Represents a Remote AT Command RX packet.">RemoteAtCommandResponse</a> : <span class="keyword">public</span> <a class="code" href="class_at_command_response.html" title="Represents an AT Command RX packet.">AtCommandResponse</a> {
-<a name="l00555"></a>00555       <span class="keyword">public</span>:
-<a name="l00556"></a>00556             <a class="code" href="class_remote_at_command_response.html" title="Represents a Remote AT Command RX packet.">RemoteAtCommandResponse</a>();
-<a name="l00560"></a>00560             uint8_t* <a class="code" href="class_remote_at_command_response.html#6d26d626de8b8d0eaf8241b92ff39f28" title="Returns an array containing the two character command.">getCommand</a>();
-<a name="l00565"></a>00565             uint8_t <a class="code" href="class_remote_at_command_response.html#fc1b15612ea780c10dc1f33754868548" title="Returns the command status code.">getStatus</a>();
-<a name="l00570"></a>00570             uint8_t* <a class="code" href="class_remote_at_command_response.html#3d72d768131c63271a62f75530efda29" title="Returns an array containing the command value.">getValue</a>();
-<a name="l00574"></a>00574             uint8_t <a class="code" href="class_remote_at_command_response.html#55cf17381e461b8de4a2d5459bfc964a" title="Returns the length of the command value array.">getValueLength</a>();
-<a name="l00578"></a>00578             uint16_t <a class="code" href="class_remote_at_command_response.html#2bea13bca12330a2eb1da3e3f0224bde" title="Returns the 16-bit address of the remote radio.">getRemoteAddress16</a>();
-<a name="l00582"></a>00582             <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; <a class="code" href="class_remote_at_command_response.html#b87802214e04a7058ed0dc9668e70e73" title="Returns the 64-bit address of the remote radio.">getRemoteAddress64</a>();
-<a name="l00586"></a>00586             <span class="keywordtype">bool</span> <a class="code" href="class_remote_at_command_response.html#0cef7b3846d9c208ebd7ce4473aa90d3" title="Returns true if command was successful.">isOk</a>();
-<a name="l00587"></a>00587       <span class="keyword">private</span>:
-<a name="l00588"></a>00588             <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress64;
-<a name="l00589"></a>00589 };
-<a name="l00590"></a>00590 
-<a name="l00591"></a>00591 
-<a name="l00599"></a><a class="code" href="class_x_bee_request.html">00599</a> <span class="keyword">class </span><a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> {
-<a name="l00600"></a>00600 <span class="keyword">public</span>:
-<a name="l00605"></a>00605       <a class="code" href="class_x_bee_request.html#f80fd559cab746ab8573087cddda71a2" title="Constructor TODO make protected.">XBeeRequest</a>(uint8_t apiId, uint8_t frameId);
-<a name="l00609"></a>00609       <span class="keywordtype">void</span> <a class="code" href="class_x_bee_request.html#ed1724c11e710217807c971e40105c86" title="Sets the frame id.">setFrameId</a>(uint8_t frameId);
-<a name="l00613"></a>00613       uint8_t <a class="code" href="class_x_bee_request.html#20394c7ea4666224c50bef25cc0cd836" title="Returns the frame id.">getFrameId</a>();
-<a name="l00617"></a>00617       uint8_t <a class="code" href="class_x_bee_request.html#746d0373c9fb6ed0ff8b7e04f5fb12c9" title="Returns the API id.">getApiId</a>();
-<a name="l00618"></a>00618       <span class="comment">// setting = 0 makes this a pure virtual function, meaning the subclass must implement, like abstract in java</span>
-<a name="l00625"></a>00625 <span class="comment"></span>      <span class="keyword">virtual</span> uint8_t <a class="code" href="class_x_bee_request.html#d5b998cd95a570bdaa4d74c6c8790d94" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos) = 0;
-<a name="l00629"></a>00629       <span class="keyword">virtual</span> uint8_t <a class="code" href="class_x_bee_request.html#03b6c558db5836fa7167c0fba7405642" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>() = 0;
-<a name="l00630"></a>00630       <span class="comment">//void reset();</span>
-<a name="l00631"></a>00631 <span class="keyword">protected</span>:
-<a name="l00632"></a>00632       <span class="keywordtype">void</span> setApiId(uint8_t apiId);
-<a name="l00633"></a>00633 <span class="keyword">private</span>:
-<a name="l00634"></a>00634       uint8_t _apiId;
-<a name="l00635"></a>00635       uint8_t _frameId;
-<a name="l00636"></a>00636 };
-<a name="l00637"></a>00637 
-<a name="l00638"></a>00638 <span class="comment">// TODO add reset/clear method since responses are often reused</span>
-<a name="l00660"></a><a class="code" href="class_x_bee.html">00660</a> <span class="comment"></span><span class="keyword">class </span><a class="code" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> {
-<a name="l00661"></a>00661 <span class="keyword">public</span>:
-<a name="l00662"></a>00662       <a class="code" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a>();
-<a name="l00663"></a>00663       <span class="comment">// for eclipse dev only</span>
-<a name="l00664"></a>00664       <span class="keywordtype">void</span> setSerial(HardwareSerial serial);
-<a name="l00677"></a>00677       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#7d788232f44e8b3c10dc686a0299fcc6" title="Reads all available serial bytes until a packet is parsed, an error occurs, or the...">readPacket</a>();
-<a name="l00682"></a>00682       <span class="keywordtype">bool</span> <a class="code" href="class_x_bee.html#7d788232f44e8b3c10dc686a0299fcc6" title="Reads all available serial bytes until a packet is parsed, an error occurs, or the...">readPacket</a>(<span class="keywordtype">int</span> timeout);
-<a name="l00688"></a>00688       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#594e2bb2ccb7b3fe7a2278b9324b4083" title="Reads until a packet is received or an error occurs.">readPacketUntilAvailable</a>();
-<a name="l00692"></a>00692       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#847a36fa06c9567496a7ec140cb72586" title="Starts the serial connection at the supplied baud rate.">begin</a>(<span class="keywordtype">long</span> baud);
-<a name="l00693"></a>00693       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#18250def80e8b643aa1ccc15a98937f3" title="Returns a reference to the current response Note: once readPacket is called again...">getResponse</a>(<a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a> &amp;response);
-<a name="l00698"></a>00698       <a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a>&amp; <a class="code" href="class_x_bee.html#18250def80e8b643aa1ccc15a98937f3" title="Returns a reference to the current response Note: once readPacket is called again...">getResponse</a>();
-<a name="l00702"></a>00702       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#802387f468be8622941d16739ac848f2" title="Sends a XBeeRequest (TX packet) out the serial port.">send</a>(<a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> &amp;request);
-<a name="l00703"></a>00703       <span class="comment">//uint8_t sendAndWaitForResponse(XBeeRequest &amp;request, int timeout);</span>
-<a name="l00707"></a>00707 <span class="comment"></span>      uint8_t <a class="code" href="class_x_bee.html#25bd226e41517e8a66a13e531d31438d" title="Returns a sequential frame id between 1 and 255.">getNextFrameId</a>();
-<a name="l00708"></a>00708 <span class="keyword">private</span>:
-<a name="l00709"></a>00709       <span class="keywordtype">void</span> sendByte(uint8_t b, <span class="keywordtype">bool</span> escape);
-<a name="l00710"></a>00710       <span class="keywordtype">void</span> resetResponse();
-<a name="l00711"></a>00711       <a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a> _response;
-<a name="l00712"></a>00712       <span class="keywordtype">bool</span> _escape;
-<a name="l00713"></a>00713       <span class="comment">// current packet position for response.  just a state variable for packet parsing and has no relevance for the response otherwise</span>
-<a name="l00714"></a>00714       uint8_t _pos;
-<a name="l00715"></a>00715       <span class="comment">// last byte read</span>
-<a name="l00716"></a>00716       uint8_t b;
-<a name="l00717"></a>00717       uint8_t _checksumTotal;
-<a name="l00718"></a>00718       uint8_t _nextFrameId;
-<a name="l00719"></a>00719       <span class="comment">// buffer for incoming RX packets.  holds only the api specific frame data, starting after the api id byte and prior to checksum</span>
-<a name="l00720"></a>00720       uint8_t _responseFrameData[MAX_FRAME_DATA_SIZE];
-<a name="l00721"></a>00721 };
-<a name="l00722"></a>00722 
-<a name="l00726"></a><a class="code" href="class_payload_request.html">00726</a> <span class="keyword">class </span><a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a> : <span class="keyword">public</span> <a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> {
-<a name="l00727"></a>00727 <span class="keyword">public</span>:
-<a name="l00728"></a>00728       <a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a>(uint8_t apiId, uint8_t frameId, uint8_t *payload, uint8_t payloadLength);
-<a name="l00732"></a>00732       uint8_t* <a class="code" href="class_payload_request.html#1e2d5757fefda70dfd0c567b3dd0ba39" title="Returns the payload of the packet, if not null.">getPayload</a>();
-<a name="l00736"></a>00736       <span class="keywordtype">void</span> <a class="code" href="class_payload_request.html#a9abc1f496a1c457f796207aa8a7567d" title="Sets the payload array.">setPayload</a>(uint8_t* payloadPtr);
-<a name="l00740"></a>00740       uint8_t <a class="code" href="class_payload_request.html#fb718d069f05611623833437c99893a4" title="Returns the length of the payload array, as specified by the user.">getPayloadLength</a>();
-<a name="l00746"></a>00746       <span class="keywordtype">void</span> <a class="code" href="class_payload_request.html#6e86a663ab6299afaa1cf21ad7c2c5c1" title="Sets the length of the payload to include in the request.">setPayloadLength</a>(uint8_t payloadLength);
-<a name="l00747"></a>00747 <span class="keyword">private</span>:
-<a name="l00748"></a>00748       uint8_t* _payloadPtr;
-<a name="l00749"></a>00749       uint8_t _payloadLength;
-<a name="l00750"></a>00750 };
-<a name="l00751"></a>00751 
-<a name="l00752"></a>00752 <span class="preprocessor">#ifdef SERIES_1</span>
-<a name="l00753"></a>00753 <span class="preprocessor"></span>
-<a name="l00762"></a><a class="code" href="class_tx16_request.html">00762</a> <span class="keyword">class </span><a class="code" href="class_tx16_request.html" title="Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST Be careful...">Tx16Request</a> : <span class="keyword">public</span> <a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a> {
-<a name="l00763"></a>00763 <span class="keyword">public</span>:
-<a name="l00764"></a>00764       <a class="code" href="class_tx16_request.html#dcdbb644e08788267fb86cbefde76b1b" title="Creates a default instance of this class.">Tx16Request</a>(uint16_t addr16, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId);
-<a name="l00768"></a>00768       <a class="code" href="class_tx16_request.html#dcdbb644e08788267fb86cbefde76b1b" title="Creates a default instance of this class.">Tx16Request</a>(uint16_t addr16, uint8_t *payload, uint8_t payloadLength);
-<a name="l00773"></a>00773       <a class="code" href="class_tx16_request.html#dcdbb644e08788267fb86cbefde76b1b" title="Creates a default instance of this class.">Tx16Request</a>();
-<a name="l00774"></a>00774       uint16_t getAddress16();
-<a name="l00775"></a>00775       <span class="keywordtype">void</span> setAddress16(uint16_t addr16);
-<a name="l00776"></a>00776       uint8_t getOption();
-<a name="l00777"></a>00777       <span class="keywordtype">void</span> setOption(uint8_t option);
-<a name="l00778"></a>00778       uint8_t <a class="code" href="class_tx16_request.html#f5ffbc2164e766d96f54c723996fd389" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
-<a name="l00779"></a>00779       uint8_t <a class="code" href="class_tx16_request.html#9a1ddfb380e72ecc09a024c6de6cdf8e" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
-<a name="l00780"></a>00780 <span class="keyword">protected</span>:
-<a name="l00781"></a>00781 <span class="keyword">private</span>:
-<a name="l00782"></a>00782       uint16_t _addr16;
-<a name="l00783"></a>00783       uint8_t _option;
-<a name="l00784"></a>00784 };
-<a name="l00785"></a>00785 
-<a name="l00794"></a><a class="code" href="class_tx64_request.html">00794</a> <span class="keyword">class </span><a class="code" href="class_tx64_request.html" title="Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST.">Tx64Request</a> : <span class="keyword">public</span> <a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a> {
-<a name="l00795"></a>00795 <span class="keyword">public</span>:
-<a name="l00796"></a>00796       <a class="code" href="class_tx64_request.html#49bd84b4aa5478c27e6da5581b2e1d3c" title="Creates a default instance of this class.">Tx64Request</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;addr64, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId);
-<a name="l00800"></a>00800       <a class="code" href="class_tx64_request.html#49bd84b4aa5478c27e6da5581b2e1d3c" title="Creates a default instance of this class.">Tx64Request</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;addr64, uint8_t *payload, uint8_t payloadLength);
-<a name="l00805"></a>00805       <a class="code" href="class_tx64_request.html#49bd84b4aa5478c27e6da5581b2e1d3c" title="Creates a default instance of this class.">Tx64Request</a>();
-<a name="l00806"></a>00806       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getAddress64();
-<a name="l00807"></a>00807       <span class="keywordtype">void</span> setAddress64(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; addr64);
-<a name="l00808"></a>00808       <span class="comment">// TODO move option to superclass</span>
-<a name="l00809"></a>00809       uint8_t getOption();
-<a name="l00810"></a>00810       <span class="keywordtype">void</span> setOption(uint8_t option);
-<a name="l00811"></a>00811       uint8_t <a class="code" href="class_tx64_request.html#fe3662433da85acd21f8a3d90844a084" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
-<a name="l00812"></a>00812       uint8_t <a class="code" href="class_tx64_request.html#fadc1e07718a62d6c5a75a4bb07dfaae" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
-<a name="l00813"></a>00813 <span class="keyword">private</span>:
-<a name="l00814"></a>00814       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _addr64;
-<a name="l00815"></a>00815       uint8_t _option;
-<a name="l00816"></a>00816 };
-<a name="l00817"></a>00817 
-<a name="l00818"></a>00818 <span class="preprocessor">#endif</span>
-<a name="l00819"></a>00819 <span class="preprocessor"></span>
-<a name="l00820"></a>00820 
-<a name="l00821"></a>00821 <span class="preprocessor">#ifdef SERIES_2</span>
-<a name="l00822"></a>00822 <span class="preprocessor"></span>
-<a name="l00835"></a><a class="code" href="class_z_b_tx_request.html">00835</a> <span class="keyword">class </span><a class="code" href="class_z_b_tx_request.html" title="Represents a Series 2 TX packet that corresponds to Api Id: ZB_TX_REQUEST.">ZBTxRequest</a> : <span class="keyword">public</span> <a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a> {
-<a name="l00836"></a>00836 <span class="keyword">public</span>:
-<a name="l00840"></a>00840       <a class="code" href="class_z_b_tx_request.html#410499f31a049f0bd4bbc8299ec74e24" title="Creates a default instance of this class.">ZBTxRequest</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;addr64, uint8_t *payload, uint8_t payloadLength);
-<a name="l00841"></a>00841       <a class="code" href="class_z_b_tx_request.html#410499f31a049f0bd4bbc8299ec74e24" title="Creates a default instance of this class.">ZBTxRequest</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId);
-<a name="l00846"></a>00846       <a class="code" href="class_z_b_tx_request.html#410499f31a049f0bd4bbc8299ec74e24" title="Creates a default instance of this class.">ZBTxRequest</a>();
-<a name="l00847"></a>00847       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getAddress64();
-<a name="l00848"></a>00848       uint16_t getAddress16();
-<a name="l00849"></a>00849       uint8_t getBroadcastRadius();
-<a name="l00850"></a>00850       uint8_t getOption();
-<a name="l00851"></a>00851       <span class="keywordtype">void</span> setAddress64(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; addr64);
-<a name="l00852"></a>00852       <span class="keywordtype">void</span> setAddress16(uint16_t addr16);
-<a name="l00853"></a>00853       <span class="keywordtype">void</span> setBroadcastRadius(uint8_t broadcastRadius);
-<a name="l00854"></a>00854       <span class="keywordtype">void</span> setOption(uint8_t option);
-<a name="l00855"></a>00855 <span class="keyword">protected</span>:
-<a name="l00856"></a>00856       <span class="comment">// declare virtual functions</span>
-<a name="l00857"></a>00857       uint8_t <a class="code" href="class_z_b_tx_request.html#c81e09dfbf7aefbdf7f8b4838b643c5c" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
-<a name="l00858"></a>00858       uint8_t <a class="code" href="class_z_b_tx_request.html#8e6914c1f556981a0f863c57c57d053b" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
-<a name="l00859"></a>00859 <span class="keyword">private</span>:
-<a name="l00860"></a>00860       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _addr64;
-<a name="l00861"></a>00861       uint16_t _addr16;
-<a name="l00862"></a>00862       uint8_t _broadcastRadius;
-<a name="l00863"></a>00863       uint8_t _option;
-<a name="l00864"></a>00864 };
-<a name="l00865"></a>00865 
-<a name="l00866"></a>00866 <span class="preprocessor">#endif</span>
-<a name="l00867"></a>00867 <span class="preprocessor"></span>
-<a name="l00872"></a><a class="code" href="class_at_command_request.html">00872</a> <span class="keyword">class </span><a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a> : <span class="keyword">public</span> <a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> {
-<a name="l00873"></a>00873 <span class="keyword">public</span>:
-<a name="l00874"></a>00874       <a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a>();
-<a name="l00875"></a>00875       <a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a>(uint8_t *command);
-<a name="l00876"></a>00876       <a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a>(uint8_t *command, uint8_t *commandValue, uint8_t commandValueLength);
-<a name="l00877"></a>00877       uint8_t <a class="code" href="class_at_command_request.html#a4fc8f0c8404172cd5532f3d8e5564f2" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
-<a name="l00878"></a>00878       uint8_t <a class="code" href="class_at_command_request.html#ad12b8357e63fca9e95b6731a4bfda0d" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
-<a name="l00879"></a>00879       uint8_t* getCommand();
-<a name="l00880"></a>00880       <span class="keywordtype">void</span> setCommand(uint8_t* command);
-<a name="l00881"></a>00881       uint8_t* getCommandValue();
-<a name="l00882"></a>00882       <span class="keywordtype">void</span> setCommandValue(uint8_t* command);
-<a name="l00883"></a>00883       uint8_t getCommandValueLength();
-<a name="l00884"></a>00884       <span class="keywordtype">void</span> setCommandValueLength(uint8_t length);
-<a name="l00888"></a>00888       <span class="keywordtype">void</span> <a class="code" href="class_at_command_request.html#6842d0e270162c389d804eafd37a4f45" title="Clears the optional commandValue and commandValueLength so that a query may be sent...">clearCommandValue</a>();
-<a name="l00889"></a>00889       <span class="comment">//void reset();</span>
-<a name="l00890"></a>00890 <span class="keyword">private</span>:
-<a name="l00891"></a>00891       uint8_t *_command;
-<a name="l00892"></a>00892       uint8_t *_commandValue;
-<a name="l00893"></a>00893       uint8_t _commandValueLength;
-<a name="l00894"></a>00894 };
-<a name="l00895"></a>00895 
-<a name="l00900"></a><a class="code" href="class_remote_at_command_request.html">00900</a> <span class="keyword">class </span><a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a> : <span class="keyword">public</span> <a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a> {
-<a name="l00901"></a>00901 <span class="keyword">public</span>:
-<a name="l00902"></a>00902       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>();
-<a name="l00907"></a>00907       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>(uint16_t remoteAddress16, uint8_t *command, uint8_t *commandValue, uint8_t commandValueLength);
-<a name="l00912"></a>00912       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>(uint16_t remoteAddress16, uint8_t *command);
-<a name="l00917"></a>00917       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;remoteAddress64, uint8_t *command, uint8_t *commandValue, uint8_t commandValueLength);
-<a name="l00922"></a>00922       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;remoteAddress64, uint8_t *command);
-<a name="l00923"></a>00923       uint16_t getRemoteAddress16();
-<a name="l00924"></a>00924       <span class="keywordtype">void</span> setRemoteAddress16(uint16_t remoteAddress16);
-<a name="l00925"></a>00925       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getRemoteAddress64();
-<a name="l00926"></a>00926       <span class="keywordtype">void</span> setRemoteAddress64(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;remoteAddress64);
-<a name="l00927"></a>00927       <span class="keywordtype">bool</span> getApplyChanges();
-<a name="l00928"></a>00928       <span class="keywordtype">void</span> setApplyChanges(<span class="keywordtype">bool</span> applyChanges);
-<a name="l00929"></a>00929       uint8_t <a class="code" href="class_remote_at_command_request.html#0e576cf564ebd5a82cb2ed05239a856a" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
-<a name="l00930"></a>00930       uint8_t <a class="code" href="class_remote_at_command_request.html#1d78334a8924b0a0e06de6ef3a09c24f" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
-<a name="l00931"></a>00931       <span class="keyword">static</span> <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> broadcastAddress64;
-<a name="l00932"></a>00932 <span class="comment">//    static uint16_t broadcast16Address;</span>
-<a name="l00933"></a>00933 <span class="keyword">private</span>:
-<a name="l00934"></a>00934       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress64;
-<a name="l00935"></a>00935       uint16_t _remoteAddress16;
-<a name="l00936"></a>00936       <span class="keywordtype">bool</span> _applyChanges;
-<a name="l00937"></a>00937 };
-<a name="l00938"></a>00938 
-<a name="l00939"></a>00939 
-<a name="l00940"></a>00940 
-<a name="l00941"></a>00941 <span class="preprocessor">#endif //XBee_h</span>
+<a name="l00510"></a>00510 <span class="keyword">class </span>Rx64IoSampleResponse : <span class="keyword">public</span> <a class="code" href="class_rx_io_sample_base_response.html" title="Represents a Series 1 RX I/O Sample packet.">RxIoSampleBaseResponse</a> {
+<a name="l00511"></a>00511 <span class="keyword">public</span>:
+<a name="l00512"></a>00512       Rx64IoSampleResponse();
+<a name="l00513"></a>00513       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getRemoteAddress64();
+<a name="l00514"></a>00514       uint8_t getRssiOffset();
+<a name="l00515"></a>00515 <span class="keyword">private</span>:
+<a name="l00516"></a>00516       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress;
+<a name="l00517"></a>00517 };
+<a name="l00518"></a>00518 
+<a name="l00519"></a>00519 <span class="preprocessor">#endif</span>
+<a name="l00520"></a>00520 <span class="preprocessor"></span>
+<a name="l00524"></a><a class="code" href="class_modem_status_response.html">00524</a> <span class="keyword">class </span><a class="code" href="class_modem_status_response.html" title="Represents a Modem Status RX packet.">ModemStatusResponse</a> : <span class="keyword">public</span> <a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a> {
+<a name="l00525"></a>00525 <span class="keyword">public</span>:
+<a name="l00526"></a>00526       <a class="code" href="class_modem_status_response.html" title="Represents a Modem Status RX packet.">ModemStatusResponse</a>();
+<a name="l00527"></a>00527       uint8_t getStatus();
+<a name="l00528"></a>00528 };
+<a name="l00529"></a>00529 
+<a name="l00533"></a><a class="code" href="class_at_command_response.html">00533</a> <span class="keyword">class </span><a class="code" href="class_at_command_response.html" title="Represents an AT Command RX packet.">AtCommandResponse</a> : <span class="keyword">public</span> <a class="code" href="class_frame_id_response.html" title="This class is extended by all Responses that include a frame id.">FrameIdResponse</a> {
+<a name="l00534"></a>00534       <span class="keyword">public</span>:
+<a name="l00535"></a>00535             <a class="code" href="class_at_command_response.html" title="Represents an AT Command RX packet.">AtCommandResponse</a>();
+<a name="l00539"></a>00539             uint8_t* <a class="code" href="class_at_command_response.html#20f1bf08ba77f2bc74f009318a6fd133" title="Returns an array containing the two character command.">getCommand</a>();
+<a name="l00544"></a>00544             uint8_t <a class="code" href="class_at_command_response.html#340822cacf6eed3ef29955dc9610c09f" title="Returns the command status code.">getStatus</a>();
+<a name="l00549"></a>00549             uint8_t* <a class="code" href="class_at_command_response.html#d1e2a0b6f8988536c570b116f103e7f9" title="Returns an array containing the command value.">getValue</a>();
+<a name="l00553"></a>00553             uint8_t <a class="code" href="class_at_command_response.html#d7d6159fa1777144e94a9ccfeaf83662" title="Returns the length of the command value array.">getValueLength</a>();
+<a name="l00557"></a>00557             <span class="keywordtype">bool</span> <a class="code" href="class_at_command_response.html#b606b3dc93f809b828b54e98a79711d8" title="Returns true if status equals AT_OK.">isOk</a>();
+<a name="l00558"></a>00558 };
+<a name="l00559"></a>00559 
+<a name="l00563"></a><a class="code" href="class_remote_at_command_response.html">00563</a> <span class="keyword">class </span><a class="code" href="class_remote_at_command_response.html" title="Represents a Remote AT Command RX packet.">RemoteAtCommandResponse</a> : <span class="keyword">public</span> <a class="code" href="class_at_command_response.html" title="Represents an AT Command RX packet.">AtCommandResponse</a> {
+<a name="l00564"></a>00564       <span class="keyword">public</span>:
+<a name="l00565"></a>00565             <a class="code" href="class_remote_at_command_response.html" title="Represents a Remote AT Command RX packet.">RemoteAtCommandResponse</a>();
+<a name="l00569"></a>00569             uint8_t* <a class="code" href="class_remote_at_command_response.html#6d26d626de8b8d0eaf8241b92ff39f28" title="Returns an array containing the two character command.">getCommand</a>();
+<a name="l00574"></a>00574             uint8_t <a class="code" href="class_remote_at_command_response.html#fc1b15612ea780c10dc1f33754868548" title="Returns the command status code.">getStatus</a>();
+<a name="l00579"></a>00579             uint8_t* <a class="code" href="class_remote_at_command_response.html#3d72d768131c63271a62f75530efda29" title="Returns an array containing the command value.">getValue</a>();
+<a name="l00583"></a>00583             uint8_t <a class="code" href="class_remote_at_command_response.html#55cf17381e461b8de4a2d5459bfc964a" title="Returns the length of the command value array.">getValueLength</a>();
+<a name="l00587"></a>00587             uint16_t <a class="code" href="class_remote_at_command_response.html#2bea13bca12330a2eb1da3e3f0224bde" title="Returns the 16-bit address of the remote radio.">getRemoteAddress16</a>();
+<a name="l00591"></a>00591             <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; <a class="code" href="class_remote_at_command_response.html#b87802214e04a7058ed0dc9668e70e73" title="Returns the 64-bit address of the remote radio.">getRemoteAddress64</a>();
+<a name="l00595"></a>00595             <span class="keywordtype">bool</span> <a class="code" href="class_remote_at_command_response.html#0cef7b3846d9c208ebd7ce4473aa90d3" title="Returns true if command was successful.">isOk</a>();
+<a name="l00596"></a>00596       <span class="keyword">private</span>:
+<a name="l00597"></a>00597             <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress64;
+<a name="l00598"></a>00598 };
+<a name="l00599"></a>00599 
+<a name="l00600"></a>00600 
+<a name="l00608"></a><a class="code" href="class_x_bee_request.html">00608</a> <span class="keyword">class </span><a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> {
+<a name="l00609"></a>00609 <span class="keyword">public</span>:
+<a name="l00614"></a>00614       <a class="code" href="class_x_bee_request.html#f80fd559cab746ab8573087cddda71a2" title="Constructor TODO make protected.">XBeeRequest</a>(uint8_t apiId, uint8_t frameId);
+<a name="l00618"></a>00618       <span class="keywordtype">void</span> <a class="code" href="class_x_bee_request.html#ed1724c11e710217807c971e40105c86" title="Sets the frame id.">setFrameId</a>(uint8_t frameId);
+<a name="l00622"></a>00622       uint8_t <a class="code" href="class_x_bee_request.html#20394c7ea4666224c50bef25cc0cd836" title="Returns the frame id.">getFrameId</a>();
+<a name="l00626"></a>00626       uint8_t <a class="code" href="class_x_bee_request.html#746d0373c9fb6ed0ff8b7e04f5fb12c9" title="Returns the API id.">getApiId</a>();
+<a name="l00627"></a>00627       <span class="comment">// setting = 0 makes this a pure virtual function, meaning the subclass must implement, like abstract in java</span>
+<a name="l00634"></a>00634 <span class="comment"></span>      <span class="keyword">virtual</span> uint8_t <a class="code" href="class_x_bee_request.html#d5b998cd95a570bdaa4d74c6c8790d94" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos) = 0;
+<a name="l00638"></a>00638       <span class="keyword">virtual</span> uint8_t <a class="code" href="class_x_bee_request.html#03b6c558db5836fa7167c0fba7405642" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>() = 0;
+<a name="l00639"></a>00639       <span class="comment">//void reset();</span>
+<a name="l00640"></a>00640 <span class="keyword">protected</span>:
+<a name="l00641"></a>00641       <span class="keywordtype">void</span> setApiId(uint8_t apiId);
+<a name="l00642"></a>00642 <span class="keyword">private</span>:
+<a name="l00643"></a>00643       uint8_t _apiId;
+<a name="l00644"></a>00644       uint8_t _frameId;
+<a name="l00645"></a>00645 };
+<a name="l00646"></a>00646 
+<a name="l00647"></a>00647 <span class="comment">// TODO add reset/clear method since responses are often reused</span>
+<a name="l00669"></a><a class="code" href="class_x_bee.html">00669</a> <span class="comment"></span><span class="keyword">class </span><a class="code" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> {
+<a name="l00670"></a>00670 <span class="keyword">public</span>:
+<a name="l00671"></a>00671       <a class="code" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a>();
+<a name="l00672"></a>00672       <span class="comment">// for eclipse dev only</span>
+<a name="l00673"></a>00673       <span class="keywordtype">void</span> setSerial(HardwareSerial serial);
+<a name="l00686"></a>00686       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#7d788232f44e8b3c10dc686a0299fcc6" title="Reads all available serial bytes until a packet is parsed, an error occurs, or the...">readPacket</a>();
+<a name="l00691"></a>00691       <span class="keywordtype">bool</span> <a class="code" href="class_x_bee.html#7d788232f44e8b3c10dc686a0299fcc6" title="Reads all available serial bytes until a packet is parsed, an error occurs, or the...">readPacket</a>(<span class="keywordtype">int</span> timeout);
+<a name="l00697"></a>00697       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#594e2bb2ccb7b3fe7a2278b9324b4083" title="Reads until a packet is received or an error occurs.">readPacketUntilAvailable</a>();
+<a name="l00701"></a>00701       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#847a36fa06c9567496a7ec140cb72586" title="Starts the serial connection at the supplied baud rate.">begin</a>(<span class="keywordtype">long</span> baud);
+<a name="l00702"></a>00702       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#18250def80e8b643aa1ccc15a98937f3" title="Returns a reference to the current response Note: once readPacket is called again...">getResponse</a>(<a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a> &amp;response);
+<a name="l00707"></a>00707       <a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a>&amp; <a class="code" href="class_x_bee.html#18250def80e8b643aa1ccc15a98937f3" title="Returns a reference to the current response Note: once readPacket is called again...">getResponse</a>();
+<a name="l00711"></a>00711       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#802387f468be8622941d16739ac848f2" title="Sends a XBeeRequest (TX packet) out the serial port.">send</a>(<a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> &amp;request);
+<a name="l00712"></a>00712       <span class="comment">//uint8_t sendAndWaitForResponse(XBeeRequest &amp;request, int timeout);</span>
+<a name="l00716"></a>00716 <span class="comment"></span>      uint8_t <a class="code" href="class_x_bee.html#25bd226e41517e8a66a13e531d31438d" title="Returns a sequential frame id between 1 and 255.">getNextFrameId</a>();
+<a name="l00717"></a>00717 <span class="keyword">private</span>:
+<a name="l00718"></a>00718       <span class="keywordtype">void</span> sendByte(uint8_t b, <span class="keywordtype">bool</span> escape);
+<a name="l00719"></a>00719       <span class="keywordtype">void</span> resetResponse();
+<a name="l00720"></a>00720       <a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a> _response;
+<a name="l00721"></a>00721       <span class="keywordtype">bool</span> _escape;
+<a name="l00722"></a>00722       <span class="comment">// current packet position for response.  just a state variable for packet parsing and has no relevance for the response otherwise</span>
+<a name="l00723"></a>00723       uint8_t _pos;
+<a name="l00724"></a>00724       <span class="comment">// last byte read</span>
+<a name="l00725"></a>00725       uint8_t b;
+<a name="l00726"></a>00726       uint8_t _checksumTotal;
+<a name="l00727"></a>00727       uint8_t _nextFrameId;
+<a name="l00728"></a>00728       <span class="comment">// buffer for incoming RX packets.  holds only the api specific frame data, starting after the api id byte and prior to checksum</span>
+<a name="l00729"></a>00729       uint8_t _responseFrameData[MAX_FRAME_DATA_SIZE];
+<a name="l00730"></a>00730 };
+<a name="l00731"></a>00731 
+<a name="l00735"></a><a class="code" href="class_payload_request.html">00735</a> <span class="keyword">class </span><a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a> : <span class="keyword">public</span> <a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> {
+<a name="l00736"></a>00736 <span class="keyword">public</span>:
+<a name="l00737"></a>00737       <a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a>(uint8_t apiId, uint8_t frameId, uint8_t *payload, uint8_t payloadLength);
+<a name="l00741"></a>00741       uint8_t* <a class="code" href="class_payload_request.html#1e2d5757fefda70dfd0c567b3dd0ba39" title="Returns the payload of the packet, if not null.">getPayload</a>();
+<a name="l00745"></a>00745       <span class="keywordtype">void</span> <a class="code" href="class_payload_request.html#a9abc1f496a1c457f796207aa8a7567d" title="Sets the payload array.">setPayload</a>(uint8_t* payloadPtr);
+<a name="l00749"></a>00749       uint8_t <a class="code" href="class_payload_request.html#fb718d069f05611623833437c99893a4" title="Returns the length of the payload array, as specified by the user.">getPayloadLength</a>();
+<a name="l00755"></a>00755       <span class="keywordtype">void</span> <a class="code" href="class_payload_request.html#6e86a663ab6299afaa1cf21ad7c2c5c1" title="Sets the length of the payload to include in the request.">setPayloadLength</a>(uint8_t payloadLength);
+<a name="l00756"></a>00756 <span class="keyword">private</span>:
+<a name="l00757"></a>00757       uint8_t* _payloadPtr;
+<a name="l00758"></a>00758       uint8_t _payloadLength;
+<a name="l00759"></a>00759 };
+<a name="l00760"></a>00760 
+<a name="l00761"></a>00761 <span class="preprocessor">#ifdef SERIES_1</span>
+<a name="l00762"></a>00762 <span class="preprocessor"></span>
+<a name="l00771"></a><a class="code" href="class_tx16_request.html">00771</a> <span class="keyword">class </span><a class="code" href="class_tx16_request.html" title="Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST Be careful...">Tx16Request</a> : <span class="keyword">public</span> <a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a> {
+<a name="l00772"></a>00772 <span class="keyword">public</span>:
+<a name="l00773"></a>00773       <a class="code" href="class_tx16_request.html#dcdbb644e08788267fb86cbefde76b1b" title="Creates a default instance of this class.">Tx16Request</a>(uint16_t addr16, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId);
+<a name="l00777"></a>00777       <a class="code" href="class_tx16_request.html#dcdbb644e08788267fb86cbefde76b1b" title="Creates a default instance of this class.">Tx16Request</a>(uint16_t addr16, uint8_t *payload, uint8_t payloadLength);
+<a name="l00782"></a>00782       <a class="code" href="class_tx16_request.html#dcdbb644e08788267fb86cbefde76b1b" title="Creates a default instance of this class.">Tx16Request</a>();
+<a name="l00783"></a>00783       uint16_t getAddress16();
+<a name="l00784"></a>00784       <span class="keywordtype">void</span> setAddress16(uint16_t addr16);
+<a name="l00785"></a>00785       uint8_t getOption();
+<a name="l00786"></a>00786       <span class="keywordtype">void</span> setOption(uint8_t option);
+<a name="l00787"></a>00787       uint8_t <a class="code" href="class_tx16_request.html#f5ffbc2164e766d96f54c723996fd389" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
+<a name="l00788"></a>00788       uint8_t <a class="code" href="class_tx16_request.html#9a1ddfb380e72ecc09a024c6de6cdf8e" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
+<a name="l00789"></a>00789 <span class="keyword">protected</span>:
+<a name="l00790"></a>00790 <span class="keyword">private</span>:
+<a name="l00791"></a>00791       uint16_t _addr16;
+<a name="l00792"></a>00792       uint8_t _option;
+<a name="l00793"></a>00793 };
+<a name="l00794"></a>00794 
+<a name="l00803"></a><a class="code" href="class_tx64_request.html">00803</a> <span class="keyword">class </span><a class="code" href="class_tx64_request.html" title="Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST.">Tx64Request</a> : <span class="keyword">public</span> <a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a> {
+<a name="l00804"></a>00804 <span class="keyword">public</span>:
+<a name="l00805"></a>00805       <a class="code" href="class_tx64_request.html#49bd84b4aa5478c27e6da5581b2e1d3c" title="Creates a default instance of this class.">Tx64Request</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;addr64, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId);
+<a name="l00809"></a>00809       <a class="code" href="class_tx64_request.html#49bd84b4aa5478c27e6da5581b2e1d3c" title="Creates a default instance of this class.">Tx64Request</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;addr64, uint8_t *payload, uint8_t payloadLength);
+<a name="l00814"></a>00814       <a class="code" href="class_tx64_request.html#49bd84b4aa5478c27e6da5581b2e1d3c" title="Creates a default instance of this class.">Tx64Request</a>();
+<a name="l00815"></a>00815       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getAddress64();
+<a name="l00816"></a>00816       <span class="keywordtype">void</span> setAddress64(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; addr64);
+<a name="l00817"></a>00817       <span class="comment">// TODO move option to superclass</span>
+<a name="l00818"></a>00818       uint8_t getOption();
+<a name="l00819"></a>00819       <span class="keywordtype">void</span> setOption(uint8_t option);
+<a name="l00820"></a>00820       uint8_t <a class="code" href="class_tx64_request.html#fe3662433da85acd21f8a3d90844a084" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
+<a name="l00821"></a>00821       uint8_t <a class="code" href="class_tx64_request.html#fadc1e07718a62d6c5a75a4bb07dfaae" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
+<a name="l00822"></a>00822 <span class="keyword">private</span>:
+<a name="l00823"></a>00823       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _addr64;
+<a name="l00824"></a>00824       uint8_t _option;
+<a name="l00825"></a>00825 };
+<a name="l00826"></a>00826 
+<a name="l00827"></a>00827 <span class="preprocessor">#endif</span>
+<a name="l00828"></a>00828 <span class="preprocessor"></span>
+<a name="l00829"></a>00829 
+<a name="l00830"></a>00830 <span class="preprocessor">#ifdef SERIES_2</span>
+<a name="l00831"></a>00831 <span class="preprocessor"></span>
+<a name="l00844"></a><a class="code" href="class_z_b_tx_request.html">00844</a> <span class="keyword">class </span><a class="code" href="class_z_b_tx_request.html" title="Represents a Series 2 TX packet that corresponds to Api Id: ZB_TX_REQUEST.">ZBTxRequest</a> : <span class="keyword">public</span> <a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a> {
+<a name="l00845"></a>00845 <span class="keyword">public</span>:
+<a name="l00849"></a>00849       <a class="code" href="class_z_b_tx_request.html#410499f31a049f0bd4bbc8299ec74e24" title="Creates a default instance of this class.">ZBTxRequest</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;addr64, uint8_t *payload, uint8_t payloadLength);
+<a name="l00850"></a>00850       <a class="code" href="class_z_b_tx_request.html#410499f31a049f0bd4bbc8299ec74e24" title="Creates a default instance of this class.">ZBTxRequest</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId);
+<a name="l00855"></a>00855       <a class="code" href="class_z_b_tx_request.html#410499f31a049f0bd4bbc8299ec74e24" title="Creates a default instance of this class.">ZBTxRequest</a>();
+<a name="l00856"></a>00856       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getAddress64();
+<a name="l00857"></a>00857       uint16_t getAddress16();
+<a name="l00858"></a>00858       uint8_t getBroadcastRadius();
+<a name="l00859"></a>00859       uint8_t getOption();
+<a name="l00860"></a>00860       <span class="keywordtype">void</span> setAddress64(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; addr64);
+<a name="l00861"></a>00861       <span class="keywordtype">void</span> setAddress16(uint16_t addr16);
+<a name="l00862"></a>00862       <span class="keywordtype">void</span> setBroadcastRadius(uint8_t broadcastRadius);
+<a name="l00863"></a>00863       <span class="keywordtype">void</span> setOption(uint8_t option);
+<a name="l00864"></a>00864 <span class="keyword">protected</span>:
+<a name="l00865"></a>00865       <span class="comment">// declare virtual functions</span>
+<a name="l00866"></a>00866       uint8_t <a class="code" href="class_z_b_tx_request.html#c81e09dfbf7aefbdf7f8b4838b643c5c" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
+<a name="l00867"></a>00867       uint8_t <a class="code" href="class_z_b_tx_request.html#8e6914c1f556981a0f863c57c57d053b" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
+<a name="l00868"></a>00868 <span class="keyword">private</span>:
+<a name="l00869"></a>00869       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _addr64;
+<a name="l00870"></a>00870       uint16_t _addr16;
+<a name="l00871"></a>00871       uint8_t _broadcastRadius;
+<a name="l00872"></a>00872       uint8_t _option;
+<a name="l00873"></a>00873 };
+<a name="l00874"></a>00874 
+<a name="l00875"></a>00875 <span class="preprocessor">#endif</span>
+<a name="l00876"></a>00876 <span class="preprocessor"></span>
+<a name="l00881"></a><a class="code" href="class_at_command_request.html">00881</a> <span class="keyword">class </span><a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a> : <span class="keyword">public</span> <a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> {
+<a name="l00882"></a>00882 <span class="keyword">public</span>:
+<a name="l00883"></a>00883       <a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a>();
+<a name="l00884"></a>00884       <a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a>(uint8_t *command);
+<a name="l00885"></a>00885       <a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a>(uint8_t *command, uint8_t *commandValue, uint8_t commandValueLength);
+<a name="l00886"></a>00886       uint8_t <a class="code" href="class_at_command_request.html#a4fc8f0c8404172cd5532f3d8e5564f2" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
+<a name="l00887"></a>00887       uint8_t <a class="code" href="class_at_command_request.html#ad12b8357e63fca9e95b6731a4bfda0d" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
+<a name="l00888"></a>00888       uint8_t* getCommand();
+<a name="l00889"></a>00889       <span class="keywordtype">void</span> setCommand(uint8_t* command);
+<a name="l00890"></a>00890       uint8_t* getCommandValue();
+<a name="l00891"></a>00891       <span class="keywordtype">void</span> setCommandValue(uint8_t* command);
+<a name="l00892"></a>00892       uint8_t getCommandValueLength();
+<a name="l00893"></a>00893       <span class="keywordtype">void</span> setCommandValueLength(uint8_t length);
+<a name="l00897"></a>00897       <span class="keywordtype">void</span> <a class="code" href="class_at_command_request.html#6842d0e270162c389d804eafd37a4f45" title="Clears the optional commandValue and commandValueLength so that a query may be sent...">clearCommandValue</a>();
+<a name="l00898"></a>00898       <span class="comment">//void reset();</span>
+<a name="l00899"></a>00899 <span class="keyword">private</span>:
+<a name="l00900"></a>00900       uint8_t *_command;
+<a name="l00901"></a>00901       uint8_t *_commandValue;
+<a name="l00902"></a>00902       uint8_t _commandValueLength;
+<a name="l00903"></a>00903 };
+<a name="l00904"></a>00904 
+<a name="l00909"></a><a class="code" href="class_remote_at_command_request.html">00909</a> <span class="keyword">class </span><a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a> : <span class="keyword">public</span> <a class="code" href="class_at_command_request.html" title="Represents an AT Command TX packet The command is used to configure the serially...">AtCommandRequest</a> {
+<a name="l00910"></a>00910 <span class="keyword">public</span>:
+<a name="l00911"></a>00911       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>();
+<a name="l00916"></a>00916       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>(uint16_t remoteAddress16, uint8_t *command, uint8_t *commandValue, uint8_t commandValueLength);
+<a name="l00921"></a>00921       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>(uint16_t remoteAddress16, uint8_t *command);
+<a name="l00926"></a>00926       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;remoteAddress64, uint8_t *command, uint8_t *commandValue, uint8_t commandValueLength);
+<a name="l00931"></a>00931       <a class="code" href="class_remote_at_command_request.html" title="Represents an Remote AT Command TX packet The command is used to configure a remote...">RemoteAtCommandRequest</a>(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;remoteAddress64, uint8_t *command);
+<a name="l00932"></a>00932       uint16_t getRemoteAddress16();
+<a name="l00933"></a>00933       <span class="keywordtype">void</span> setRemoteAddress16(uint16_t remoteAddress16);
+<a name="l00934"></a>00934       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a>&amp; getRemoteAddress64();
+<a name="l00935"></a>00935       <span class="keywordtype">void</span> setRemoteAddress64(<a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> &amp;remoteAddress64);
+<a name="l00936"></a>00936       <span class="keywordtype">bool</span> getApplyChanges();
+<a name="l00937"></a>00937       <span class="keywordtype">void</span> setApplyChanges(<span class="keywordtype">bool</span> applyChanges);
+<a name="l00938"></a>00938       uint8_t <a class="code" href="class_remote_at_command_request.html#0e576cf564ebd5a82cb2ed05239a856a" title="Starting after the frame id (pos = 0) and up to but not including the checksum Note:...">getFrameData</a>(uint8_t pos);
+<a name="l00939"></a>00939       uint8_t <a class="code" href="class_remote_at_command_request.html#1d78334a8924b0a0e06de6ef3a09c24f" title="Returns the size of the api frame (not including frame id or api id or checksum)...">getFrameDataLength</a>();
+<a name="l00940"></a>00940       <span class="keyword">static</span> <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> broadcastAddress64;
+<a name="l00941"></a>00941 <span class="comment">//    static uint16_t broadcast16Address;</span>
+<a name="l00942"></a>00942 <span class="keyword">private</span>:
+<a name="l00943"></a>00943       <a class="code" href="class_x_bee_address64.html" title="Represents a 64-bit XBee Address.">XBeeAddress64</a> _remoteAddress64;
+<a name="l00944"></a>00944       uint16_t _remoteAddress16;
+<a name="l00945"></a>00945       <span class="keywordtype">bool</span> _applyChanges;
+<a name="l00946"></a>00946 };
+<a name="l00947"></a>00947 
+<a name="l00948"></a>00948 
+<a name="l00949"></a>00949 
+<a name="l00950"></a>00950 <span class="preprocessor">#endif //XBee_h</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 13:03:20 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 21:44:51 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

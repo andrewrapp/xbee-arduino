@@ -33,7 +33,7 @@ void XBeeResponse::setApiId(uint8_t apiId) {
 	_apiId = apiId;
 }
 
-uint8_t& XBeeResponse::getMsbLength() {
+uint8_t XBeeResponse::getMsbLength() {
 	return _msbLength;
 }
 
@@ -41,7 +41,7 @@ void XBeeResponse::setMsbLength(uint8_t msbLength) {
 	_msbLength = msbLength;
 }
 
-uint8_t& XBeeResponse::getLsbLength() {
+uint8_t XBeeResponse::getLsbLength() {
 	return _lsbLength;
 }
 
@@ -49,7 +49,7 @@ void XBeeResponse::setLsbLength(uint8_t lsbLength) {
 	_lsbLength = lsbLength;
 }
 
-uint8_t& XBeeResponse::getChecksum() {
+uint8_t XBeeResponse::getChecksum() {
 	return _checksum;
 }
 
@@ -547,10 +547,13 @@ RxDataResponse::RxDataResponse() : XBeeResponse() {
 
 }
 
-uint8_t& RxDataResponse::getData(int index) {
+uint8_t RxDataResponse::getData(int index) {
 	return getFrameData()[getDataOffset() + index];
 }
 
+uint8_t* RxDataResponse::getData() {
+	return getFrameData() + getDataOffset();
+}
 
 FrameIdResponse::FrameIdResponse() {
 
@@ -565,7 +568,7 @@ ModemStatusResponse::ModemStatusResponse() {
 
 }
 
-uint8_t& ModemStatusResponse::getStatus() {
+uint8_t ModemStatusResponse::getStatus() {
 	return getFrameData()[0];
 }
 

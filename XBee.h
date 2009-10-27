@@ -158,17 +158,17 @@ public:
 	/**
 	 * Returns the MSB length of the packet
 	 */
-	uint8_t& getMsbLength();
+	uint8_t getMsbLength();
 	void setMsbLength(uint8_t msbLength);
 	/**
 	 * Returns the LSB length of the packet
 	 */
-	uint8_t& getLsbLength();
+	uint8_t getLsbLength();
 	void setLsbLength(uint8_t lsbLength);
 	/**
 	 * Returns the packet checksum
 	 */
-	uint8_t& getChecksum();
+	uint8_t getChecksum();
 	void setChecksum(uint8_t checksum);
 	/**
 	 * Returns the length of the frame data: all bytes after the api id, and prior to the checksum
@@ -329,9 +329,18 @@ class RxDataResponse : public XBeeResponse {
 public:
 	RxDataResponse();
 	/**
-	 * Returns the byte at the position <i>index</i> where the <i>index</i> may be 0 to (getDataLength() - 1)
+	 * Returns the specified index of the payload.  The index may be 0 to getDataLength() - 1
+	 * This method is deprecated; use uint8_t* getData()
 	 */
-	uint8_t& getData(int index);
+	uint8_t getData(int index);
+	/**
+	 * Returns the payload array.  This may be accessed from index 0 to getDataLength() - 1
+	 */
+	uint8_t* getData();
+	/**
+	 * Returns the length of the payload
+	 */
+	virtual uint8_t getDataLength() = 0;
 	/**
 	 * Returns the position in the frame data where the data begins
 	 */
@@ -515,7 +524,7 @@ private:
 class ModemStatusResponse : public XBeeResponse {
 public:
 	ModemStatusResponse();
-	uint8_t& getStatus();
+	uint8_t getStatus();
 };
 
 /**
@@ -731,7 +740,7 @@ public:
 	 */
 	uint8_t* getPayload();
 	/**
-	 * Sets the payload array.  Overwrites existing payload.
+	 * Sets the payload array
 	 */
 	void setPayload(uint8_t* payloadPtr);
 	/**
