@@ -33,10 +33,11 @@ Inheritance diagram for RxResponse:</div>
 
 <p><center><img src="class_rx_response.png" usemap="#RxResponse_map" border="0" alt=""></center>
 <map name="RxResponse_map">
-<area href="class_rx_data_response.html" alt="RxDataResponse" shape="rect" coords="58,56,165,80">
-<area href="class_x_bee_response.html" alt="XBeeResponse" shape="rect" coords="58,0,165,24">
-<area href="class_rx16_response.html" alt="Rx16Response" shape="rect" coords="0,168,107,192">
-<area href="class_rx64_response.html" alt="Rx64Response" shape="rect" coords="117,168,224,192">
+<area href="class_rx_data_response.html" alt="RxDataResponse" shape="rect" coords="170,56,330,80">
+<area href="class_x_bee_response.html" alt="XBeeResponse" shape="rect" coords="170,0,330,24">
+<area href="class_rx16_response.html" alt="Rx16Response" shape="rect" coords="0,168,160,192">
+<area href="class_rx64_response.html" alt="Rx64Response" shape="rect" coords="170,168,330,192">
+<area href="class_rx_io_sample_base_response.html" alt="RxIoSampleBaseResponse" shape="rect" coords="340,168,500,192">
 </map>
 </div>
 
@@ -56,9 +57,6 @@ bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>isAddressBroadcast</b
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="1b492ad1ff869b00903efc4ff571a006"></a><!-- doxytag: member="RxResponse::isPanBroadcast" ref="1b492ad1ff869b00903efc4ff571a006" args="()" -->
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><b>isPanBroadcast</b> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="c0e5dc8fc16aa3004b5c59a8a306e00e"></a><!-- doxytag: member="RxResponse::getRssiOffset" ref="c0e5dc8fc16aa3004b5c59a8a306e00e" args="()=0" -->
-virtual uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getRssiOffset</b> ()=0</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="dd3478a1ce5667aad315f6a6c218011a"></a><!-- doxytag: member="RxResponse::getDataLength" ref="dd3478a1ce5667aad315f6a6c218011a" args="()" -->
 uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getDataLength</b> ()</td></tr>
 
@@ -66,12 +64,15 @@ uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getDataLength</b> 
 uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_rx_response.html#37fd3ee455f2157fa3894e710e668409">getDataOffset</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the position in the frame data where the data begins. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="c0e5dc8fc16aa3004b5c59a8a306e00e"></a><!-- doxytag: member="RxResponse::getRssiOffset" ref="c0e5dc8fc16aa3004b5c59a8a306e00e" args="()=0" -->
+virtual uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getRssiOffset</b> ()=0</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Represents a Series 1 RX packet. <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 13:03:20 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

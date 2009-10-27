@@ -22,7 +22,8 @@
   </div>
 </div>
 <div class="contents">
-<h1>Tx16Request Class Reference</h1><!-- doxytag: class="Tx16Request" --><!-- doxytag: inherits="XBeeRequest" -->Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST.  
+<h1>Tx16Request Class Reference</h1><!-- doxytag: class="Tx16Request" --><!-- doxytag: inherits="PayloadRequest" -->Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST <p>
+Be careful not to send a data array larger than the max packet size of your radio.  
 <a href="#_details">More...</a>
 <p>
 <code>#include &lt;<a class="el" href="_x_bee_8h-source.html">XBee.h</a>&gt;</code>
@@ -33,7 +34,8 @@ Inheritance diagram for Tx16Request:</div>
 
 <p><center><img src="class_tx16_request.png" usemap="#Tx16Request_map" border="0" alt=""></center>
 <map name="Tx16Request_map">
-<area href="class_x_bee_request.html" alt="XBeeRequest" shape="rect" coords="0,0,87,24">
+<area href="class_payload_request.html" alt="PayloadRequest" shape="rect" coords="0,56,102,80">
+<area href="class_x_bee_request.html" alt="XBeeRequest" shape="rect" coords="0,0,102,24">
 </map>
 </div>
 
@@ -41,13 +43,16 @@ Inheritance diagram for Tx16Request:</div>
 <a href="class_tx16_request-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f9e141d3cb32df8ad33370e219ce3a31"></a><!-- doxytag: member="Tx16Request::Tx16Request" ref="f9e141d3cb32df8ad33370e219ce3a31" args="(uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>Tx16Request</b> (uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="4e8f8b660e4837f4053e9f18d394f913"></a><!-- doxytag: member="Tx16Request::Tx16Request" ref="4e8f8b660e4837f4053e9f18d394f913" args="(uint16_t addr16, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><b>Tx16Request</b> (uint16_t addr16, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="0aea3d6ae473d33e250a2a68c86a6310"></a><!-- doxytag: member="Tx16Request::Tx16Request" ref="0aea3d6ae473d33e250a2a68c86a6310" args="(uint16_t addr16, uint8_t *data, uint8_t dataLength)" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx16_request.html#0aea3d6ae473d33e250a2a68c86a6310">Tx16Request</a> (uint16_t addr16, uint8_t *data, uint8_t dataLength)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="760e2c31996673e816fb3576748f731f"></a><!-- doxytag: member="Tx16Request::Tx16Request" ref="760e2c31996673e816fb3576748f731f" args="(uint16_t addr16, uint8_t *payload, uint8_t payloadLength)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx16_request.html#760e2c31996673e816fb3576748f731f">Tx16Request</a> (uint16_t addr16, uint8_t *payload, uint8_t payloadLength)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Creates a unicast <a class="el" href="class_tx16_request.html" title="Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST.">Tx16Request</a> with the ACK option and DEFAULT_FRAME_ID. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Creates a Unicast <a class="el" href="class_tx16_request.html" title="Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST Be careful...">Tx16Request</a> with the ACK option and DEFAULT_FRAME_ID. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx16_request.html#dcdbb644e08788267fb86cbefde76b1b">Tx16Request</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Creates a default instance of this class.  <a href="#dcdbb644e08788267fb86cbefde76b1b"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="deb9cf2989e2c86992f6a652a92bd648"></a><!-- doxytag: member="Tx16Request::getAddress16" ref="deb9cf2989e2c86992f6a652a92bd648" args="()" -->
 uint16_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getAddress16</b> ()</td></tr>
 
@@ -60,18 +65,69 @@ uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getOption</b> ()</
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="fc0792e586ddb3c9d62efb787a5956d9"></a><!-- doxytag: member="Tx16Request::setOption" ref="fc0792e586ddb3c9d62efb787a5956d9" args="(uint8_t option)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setOption</b> (uint8_t option)</td></tr>
 
-<tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2a4ab3279aef622e91cb4fee25c2ac60"></a><!-- doxytag: member="Tx16Request::assembleFrame" ref="2a4ab3279aef622e91cb4fee25c2ac60" args="()" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>assembleFrame</b> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx16_request.html#f5ffbc2164e766d96f54c723996fd389">getFrameData</a> (uint8_t pos)</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Starting after the frame id (pos = 0) and up to but not including the checksum Note: Unlike Digi's definition of the frame data, this does not start with the API ID.  <a href="#f5ffbc2164e766d96f54c723996fd389"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="9a1ddfb380e72ecc09a024c6de6cdf8e"></a><!-- doxytag: member="Tx16Request::getFrameDataLength" ref="9a1ddfb380e72ecc09a024c6de6cdf8e" args="()" -->
+uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx16_request.html#9a1ddfb380e72ecc09a024c6de6cdf8e">getFrameDataLength</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the size of the api frame (not including frame id or api id or checksum). <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST. 
+Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST <p>
+Be careful not to send a data array larger than the max packet size of your radio. 
 <p>
-Be careful not to send a data array larger than the max packet size of your radio. This class does not perform any validation of packet size and there will be no indication if the packet is too large, other than you will not get a TX Status response. The datasheet says 100 bytes is the maximum although that could change in future firmware. <hr>The documentation for this class was generated from the following files:<ul>
+This class does not perform any validation of packet size and there will be no indication if the packet is too large, other than you will not get a TX Status response. The datasheet says 100 bytes is the maximum, although that could change in future firmware. <hr><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" name="dcdbb644e08788267fb86cbefde76b1b"></a><!-- doxytag: member="Tx16Request::Tx16Request" ref="dcdbb644e08788267fb86cbefde76b1b" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Tx16Request::Tx16Request           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Creates a default instance of this class. 
+<p>
+At a minimum you must specify a payload, payload length and a destination address before sending this request. 
+</div>
+</div><p>
+<hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="f5ffbc2164e766d96f54c723996fd389"></a><!-- doxytag: member="Tx16Request::getFrameData" ref="f5ffbc2164e766d96f54c723996fd389" args="(uint8_t pos)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t Tx16Request::getFrameData           </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&nbsp;</td>
+          <td class="paramname"> <em>pos</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Starting after the frame id (pos = 0) and up to but not including the checksum Note: Unlike Digi's definition of the frame data, this does not start with the API ID. 
+<p>
+The reason for this is the API ID and Frame ID are common to all requests, whereas my definition of frame data is only the API specific data. 
+<p>Implements <a class="el" href="class_x_bee_request.html#d5b998cd95a570bdaa4d74c6c8790d94">XBeeRequest</a>.</p>
+
+</div>
+</div><p>
+<hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 13:03:20 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

@@ -33,14 +33,19 @@ Inheritance diagram for XBeeResponse:</div>
 
 <p><center><img src="class_x_bee_response.png" usemap="#XBeeResponse_map" border="0" alt=""></center>
 <map name="XBeeResponse_map">
-<area href="class_modem_status_response.html" alt="ModemStatusResponse" shape="rect" coords="0,56,142,80">
-<area href="class_rx_data_response.html" alt="RxDataResponse" shape="rect" coords="152,56,294,80">
-<area href="class_tx_status_response.html" alt="TxStatusResponse" shape="rect" coords="304,56,446,80">
-<area href="class_z_b_tx_status_response.html" alt="ZBTxStatusResponse" shape="rect" coords="456,56,598,80">
-<area href="class_rx_response.html" alt="RxResponse" shape="rect" coords="76,112,218,136">
-<area href="class_z_b_rx_response.html" alt="ZBRxResponse" shape="rect" coords="228,112,370,136">
-<area href="class_rx16_response.html" alt="Rx16Response" shape="rect" coords="0,168,142,192">
-<area href="class_rx64_response.html" alt="Rx64Response" shape="rect" coords="152,168,294,192">
+<area href="class_frame_id_response.html" alt="FrameIdResponse" shape="rect" coords="185,56,360,80">
+<area href="class_modem_status_response.html" alt="ModemStatusResponse" shape="rect" coords="370,56,545,80">
+<area href="class_rx_data_response.html" alt="RxDataResponse" shape="rect" coords="740,56,915,80">
+<area href="class_at_command_response.html" alt="AtCommandResponse" shape="rect" coords="0,112,175,136">
+<area href="class_tx_status_response.html" alt="TxStatusResponse" shape="rect" coords="185,112,360,136">
+<area href="class_z_b_tx_status_response.html" alt="ZBTxStatusResponse" shape="rect" coords="370,112,545,136">
+<area href="class_rx_response.html" alt="RxResponse" shape="rect" coords="555,112,730,136">
+<area href="class_z_b_rx_response.html" alt="ZBRxResponse" shape="rect" coords="925,112,1100,136">
+<area href="class_remote_at_command_response.html" alt="RemoteAtCommandResponse" shape="rect" coords="0,168,175,192">
+<area href="class_rx16_response.html" alt="Rx16Response" shape="rect" coords="370,168,545,192">
+<area href="class_rx64_response.html" alt="Rx64Response" shape="rect" coords="555,168,730,192">
+<area href="class_rx_io_sample_base_response.html" alt="RxIoSampleBaseResponse" shape="rect" coords="740,168,915,192">
+<area href="class_z_b_rx_io_sample_response.html" alt="ZBRxIoSampleResponse" shape="rect" coords="925,168,1100,192">
 </map>
 </div>
 
@@ -82,7 +87,13 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setChecksum</b> (uint
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="6205be340c4f0397a68dadbdca36a091"></a><!-- doxytag: member="XBeeResponse::getFrameDataLength" ref="6205be340c4f0397a68dadbdca36a091" args="()" -->
 uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#6205be340c4f0397a68dadbdca36a091">getFrameDataLength</a> ()</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the length of the frame data. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the length of the frame data: all bytes after the api id, and prior to the checksum Note up to release 0.1.2, this was incorrectly including the checksum in the length. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="13788c12c5201769a304880335749b69"></a><!-- doxytag: member="XBeeResponse::setFrameData" ref="13788c12c5201769a304880335749b69" args="(uint8_t *frameDataPtr)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setFrameData</b> (uint8_t *frameDataPtr)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">uint8_t *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#d958f0b5200138545bdd762111299a94">getFrameData</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the buffer that contains the response.  <a href="#d958f0b5200138545bdd762111299a94"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="d2419bab7589e82b5358482c1abbe87c"></a><!-- doxytag: member="XBeeResponse::setFrameLength" ref="d2419bab7589e82b5358482c1abbe87c" args="(uint8_t frameLength)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setFrameLength</b> (uint8_t frameLength)</td></tr>
 
@@ -106,9 +117,14 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#4c0edfc6be81349237956531a006d3ab">getZBRxResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_z_b_rx_response.html" title="Represents a Series 2 RX packet.">ZBRxResponse</a> class only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == ZB_RX_RESPONSE to populate response. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#2fd9882d767d48e679a7595b780c2a2d">getTxStatusResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="0c1f8d66b1b276fd6d482c589d5cda3d"></a><!-- doxytag: member="XBeeResponse::getZBRxIoSampleResponse" ref="0c1f8d66b1b276fd6d482c589d5cda3d" args="(XBeeResponse &amp;response)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#0c1f8d66b1b276fd6d482c589d5cda3d">getZBRxIoSampleResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == TX_STATUS_RESPONSE.  <a href="#2fd9882d767d48e679a7595b780c2a2d"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_z_b_rx_io_sample_response.html" title="Represents a Series 2 RX I/O Sample packet.">ZBRxIoSampleResponse</a> class only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == ZB_IO_SAMPLE_RESPONSE to populate response. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2fd9882d767d48e679a7595b780c2a2d"></a><!-- doxytag: member="XBeeResponse::getTxStatusResponse" ref="2fd9882d767d48e679a7595b780c2a2d" args="(XBeeResponse &amp;response)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#2fd9882d767d48e679a7595b780c2a2d">getTxStatusResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == TX_STATUS_RESPONSE. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b85f25eac3e57d665e2189d84cb5d2e3"></a><!-- doxytag: member="XBeeResponse::getRx16Response" ref="b85f25eac3e57d665e2189d84cb5d2e3" args="(XBeeResponse &amp;response)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#b85f25eac3e57d665e2189d84cb5d2e3">getRx16Response</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
@@ -117,6 +133,22 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#72e5b863c14a9ec0a4f1cdeba5f24e58">getRx64Response</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_rx64_response.html" title="Represents a Series 1 64-bit address RX packet.">Rx64Response</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == RX_64_RESPONSE. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="e84d38e3759ebf8b23d256b207e5761d"></a><!-- doxytag: member="XBeeResponse::getRx16IoSampleResponse" ref="e84d38e3759ebf8b23d256b207e5761d" args="(XBeeResponse &amp;response)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#e84d38e3759ebf8b23d256b207e5761d">getRx16IoSampleResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of Rx16IoSampleResponse only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == RX_16_IO_RESPONSE. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="e298de16ed0dce349154ae87f8b93d77"></a><!-- doxytag: member="XBeeResponse::getRx64IoSampleResponse" ref="e298de16ed0dce349154ae87f8b93d77" args="(XBeeResponse &amp;response)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#e298de16ed0dce349154ae87f8b93d77">getRx64IoSampleResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of Rx64IoSampleResponse only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == RX_64_IO_RESPONSE. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5177bb036ccaa6ea30d73541a3e7d414"></a><!-- doxytag: member="XBeeResponse::getAtCommandResponse" ref="5177bb036ccaa6ea30d73541a3e7d414" args="(XBeeResponse &amp;responses)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#5177bb036ccaa6ea30d73541a3e7d414">getAtCommandResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;responses)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_at_command_response.html" title="Represents an AT Command RX packet.">AtCommandResponse</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == AT_COMMAND_RESPONSE. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f359dab94c57006a0fb4b58986744c04"></a><!-- doxytag: member="XBeeResponse::getRemoteAtCommandResponse" ref="f359dab94c57006a0fb4b58986744c04" args="(XBeeResponse &amp;response)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#f359dab94c57006a0fb4b58986744c04">getRemoteAtCommandResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Call with instance of <a class="el" href="class_remote_at_command_response.html" title="Represents a Remote AT Command RX packet.">RemoteAtCommandResponse</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == REMOTE_AT_COMMAND_RESPONSE. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="d93317521b52825c32b43d34a0f189d1"></a><!-- doxytag: member="XBeeResponse::getModemStatusResponse" ref="d93317521b52825c32b43d34a0f189d1" args="(XBeeResponse &amp;response)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#d93317521b52825c32b43d34a0f189d1">getModemStatusResponse</a> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
@@ -132,15 +164,12 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setAvailable</b> (boo
 bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#68cbc45004ff4314161b0fb1cc579b9b">isError</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns true if the response contains errors. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="d69c396c504f01433c5bf5dd271f7e0c"></a><!-- doxytag: member="XBeeResponse::setError" ref="d69c396c504f01433c5bf5dd271f7e0c" args="(bool error)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setError</b> (bool error)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#2895438378d2738e3efe74b1c838170b">getErrorCode</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="13788c12c5201769a304880335749b69"></a><!-- doxytag: member="XBeeResponse::setFrameData" ref="13788c12c5201769a304880335749b69" args="(uint8_t *frameDataPtr)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setFrameData</b> (uint8_t *frameDataPtr)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns an error code, or zero, if successful.  <a href="#2895438378d2738e3efe74b1c838170b"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="95749b78c9807e8f403abf1620ab29c1"></a><!-- doxytag: member="XBeeResponse::setErrorCode" ref="95749b78c9807e8f403abf1620ab29c1" args="(uint8_t errorCode)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setErrorCode</b> (uint8_t errorCode)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">uint8_t *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_response.html#d958f0b5200138545bdd762111299a94">getFrameData</a> ()</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the buffer that contains the response.  <a href="#d958f0b5200138545bdd762111299a94"></a><br></td></tr>
 <tr><td colspan="2"><br><h2>Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f62a61818a476f4815d93f9c3485e6e7"></a><!-- doxytag: member="XBeeResponse::_frameDataPtr" ref="f62a61818a476f4815d93f9c3485e6e7" args="" -->
 uint8_t *&nbsp;</td><td class="memItemRight" valign="bottom"><b>_frameDataPtr</b></td></tr>
@@ -175,6 +204,27 @@ You should have received a copy of the GNU General Public License along with XBe
 </div>
 </div><p>
 <hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="2895438378d2738e3efe74b1c838170b"></a><!-- doxytag: member="XBeeResponse::getErrorCode" ref="2895438378d2738e3efe74b1c838170b" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t XBeeResponse::getErrorCode           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Returns an error code, or zero, if successful. 
+<p>
+Error codes include: CHECKSUM_FAILURE, PACKET_EXCEEDS_BYTE_ARRAY_LENGTH, UNEXPECTED_START_BYTE 
+</div>
+</div><p>
 <a class="anchor" name="d958f0b5200138545bdd762111299a94"></a><!-- doxytag: member="XBeeResponse::getFrameData" ref="d958f0b5200138545bdd762111299a94" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -193,35 +243,13 @@ You should have received a copy of the GNU General Public License along with XBe
 <p>
 Returns the buffer that contains the response. 
 <p>
-Starts with byte that follows API ID and includes all bytes prior to the checksum 
-</div>
-</div><p>
-<a class="anchor" name="2fd9882d767d48e679a7595b780c2a2d"></a><!-- doxytag: member="XBeeResponse::getTxStatusResponse" ref="2fd9882d767d48e679a7595b780c2a2d" args="(XBeeResponse &amp;response)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void XBeeResponse::getTxStatusResponse           </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;&nbsp;</td>
-          <td class="paramname"> <em>response</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Call with instance of <a class="el" href="class_tx_status_response.html" title="Represents a Series 1 TX Status packet.">TxStatusResponse</a> only if <a class="el" href="class_x_bee_response.html#4a9677e3b39054119fa278d1ad52130a" title="Returns Api Id of the response.">getApiId()</a> == TX_STATUS_RESPONSE. 
-<p>
-
+Starts with byte that follows API ID and includes all bytes prior to the checksum Length is specified by <a class="el" href="class_x_bee_response.html#6205be340c4f0397a68dadbdca36a091" title="Returns the length of the frame data: all bytes after the api id, and prior to the...">getFrameDataLength()</a> Note: Unlike Digi's definition of the frame data, this does not start with the API ID.. The reason for this is all responses include an API ID, whereas my frame data includes only the API specific data. 
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 13:03:20 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

@@ -22,7 +22,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>Tx64Request Class Reference</h1><!-- doxytag: class="Tx64Request" --><!-- doxytag: inherits="XBeeRequest" -->Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST.  
+<h1>Tx64Request Class Reference</h1><!-- doxytag: class="Tx64Request" --><!-- doxytag: inherits="PayloadRequest" -->Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST.  
 <a href="#_details">More...</a>
 <p>
 <code>#include &lt;<a class="el" href="_x_bee_8h-source.html">XBee.h</a>&gt;</code>
@@ -33,7 +33,8 @@ Inheritance diagram for Tx64Request:</div>
 
 <p><center><img src="class_tx64_request.png" usemap="#Tx64Request_map" border="0" alt=""></center>
 <map name="Tx64Request_map">
-<area href="class_x_bee_request.html" alt="XBeeRequest" shape="rect" coords="0,0,87,24">
+<area href="class_payload_request.html" alt="PayloadRequest" shape="rect" coords="0,56,102,80">
+<area href="class_x_bee_request.html" alt="XBeeRequest" shape="rect" coords="0,0,102,24">
 </map>
 </div>
 
@@ -41,13 +42,16 @@ Inheritance diagram for Tx64Request:</div>
 <a href="class_tx64_request-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="42253ae58f3e05f8067f401727100dd2"></a><!-- doxytag: member="Tx64Request::Tx64Request" ref="42253ae58f3e05f8067f401727100dd2" args="(XBeeAddress64 &amp;addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>Tx64Request</b> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7670fd44d8765d8215a3e5cfcf605c1e"></a><!-- doxytag: member="Tx64Request::Tx64Request" ref="7670fd44d8765d8215a3e5cfcf605c1e" args="(XBeeAddress64 &amp;addr64, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><b>Tx64Request</b> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="afe06b8c6738e2929a798da8a88a458b"></a><!-- doxytag: member="Tx64Request::Tx64Request" ref="afe06b8c6738e2929a798da8a88a458b" args="(XBeeAddress64 &amp;addr64, uint8_t *data, uint8_t dataLength)" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx64_request.html#afe06b8c6738e2929a798da8a88a458b">Tx64Request</a> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64, uint8_t *data, uint8_t dataLength)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7c9d830fa804daaf39ed368894cf9691"></a><!-- doxytag: member="Tx64Request::Tx64Request" ref="7c9d830fa804daaf39ed368894cf9691" args="(XBeeAddress64 &amp;addr64, uint8_t *payload, uint8_t payloadLength)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx64_request.html#7c9d830fa804daaf39ed368894cf9691">Tx64Request</a> (<a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;addr64, uint8_t *payload, uint8_t payloadLength)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Creates a unicast <a class="el" href="class_tx64_request.html" title="Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST.">Tx64Request</a> with the ACK option and DEFAULT_FRAME_ID. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx64_request.html#49bd84b4aa5478c27e6da5581b2e1d3c">Tx64Request</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Creates a default instance of this class.  <a href="#49bd84b4aa5478c27e6da5581b2e1d3c"></a><br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="8f6970aa54b8504be65e05ce1f52e8e4"></a><!-- doxytag: member="Tx64Request::getAddress64" ref="8f6970aa54b8504be65e05ce1f52e8e4" args="()" -->
 <a class="el" href="class_x_bee_address64.html">XBeeAddress64</a> &amp;&nbsp;</td><td class="memItemRight" valign="bottom"><b>getAddress64</b> ()</td></tr>
 
@@ -60,18 +64,68 @@ uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>getOption</b> ()</
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="7f6987e3910d97dd8f77f58184dc17c9"></a><!-- doxytag: member="Tx64Request::setOption" ref="7f6987e3910d97dd8f77f58184dc17c9" args="(uint8_t option)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setOption</b> (uint8_t option)</td></tr>
 
-<tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5d59ec358f1c747fcf0bb953f31154ed"></a><!-- doxytag: member="Tx64Request::assembleFrame" ref="5d59ec358f1c747fcf0bb953f31154ed" args="()" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>assembleFrame</b> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx64_request.html#fe3662433da85acd21f8a3d90844a084">getFrameData</a> (uint8_t pos)</td></tr>
 
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Starting after the frame id (pos = 0) and up to but not including the checksum Note: Unlike Digi's definition of the frame data, this does not start with the API ID.  <a href="#fe3662433da85acd21f8a3d90844a084"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="fadc1e07718a62d6c5a75a4bb07dfaae"></a><!-- doxytag: member="Tx64Request::getFrameDataLength" ref="fadc1e07718a62d6c5a75a4bb07dfaae" args="()" -->
+uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tx64_request.html#fadc1e07718a62d6c5a75a4bb07dfaae">getFrameDataLength</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the size of the api frame (not including frame id or api id or checksum). <br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST. 
 <p>
-Be careful not to send a data array larger than the max packet size of your radio. This class does not perform any validation of packet size and there will be no indication if the packet is too large, other than you will not get a TX Status response. The datasheet says 100 bytes is the maximum although that could change in future firmware. <hr>The documentation for this class was generated from the following files:<ul>
+Be careful not to send a data array larger than the max packet size of your radio. This class does not perform any validation of packet size and there will be no indication if the packet is too large, other than you will not get a TX Status response. The datasheet says 100 bytes is the maximum, although that could change in future firmware. <hr><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" name="49bd84b4aa5478c27e6da5581b2e1d3c"></a><!-- doxytag: member="Tx64Request::Tx64Request" ref="49bd84b4aa5478c27e6da5581b2e1d3c" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Tx64Request::Tx64Request           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Creates a default instance of this class. 
+<p>
+At a minimum you must specify a payload, payload length and a destination address before sending this request. 
+</div>
+</div><p>
+<hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="fe3662433da85acd21f8a3d90844a084"></a><!-- doxytag: member="Tx64Request::getFrameData" ref="fe3662433da85acd21f8a3d90844a084" args="(uint8_t pos)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t Tx64Request::getFrameData           </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&nbsp;</td>
+          <td class="paramname"> <em>pos</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Starting after the frame id (pos = 0) and up to but not including the checksum Note: Unlike Digi's definition of the frame data, this does not start with the API ID. 
+<p>
+The reason for this is the API ID and Frame ID are common to all requests, whereas my definition of frame data is only the API specific data. 
+<p>Implements <a class="el" href="class_x_bee_request.html#d5b998cd95a570bdaa4d74c6c8790d94">XBeeRequest</a>.</p>
+
+</div>
+</div><p>
+<hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 13:03:20 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

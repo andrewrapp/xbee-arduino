@@ -23,24 +23,34 @@
 </div>
 <div class="contents">
 <h1>Class List</h1>Here are the classes, structs, unions and interfaces with brief descriptions:<table>
+  <tr><td class="indexkey"><a class="el" href="class_at_command_request.html">AtCommandRequest</a></td><td class="indexvalue">Represents an AT Command TX packet The command is used to configure the serially connected <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> radio </td></tr>
+  <tr><td class="indexkey"><a class="el" href="class_at_command_response.html">AtCommandResponse</a></td><td class="indexvalue">Represents an AT Command RX packet </td></tr>
+  <tr><td class="indexkey"><a class="el" href="class_frame_id_response.html">FrameIdResponse</a></td><td class="indexvalue">This class is extended by all Responses that include a frame id </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_modem_status_response.html">ModemStatusResponse</a></td><td class="indexvalue">Represents a Modem Status RX packet </td></tr>
+  <tr><td class="indexkey"><a class="el" href="class_payload_request.html">PayloadRequest</a></td><td class="indexvalue">All TX packets that support payloads extend this class </td></tr>
+  <tr><td class="indexkey"><a class="el" href="class_remote_at_command_request.html">RemoteAtCommandRequest</a></td><td class="indexvalue">Represents an Remote AT Command TX packet The command is used to configure a remote <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> radio </td></tr>
+  <tr><td class="indexkey"><a class="el" href="class_remote_at_command_response.html">RemoteAtCommandResponse</a></td><td class="indexvalue">Represents a Remote AT Command RX packet </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_rx16_response.html">Rx16Response</a></td><td class="indexvalue">Represents a Series 1 16-bit address RX packet </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_rx64_response.html">Rx64Response</a></td><td class="indexvalue">Represents a Series 1 64-bit address RX packet </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_rx_data_response.html">RxDataResponse</a></td><td class="indexvalue">Common functionality for both Series 1 and 2 data RX data packets </td></tr>
+  <tr><td class="indexkey"><a class="el" href="class_rx_io_sample_base_response.html">RxIoSampleBaseResponse</a></td><td class="indexvalue">Represents a Series 1 RX I/O Sample packet </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_rx_response.html">RxResponse</a></td><td class="indexvalue">Represents a Series 1 RX packet </td></tr>
-  <tr><td class="indexkey"><a class="el" href="class_tx16_request.html">Tx16Request</a></td><td class="indexvalue">Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST </td></tr>
+  <tr><td class="indexkey"><a class="el" href="class_tx16_request.html">Tx16Request</a></td><td class="indexvalue">Represents a Series 1 TX packet that corresponds to Api Id: TX_16_REQUEST <p>
+Be careful not to send a data array larger than the max packet size of your radio </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_tx64_request.html">Tx64Request</a></td><td class="indexvalue">Represents a Series 1 TX packet that corresponds to Api Id: TX_64_REQUEST </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_tx_status_response.html">TxStatusResponse</a></td><td class="indexvalue">Represents a Series 1 TX Status packet </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_x_bee.html">XBee</a></td><td class="indexvalue">Primary interface for communicating with an <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> Radio </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_x_bee_address64.html">XBeeAddress64</a></td><td class="indexvalue">Represents a 64-bit <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> Address </td></tr>
-  <tr><td class="indexkey"><a class="el" href="class_x_bee_request.html">XBeeRequest</a></td><td class="indexvalue">Super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> requests (TX packets) Users should never create an instance of this class; instead use an subclass of this class It is recommended to reuse Subclasses of the class to conserve memory </td></tr>
+  <tr><td class="indexkey"><a class="el" href="class_x_bee_request.html">XBeeRequest</a></td><td class="indexvalue">Super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> requests (TX packets) Users should never create an instance of this class; instead use an subclass of this class It is recommended to reuse Subclasses of the class to conserve memory <p>
+This class allocates a buffer to </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_x_bee_response.html">XBeeResponse</a></td><td class="indexvalue">The super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> responses (RX packets) Users should never attempt to create an instance of this class; instead create an instance of a subclass It is recommend to reuse subclasses to conserve memory </td></tr>
+  <tr><td class="indexkey"><a class="el" href="class_z_b_rx_io_sample_response.html">ZBRxIoSampleResponse</a></td><td class="indexvalue">Represents a Series 2 RX I/O Sample packet </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_z_b_rx_response.html">ZBRxResponse</a></td><td class="indexvalue">Represents a Series 2 RX packet </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_z_b_tx_request.html">ZBTxRequest</a></td><td class="indexvalue">Represents a Series 2 TX packet that corresponds to Api Id: ZB_TX_REQUEST </td></tr>
   <tr><td class="indexkey"><a class="el" href="class_z_b_tx_status_response.html">ZBTxStatusResponse</a></td><td class="indexvalue">Represents a Series 2 TX status packet </td></tr>
 </table>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 13:03:20 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

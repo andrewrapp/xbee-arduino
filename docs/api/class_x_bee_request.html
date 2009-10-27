@@ -22,7 +22,8 @@
   </div>
 </div>
 <div class="contents">
-<h1>XBeeRequest Class Reference</h1><!-- doxytag: class="XBeeRequest" -->Super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> requests (TX packets) Users should never create an instance of this class; instead use an subclass of this class It is recommended to reuse Subclasses of the class to conserve memory.  
+<h1>XBeeRequest Class Reference</h1><!-- doxytag: class="XBeeRequest" -->Super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> requests (TX packets) Users should never create an instance of this class; instead use an subclass of this class It is recommended to reuse Subclasses of the class to conserve memory <p>
+This class allocates a buffer to.  
 <a href="#_details">More...</a>
 <p>
 <code>#include &lt;<a class="el" href="_x_bee_8h-source.html">XBee.h</a>&gt;</code>
@@ -33,9 +34,12 @@ Inheritance diagram for XBeeRequest:</div>
 
 <p><center><img src="class_x_bee_request.png" usemap="#XBeeRequest_map" border="0" alt=""></center>
 <map name="XBeeRequest_map">
-<area href="class_tx16_request.html" alt="Tx16Request" shape="rect" coords="0,56,87,80">
-<area href="class_tx64_request.html" alt="Tx64Request" shape="rect" coords="97,56,184,80">
-<area href="class_z_b_tx_request.html" alt="ZBTxRequest" shape="rect" coords="194,56,281,80">
+<area href="class_at_command_request.html" alt="AtCommandRequest" shape="rect" coords="0,56,164,80">
+<area href="class_payload_request.html" alt="PayloadRequest" shape="rect" coords="348,56,512,80">
+<area href="class_remote_at_command_request.html" alt="RemoteAtCommandRequest" shape="rect" coords="0,112,164,136">
+<area href="class_tx16_request.html" alt="Tx16Request" shape="rect" coords="174,112,338,136">
+<area href="class_tx64_request.html" alt="Tx64Request" shape="rect" coords="348,112,512,136">
+<area href="class_z_b_tx_request.html" alt="ZBTxRequest" shape="rect" coords="522,112,686,136">
 </map>
 </div>
 
@@ -43,32 +47,10 @@ Inheritance diagram for XBeeRequest:</div>
 <a href="class_x_bee_request-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="14db51bf53cdb81460eaeab553c445c9"></a><!-- doxytag: member="XBeeRequest::XBeeRequest" ref="14db51bf53cdb81460eaeab553c445c9" args="(uint8_t apiId, uint8_t frameId, uint16_t frameDataLength, uint8_t *_payloadPtr, uint8_t _payloadLength)" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#14db51bf53cdb81460eaeab553c445c9">XBeeRequest</a> (uint8_t apiId, uint8_t frameId, uint16_t frameDataLength, uint8_t *_payloadPtr, uint8_t _payloadLength)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="f80fd559cab746ab8573087cddda71a2"></a><!-- doxytag: member="XBeeRequest::XBeeRequest" ref="f80fd559cab746ab8573087cddda71a2" args="(uint8_t apiId, uint8_t frameId)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#f80fd559cab746ab8573087cddda71a2">XBeeRequest</a> (uint8_t apiId, uint8_t frameId)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Constructor TODO make protected. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#6df1de6df815f876fe66edff4e7c4b85">assemblePacket</a> ()</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">This is called by the <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> class in <a class="el" href="class_x_bee.html#802387f468be8622941d16739ac848f2" title="Sends a XBeeRequest (TX packet) out the serial port.">XBee.send()</a>.  <a href="#6df1de6df815f876fe66edff4e7c4b85"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="710d1a6ac0d0571a2336a545cb801c51"></a><!-- doxytag: member="XBeeRequest::getFrameDataLength" ref="710d1a6ac0d0571a2336a545cb801c51" args="()" -->
-uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#710d1a6ac0d0571a2336a545cb801c51">getFrameDataLength</a> ()</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the size of the api frame (not including frame id or api id or variable data size for packets that support payload). <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="6caba188e0f4299ce00b06d0f074a157"></a><!-- doxytag: member="XBeeRequest::getPacket" ref="6caba188e0f4299ce00b06d0f074a157" args="()" -->
-uint8_t *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#6caba188e0f4299ce00b06d0f074a157">getPacket</a> ()</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the raw packet. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#61481edce56bb4149236951ad0be7e50">setPacket</a> (uint8_t *frameDataPtr)</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Provides the array to contain the packet.  <a href="#61481edce56bb4149236951ad0be7e50"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ddabe5b40a6c37276c2799c16ddc518e"></a><!-- doxytag: member="XBeeRequest::getPayload" ref="ddabe5b40a6c37276c2799c16ddc518e" args="()" -->
-uint8_t *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#ddabe5b40a6c37276c2799c16ddc518e">getPayload</a> ()</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the payload of the packet, if not null. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="b3951e9a9f03629527f6caf149be8939"></a><!-- doxytag: member="XBeeRequest::getPayloadLength" ref="b3951e9a9f03629527f6caf149be8939" args="()" -->
-uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#b3951e9a9f03629527f6caf149be8939">getPayloadLength</a> ()</td></tr>
-
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the length of the payload. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#ed1724c11e710217807c971e40105c86">setFrameId</a> (uint8_t frameId)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Sets the frame id.  <a href="#ed1724c11e710217807c971e40105c86"></a><br></td></tr>
@@ -76,35 +58,47 @@ uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#20394c7ea4666224c50bef25cc0cd836">getFrameId</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the frame id. <br></td></tr>
-<tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="58905b54a7629682a7d26addd2f90ae6"></a><!-- doxytag: member="XBeeRequest::computeChecksum" ref="58905b54a7629682a7d26addd2f90ae6" args="(uint8_t *arr, int len, int offset)" -->
-uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><b>computeChecksum</b> (uint8_t *arr, int len, int offset)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="746d0373c9fb6ed0ff8b7e04f5fb12c9"></a><!-- doxytag: member="XBeeRequest::getApiId" ref="746d0373c9fb6ed0ff8b7e04f5fb12c9" args="()" -->
+uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#746d0373c9fb6ed0ff8b7e04f5fb12c9">getApiId</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="fef32f60f52302f523eb4f78e8952c47"></a><!-- doxytag: member="XBeeRequest::assembleFrame" ref="fef32f60f52302f523eb4f78e8952c47" args="()=0" -->
-virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><b>assembleFrame</b> ()=0</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the API id. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">virtual uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#d5b998cd95a570bdaa4d74c6c8790d94">getFrameData</a> (uint8_t pos)=0</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Starting after the frame id (pos = 0) and up to but not including the checksum Note: Unlike Digi's definition of the frame data, this does not start with the API ID.  <a href="#d5b998cd95a570bdaa4d74c6c8790d94"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="03b6c558db5836fa7167c0fba7405642"></a><!-- doxytag: member="XBeeRequest::getFrameDataLength" ref="03b6c558db5836fa7167c0fba7405642" args="()=0" -->
+virtual uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee_request.html#03b6c558db5836fa7167c0fba7405642">getFrameDataLength</a> ()=0</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns the size of the api frame (not including frame id or api id or checksum). <br></td></tr>
+<tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="ee756672e79dbb05358187cb53f61b1a"></a><!-- doxytag: member="XBeeRequest::setApiId" ref="ee756672e79dbb05358187cb53f61b1a" args="(uint8_t apiId)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setApiId</b> (uint8_t apiId)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> requests (TX packets) Users should never create an instance of this class; instead use an subclass of this class It is recommended to reuse Subclasses of the class to conserve memory. <hr><h2>Member Function Documentation</h2>
-<a class="anchor" name="6df1de6df815f876fe66edff4e7c4b85"></a><!-- doxytag: member="XBeeRequest::assemblePacket" ref="6df1de6df815f876fe66edff4e7c4b85" args="()" -->
+Super class of all <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> requests (TX packets) Users should never create an instance of this class; instead use an subclass of this class It is recommended to reuse Subclasses of the class to conserve memory <p>
+This class allocates a buffer to. <hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="d5b998cd95a570bdaa4d74c6c8790d94"></a><!-- doxytag: member="XBeeRequest::getFrameData" ref="d5b998cd95a570bdaa4d74c6c8790d94" args="(uint8_t pos)=0" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void XBeeRequest::assemblePacket           </td>
+          <td class="memname">virtual uint8_t XBeeRequest::getFrameData           </td>
           <td>(</td>
-          <td class="paramname">          </td>
+          <td class="paramtype">uint8_t&nbsp;</td>
+          <td class="paramname"> <em>pos</em>          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td></td>
+          <td><code> [pure virtual]</code></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-This is called by the <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> class in <a class="el" href="class_x_bee.html#802387f468be8622941d16739ac848f2" title="Sends a XBeeRequest (TX packet) out the serial port.">XBee.send()</a>. 
+Starting after the frame id (pos = 0) and up to but not including the checksum Note: Unlike Digi's definition of the frame data, this does not start with the API ID. 
 <p>
-Users should never need to call this directly 
+The reason for this is the API ID and Frame ID are common to all requests, whereas my definition of frame data is only the API specific data. 
+<p>Implemented in <a class="el" href="class_tx16_request.html#f5ffbc2164e766d96f54c723996fd389">Tx16Request</a>, <a class="el" href="class_tx64_request.html#fe3662433da85acd21f8a3d90844a084">Tx64Request</a>, <a class="el" href="class_z_b_tx_request.html#c81e09dfbf7aefbdf7f8b4838b643c5c">ZBTxRequest</a>, <a class="el" href="class_at_command_request.html#a4fc8f0c8404172cd5532f3d8e5564f2">AtCommandRequest</a>, and <a class="el" href="class_remote_at_command_request.html#0e576cf564ebd5a82cb2ed05239a856a">RemoteAtCommandRequest</a>.</p>
+
 </div>
 </div><p>
 <a class="anchor" name="ed1724c11e710217807c971e40105c86"></a><!-- doxytag: member="XBeeRequest::setFrameId" ref="ed1724c11e710217807c971e40105c86" args="(uint8_t frameId)" -->
@@ -129,32 +123,10 @@ Sets the frame id.
 Must be between 1 and 255 inclusive to get a TX status response. 
 </div>
 </div><p>
-<a class="anchor" name="61481edce56bb4149236951ad0be7e50"></a><!-- doxytag: member="XBeeRequest::setPacket" ref="61481edce56bb4149236951ad0be7e50" args="(uint8_t *frameDataPtr)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void XBeeRequest::setPacket           </td>
-          <td>(</td>
-          <td class="paramtype">uint8_t *&nbsp;</td>
-          <td class="paramname"> <em>frameDataPtr</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Provides the array to contain the packet. 
-<p>
-Called by the <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> class. Users should never need to call this. 
-</div>
-</div><p>
 <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 13:03:20 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

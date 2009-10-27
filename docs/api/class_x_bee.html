@@ -32,19 +32,20 @@
 <a href="class_x_bee-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5843b69c791eabf9b5c1e892aaa7593e"></a><!-- doxytag: member="XBee::setSerial" ref="5843b69c791eabf9b5c1e892aaa7593e" args="(HardwareSerial serial)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setSerial</b> (HardwareSerial serial)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#7d788232f44e8b3c10dc686a0299fcc6">readPacket</a> ()</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reads all available serial bytes until a packet is complete or the buffer is empty.  <a href="#7d788232f44e8b3c10dc686a0299fcc6"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="e1c9f3b53df50564ab9aca2716792b44"></a><!-- doxytag: member="XBee::readPacket" ref="e1c9f3b53df50564ab9aca2716792b44" args="(int timeout)" -->
-bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#e1c9f3b53df50564ab9aca2716792b44">readPacket</a> (int timeout)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reads all available serial bytes until a packet is parsed, an error occurs, or the buffer is empty.  <a href="#7d788232f44e8b3c10dc686a0299fcc6"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#e1c9f3b53df50564ab9aca2716792b44">readPacket</a> (int timeout)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Waits a maximum of <em>timeout</em> milliseconds for a response packet before timing out; returns true if packet is read before timeout. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="594e2bb2ccb7b3fe7a2278b9324b4083"></a><!-- doxytag: member="XBee::readPacketUntilAvailable" ref="594e2bb2ccb7b3fe7a2278b9324b4083" args="()" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#594e2bb2ccb7b3fe7a2278b9324b4083">readPacketUntilAvailable</a> ()</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Waits a maximum of <em>timeout</em> milliseconds for a response packet before timing out; returns true if packet is read.  <a href="#e1c9f3b53df50564ab9aca2716792b44"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#594e2bb2ccb7b3fe7a2278b9324b4083">readPacketUntilAvailable</a> ()</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reads until a packet is received Caution: use this carefully since if you don't get a response, your Arduino code will hang on this call forever!! often it's better to use a timeout: <a class="el" href="class_x_bee.html#e1c9f3b53df50564ab9aca2716792b44" title="Waits a maximum of timeout milliseconds for a response packet before timing out;...">readPacket(int)</a>. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="047935baaeb307fd326de258ddfcebb0"></a><!-- doxytag: member="XBee::begin" ref="047935baaeb307fd326de258ddfcebb0" args="(int baud)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#047935baaeb307fd326de258ddfcebb0">begin</a> (int baud)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reads until a packet is received or an error occurs.  <a href="#594e2bb2ccb7b3fe7a2278b9324b4083"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="847a36fa06c9567496a7ec140cb72586"></a><!-- doxytag: member="XBee::begin" ref="847a36fa06c9567496a7ec140cb72586" args="(long baud)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#847a36fa06c9567496a7ec140cb72586">begin</a> (long baud)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Starts the serial connection at the supplied baud rate. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="c88079aa744d36b26a0c6a0add939898"></a><!-- doxytag: member="XBee::getResponse" ref="c88079aa744d36b26a0c6a0add939898" args="(XBeeResponse &amp;response)" -->
@@ -66,12 +67,34 @@ uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Primary interface for communicating with an <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> Radio. 
 <p>
-This class provides methods for sending and receiving packets with an <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> radio via the serial port. The <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> radio must be configured in API (packet) mode (AP=2) in order to use this software.<p>
-Since this code is designed to run on a microcontroller, with only one thread, you are responsible for reading the data off the serial buffer in a timely manner. This involves a call to a variant of readPacket(...). If your serial port is receiving data faster than you are reading, you can expect to lose packets. Arduino only has a 128 byte serial buffer so it can easily overflow if two or more packets arrive without a call to readPacket(...)<p>
-In order to conserve resources, this class only supports storing one response packet in memory at a time. This means that you must fully consume the packet prior to calling readPacket(...), since when this occurs, the contents of the response will be overwritten with the next response.<p>
-This class creates an array of size MAX_PACKET_SIZE for storing the response packet<p>
+This class provides methods for sending and receiving packets with an <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> radio via the serial port. The <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> radio must be configured in API (packet) mode (AP=2) in order to use this software. <p>
+Since this code is designed to run on a microcontroller, with only one thread, you are responsible for reading the data off the serial buffer in a timely manner. This involves a call to a variant of readPacket(...). If your serial port is receiving data faster than you are reading, you can expect to lose packets. Arduino only has a 128 byte serial buffer so it can easily overflow if two or more packets arrive without a call to readPacket(...) <p>
+In order to conserve resources, this class only supports storing one response packet in memory at a time. This means that you must fully consume the packet prior to calling readPacket(...), because calling readPacket(...) overwrites the previous response. <p>
+This class creates an array of size MAX_FRAME_DATA_SIZE for storing the response packet. You may want to adjust this value to conserve memory.<p>
 <dl class="author" compact><dt><b>Author:</b></dt><dd>Andrew Rapp </dd></dl>
 <hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="e1c9f3b53df50564ab9aca2716792b44"></a><!-- doxytag: member="XBee::readPacket" ref="e1c9f3b53df50564ab9aca2716792b44" args="(int timeout)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool XBee::readPacket           </td>
+          <td>(</td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>timeout</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Waits a maximum of <em>timeout</em> milliseconds for a response packet before timing out; returns true if packet is read. 
+<p>
+Returns false if timeout or error occurs. 
+</div>
+</div><p>
 <a class="anchor" name="7d788232f44e8b3c10dc686a0299fcc6"></a><!-- doxytag: member="XBee::readPacket" ref="7d788232f44e8b3c10dc686a0299fcc6" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -88,15 +111,37 @@ This class creates an array of size MAX_PACKET_SIZE for storing the response pac
 <div class="memdoc">
 
 <p>
-Reads all available serial bytes until a packet is complete or the buffer is empty. 
+Reads all available serial bytes until a packet is parsed, an error occurs, or the buffer is empty. 
 <p>
-You may call <em>xbee</em>.<a class="el" href="class_x_bee.html#18250def80e8b643aa1ccc15a98937f3" title="Returns a reference to the current response Note: once readPacket is called again...">getResponse()</a>.isAvailable() after calling this method to determine if a packet is ready. This method should always return quickly since it does not wait for serial data to arrive. You will want to use this method if you are doing other timely stuff in your loop, where a delay would cause problems. NOTE: calling this method resets the current response, so make sure you first consume the current response 
+You may call <em>xbee</em>.<a class="el" href="class_x_bee.html#18250def80e8b643aa1ccc15a98937f3" title="Returns a reference to the current response Note: once readPacket is called again...">getResponse()</a>.isAvailable() after calling this method to determine if a packet is ready, or <em>xbee</em>.<a class="el" href="class_x_bee.html#18250def80e8b643aa1ccc15a98937f3" title="Returns a reference to the current response Note: once readPacket is called again...">getResponse()</a>.isError() to determine if a error occurred. <p>
+This method should always return quickly since it does not wait for serial data to arrive. You will want to use this method if you are doing other timely stuff in your loop, where a delay would cause problems. NOTE: calling this method resets the current response, so make sure you first consume the current response 
+</div>
+</div><p>
+<a class="anchor" name="594e2bb2ccb7b3fe7a2278b9324b4083"></a><!-- doxytag: member="XBee::readPacketUntilAvailable" ref="594e2bb2ccb7b3fe7a2278b9324b4083" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void XBee::readPacketUntilAvailable           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Reads until a packet is received or an error occurs. 
+<p>
+Caution: use this carefully since if you don't get a response, your Arduino code will hang on this call forever!! often it's better to use a timeout: <a class="el" href="class_x_bee.html#e1c9f3b53df50564ab9aca2716792b44" title="Waits a maximum of timeout milliseconds for a response packet before timing out;...">readPacket(int)</a> 
 </div>
 </div><p>
 <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Apr 19 10:39:08 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 13:03:20 2009 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>
