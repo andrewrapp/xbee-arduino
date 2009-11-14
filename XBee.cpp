@@ -1274,7 +1274,7 @@ uint8_t RemoteAtCommandRequest::getFrameData(uint8_t pos) {
 	} else if (pos == 9) {
 		return _remoteAddress16 & 0xff;
 	} else if (pos == 10) {
-		return _applyChanges;
+		return _applyChanges ? 2: 0;
 	} else if (pos == 11) {
 		return getCommand()[0];
 	} else if (pos == 12) {
