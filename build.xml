@@ -2,12 +2,14 @@
 <project default="dist" name="XBee-Arduino">
 	<property file="build.properties"/>
 	<property name="dist.dir" value="dist"/>
-	<property name="release" value="0.1.2"/>
+	<property name="release" value="0.2.1"/>
 	
 	<target name="init">
 		<mkdir dir="${dist.dir}/XBee"/>
 	</target>
 	
+	<!-- TODO add doxygen doc generation -->
+		
 	<target name="dist" depends="init">
 		
 		<copy todir="${dist.dir}/XBee">
