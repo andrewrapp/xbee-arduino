@@ -222,7 +222,7 @@ uint16_t ZBRxIoSampleResponse::getAnalog(uint8_t pin) {
 
 	// start depends on how many pins before this pin are enabled
 	for (int i = 0; i < pin; i++) {
-		if (isAnalogEnabled(pin)) {
+		if (isAnalogEnabled(i)) {
 			start+=2;
 		}
 	}
@@ -344,7 +344,7 @@ uint16_t RxIoSampleBaseResponse::getAnalog(uint8_t pin, uint8_t sample) {
 
 	// start depends on how many pins before this pin are enabled
 	for (int i = 0; i < pin; i++) {
-		if (isAnalogEnabled(pin)) {
+		if (isAnalogEnabled(i)) {
 			start+=2;
 		}
 	}
