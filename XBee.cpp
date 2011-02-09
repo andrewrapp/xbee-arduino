@@ -20,6 +20,7 @@
 #include "XBee.h"
 #include "WProgram.h"
 #include "HardwareSerial.h"
+#include "NewSoftSerial.h"
 
 XBeeResponse::XBeeResponse() {
 
@@ -320,6 +321,98 @@ bool RxIoSampleBaseResponse::isDigitalEnabled(uint8_t pin) {
 	}
 }
 
+//	// verified (from XBee-API)
+//	private int getSampleWidth() {
+//		int width = 0;
+//
+//		// width of sample depends on how many I/O pins are enabled. add one for each analog that's enabled
+//		for (int i = 0; i <= 5; i++) {
+//			if (isAnalogEnabled(i)) {
+//				// each analog is two bytes
+//				width+=2;
+//			}
+//		}
+//		
+//		if (this.containsDigital()) {
+//			// digital enabled takes two bytes, no matter how many pins enabled
+//			width+= 2;
+//		}
+//		
+//		return width;
+//	}
+//
+//	private int getStartIndex() {
+//
+//		int startIndex;
+//
+//		if (this.getSourceAddress() instanceof XBeeAddress16) {
+//			// 16 bit
+//			startIndex = 7;
+//		} else {
+//			// 64 bit
+//			startIndex = 13;
+//		}
+//		
+//		return startIndex;
+//	}
+//	
+//	public int getDigitalMsb(int sample) {
+//		// msb digital always starts 3 bytes after sample size
+//		return this.getProcessedPacketBytes()[this.getStartIndex() + 3 + this.getSampleWidth() * sample];
+//	}
+//	
+//	public int getDigitalLsb(int sample) {
+//		return this.getProcessedPacketBytes()[this.getStartIndex() + 3 + this.getSampleWidth() * sample + 1];
+//	}	
+//
+//	public Boolean isDigitalOn(int pin, int sample) {
+//		
+//		if (sample < 0 || sample >= this.getSampleSize()) {
+//			throw new IllegalArgumentException("invalid sample size: " + sample);
+//		}
+//		
+//		if (!this.containsDigital()) {
+//			throw new RuntimeException("Digital is not enabled");
+//		}
+//		
+//		if (pin >= 0 && pin < 8) {
+//			return ((this.getDigitalLsb(sample) >> pin) & 1) == 1;
+//		} else if (pin == 8) {
+//			// uses msb dio line
+//			return (this.getDigitalMsb(sample) & 1) == 1;
+//		} else {
+//			throw new IllegalArgumentException("Invalid pin: " + pin);
+//		}		
+//	}
+//	
+//	public Integer getAnalog(int pin, int sample) {
+//		
+//		if (sample < 0 || sample >= this.getSampleSize()) {
+//			throw new IllegalArgumentException("invalid sample size: " + sample);
+//		}
+//		
+//		// analog starts 3 bytes after start of sample, if no dio enabled
+//		int startIndex = this.getStartIndex() + 3;
+//		
+//		if (this.containsDigital()) {
+//			// make room for digital i/o sample (2 bytes per sample)
+//			startIndex+= 2;
+//		}
+//		
+//		startIndex+= this.getSampleWidth() * sample;
+//
+//		// start depends on how many pins before this pin are enabled
+//		// this will throw illegalargumentexception if invalid pin
+//		for (int i = 0; i < pin; i++) {
+//			if (isAnalogEnabled(i)) {
+//				startIndex+=2;
+//			}
+//		}
+//
+//		return (this.getProcessedPacketBytes()[startIndex] << 8) + this.getProcessedPacketBytes()[startIndex + 1];		
+//	}
+				
+// THIS IS WRONG
 uint16_t RxIoSampleBaseResponse::getAnalog(uint8_t pin, uint8_t sample) {
 
 	// analog starts 3 bytes after sample size, if no dio enabled
@@ -646,6 +739,8 @@ void XBeeResponse::reset() {
 	_checksum = 0;
 	_frameLength = 0;
 
+	_errorCode = NO_ERROR;
+
 	for (int i = 0; i < MAX_FRAME_DATA_SIZE; i++) {
 		getFrameData()[i] = 0;
 	}
@@ -662,9 +757,13 @@ XBee::XBee(): _response(XBeeResponse()) {
 	_escape = false;
 	_checksumTotal = 0;
 	_nextFrameId = 0;
-
+	
 	_response.init();
 	_response.setFrameData(_responseFrameData);
+
+	_useNss = false;	
+	_serial = NULL;
+	_nssSerial = NULL;
 }
 
 uint8_t XBee::getNextFrameId() {
@@ -680,11 +779,53 @@ uint8_t XBee::getNextFrameId() {
 }
 
 void XBee::begin(long baud) {
-	Serial.begin(baud);
+	if (_useNss) {
+		_nssSerial->begin(baud);
+	} else {
+		_serial->begin(baud);
+	}
 }
 
-void XBee::setSerial(HardwareSerial serial) {
-	Serial = serial;
+bool XBee::available() {
+	if (_useNss) {
+		return _nssSerial->available();
+	} else {
+		return _serial->available();
+	}
+}
+
+uint8_t XBee::read() {
+	if (_useNss) {
+		return _nssSerial->read();
+	} else {
+		return _serial->read();
+	}
+} 
+
+void XBee::flush() {
+	if (_useNss) {
+		_nssSerial->flush();
+	} else {
+		_serial->flush();
+	}
+} 
+
+void XBee::print(uint8_t val) {
+	if (_useNss) {
+		_nssSerial->print(val, BYTE);
+	} else {
+		_serial->print(val, BYTE);
+	}
+}
+
+void XBee::setSerial(HardwareSerial &serial) {
+	_serial = &serial;
+	_useNss = false;
+}
+
+void XBee::setNss(NewSoftSerial &nssSerial) {
+	_nssSerial = &nssSerial;
+	_useNss = true;
 }
 
 XBeeResponse& XBee::getResponse() {
@@ -739,9 +880,9 @@ void XBee::readPacket() {
 		resetResponse();
 	}
 
-    while (Serial.available()) {
+    while (available()) {
 
-        b = Serial.read();
+        b = read();
 
         if (_pos > 0 && b == START_BYTE && ATAP == 2) {
         	// new packet start before previous packeted completed -- discard previous packet and start over
@@ -750,8 +891,8 @@ void XBee::readPacket() {
         }
 
 		if (_pos > 0 && b == ESCAPE) {
-			if (Serial.available()) {
-				b = Serial.read();
+			if (available()) {
+				b = read();
 				b = 0x20 ^ b;
 			} else {
 				// escape byte.  next byte will be
@@ -1333,17 +1474,16 @@ void XBee::send(XBeeRequest &request) {
 	sendByte(checksum, true);
 
 	// send packet
-	Serial.flush();
+	flush();
 }
 
 void XBee::sendByte(uint8_t b, bool escape) {
 
 	if (escape && (b == START_BYTE || b == ESCAPE || b == XON || b == XOFF)) {
 //		std::cout << "escaping byte [" << toHexString(b) << "] " << std::endl;
-		Serial.print(ESCAPE, BYTE);
-		Serial.print(b ^ 0x20, BYTE);
+		print(ESCAPE);
+		print(b ^ 0x20);
 	} else {
-		Serial.print(b, BYTE);
+		print(b);
 	}
 }
-
