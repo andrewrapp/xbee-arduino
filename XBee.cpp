@@ -1474,7 +1474,8 @@ void XBee::send(XBeeRequest &request) {
 	sendByte(checksum, true);
 
 	// send packet
-	flush();
+	// flush does not flush the output buffer, but instead input buffer, which would be awful!
+	//flush();
 }
 
 void XBee::sendByte(uint8_t b, bool escape) {

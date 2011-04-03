@@ -21,17 +21,25 @@
 #include <NewSoftSerial.h>
 
 /*
-This example is for Series 2 (ZigBee) XBee Radios only
+This example is for Series 2 (ZigBee) XBee Radios only, though Series 1 also support sleep mode.
 This example demonstrates the XBee pin sleep setting, by allowing the Arduino
-to sleep/wake the XBee.  
-The XBee sleep mode must be set to 1 (SM=1), to enable pin sleep.
-I'm using the NewSoftSerial library to communicate with the Arduino since the Arduino's Serial is being used by the XBee
+to sleep/wake the XBee.  In this example and end device is attached to the Arduino.
+ 
+The end device sleep mode must be set to 1 (SM=1), to enable pin sleep.
+Set SP=AF0 (28 seconds) on the coordinator.  This will instruct the coordinator to buffer any packets, for up to 28 seconds,
+while the end device is sleeping.  When the end device wakes, it will poll the coordinator and receive the packet.
+
+Note: I'm using the NewSoftSerial library to communicate with the Arduino since the Arduino's Serial is being used by the XBee
+
 How it works:
 When you send a "1", the Arduino will sleep the XBee.
 Sending "2" wakes the XBee and "3" will send an arbitrary TX packet.
-Of course if the XBee is sleeping, the TX packet will not be sent.
+Of course if the XBee is sleeping, the TX packet will not be delivered.
 Connect the Arduino Serial Monitor to the usb-serial device to send the commands.
 Connect an LED to the XBee Module Status (pin 13).  This will turn on when the XBee is awake and off when it's sleeping
+Attach the coordinator to your computer and send a TX packet ever 28 seconds.  You should be able to verify the 
+end device receives the packet when it wakes from sleep.
+
 Remember to connect all devices to a common Ground: XBee, Arduino and USB-Serial device
 */
 
@@ -48,6 +56,7 @@ uint8_t payload[] = { 0, 0 };
 XBeeAddress64 addr64 = XBeeAddress64(0x0013a200, 0x403e0f30);
 ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
+ZBRxResponse rx = ZBRxResponse();
 
 // note: xbee sleep pin doesn't need 3.3. to sleep -- open circuit also will sleep it, but of course needs 0V to wake!
 // connect Arduino digital 8 to XBee sleep pin (9) through a voltage divider.  I'm using 10K resistors. 
@@ -94,10 +103,17 @@ void sendPacket() {
             	// the remote XBee did not receive our packet. is it powered on?
                 nss.println("packet delivery failed");
            }
+        } else if (xbee.getResponse().getApiId() == ZB_RX_RESPONSE) {
+        	// we received a packet something!
+            xbee.getResponse().getZBRxResponse(rx);
+        	// print the payload. lets assume it's text.
+        	for (uint8_t i = 0; i < rx.getDataLength(); i++) {
+        		nss.println(rx.getData(i));
+        	}
         }      
     } else {
-      // local XBee did not provide a timely TX Status Response -- should not happen
-       nss.println("timeout waiting for tx status response");
+      // local xbee is sleeping
+       nss.println("no response -- is local xbee sleeping?");
     }  
 }
 
