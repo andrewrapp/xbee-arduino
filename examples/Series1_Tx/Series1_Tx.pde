@@ -18,6 +18,7 @@
  */
  
 #include <XBee.h>
+#include <NewSoftSerial.h>
 
 /*
 This example is for Series 1 XBee
@@ -102,8 +103,12 @@ void loop() {
              	flashLed(errorLed, 3, 500);
            }
         }      
+    } else if (xbee.getResponse().isError()) {
+      //nss.print("Error reading packet.  Error code: ");  
+      //nss.println(xbee.getResponse().getErrorCode());
+      // or flash error led
     } else {
-      // local XBee did not provide a timely TX Status Response -- should not happen
+      // local XBee did not provide a timely TX Status Response.  Radio is not configured properly or connected
       flashLed(errorLed, 2, 50);
     }
     

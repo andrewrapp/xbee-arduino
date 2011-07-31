@@ -108,8 +108,7 @@ void loop() {
       nss.print("Expected I/O Sample, but got ");
       nss.print(xbee.getResponse().getApiId(), HEX);
     }    
-  } 
-  else if (xbee.getResponse().isError()) {
+  } else if (xbee.getResponse().isError()) {
     nss.print("Error reading packet.  Error code: ");  
     nss.println(xbee.getResponse().getErrorCode());
   }

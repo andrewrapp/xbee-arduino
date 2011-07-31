@@ -18,6 +18,7 @@
  */
 
 #include <XBee.h>
+#include <NewSoftSerial.h>
 
 /*
 This example is for Series 1 XBee (802.15.4)
@@ -92,5 +93,9 @@ void loop() {
       	// not something we were expecting
         flashLed(errorLed, 1, 25);    
       }
-    }
+    } else if (xbee.getResponse().isError()) {
+      //nss.print("Error reading packet.  Error code: ");  
+      //nss.println(xbee.getResponse().getErrorCode());
+      // or flash error led
+    } 
 }

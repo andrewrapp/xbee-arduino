@@ -134,13 +134,10 @@ void sendRemoteAtCommand() {
       nss.print("Expected Remote AT response but got ");
       nss.print(xbee.getResponse().getApiId(), HEX);
     }    
+  } else if (xbee.getResponse().isError()) {
+    nss.print("Error reading packet.  Error code: ");  
+    nss.println(xbee.getResponse().getErrorCode());
   } else {
-    // remote at command failed
-    if (xbee.getResponse().isError()) {
-      nss.print("Error reading packet.  Error code: ");  
-      nss.println(xbee.getResponse().getErrorCode());
-    } else {
-      nss.print("No response from radio");  
-    }
+    nss.print("No response from radio");  
   }
 }
