@@ -20,14 +20,13 @@
 #ifndef XBee_h
 #define XBee_h
 
-#include <WProgram.h>
+#if defined(ARDUINO) && ARDUINO >= 100
+	#include "Arduino.h"
+#else
+	#include "WProgram.h"
+#endif
+
 #include <inttypes.h>
-
-#include <NewSoftSerial.h>
-#include <HardwareSerial.h>
-
-// TODO
-#define USE_NSS 0
 
 #define SERIES_1
 #define SERIES_2
@@ -718,21 +717,15 @@ public:
 	 * Returns a sequential frame id between 1 and 255
 	 */
 	uint8_t getNextFrameId();
-	
 	/**
-	 * Sets the Serial port for communication.
+	 * Specify the serial port.  Only relevant for Arduinos that support multiple serial ports (e.g. Mega)
 	 */
 	void setSerial(HardwareSerial &serial);
-	/**
-	 * Tells the library to use NSS for communication, with the specified TX and RX pins
-	 */
-	//void setNss(uint8_t tx, uint8_t rx);
-	void setNss(NewSoftSerial &nssSerial);
 private:
 	bool available();
 	uint8_t read();
 	void flush();
-	void print(uint8_t val);
+	void write(uint8_t val);
 	void sendByte(uint8_t b, bool escape);
 	void resetResponse();
 	XBeeResponse _response;
@@ -746,10 +739,6 @@ private:
 	// buffer for incoming RX packets.  holds only the api specific frame data, starting after the api id byte and prior to checksum
 	uint8_t _responseFrameData[MAX_FRAME_DATA_SIZE];
 	HardwareSerial* _serial;
-	NewSoftSerial* _nssSerial;
-	bool _useNss;
-	//uint8_t nssTx;
-	//uint8_t nssRx;
 };
 
 /**

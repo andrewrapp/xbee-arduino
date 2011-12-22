@@ -18,9 +18,14 @@
  */
 
 #include "XBee.h"
-#include "WProgram.h"
+
+#if defined(ARDUINO) && ARDUINO >= 100
+	#include "Arduino.h"
+#else
+	#include "WProgram.h"
+#endif
+
 #include "HardwareSerial.h"
-#include "NewSoftSerial.h"
 
 XBeeResponse::XBeeResponse() {
 
@@ -760,10 +765,8 @@ XBee::XBee(): _response(XBeeResponse()) {
 	
 	_response.init();
 	_response.setFrameData(_responseFrameData);
-
-	_useNss = false;	
-	_serial = NULL;
-	_nssSerial = NULL;
+	// default
+	_serial = &Serial;
 }
 
 uint8_t XBee::getNextFrameId() {
@@ -779,53 +782,27 @@ uint8_t XBee::getNextFrameId() {
 }
 
 void XBee::begin(long baud) {
-	if (_useNss) {
-		_nssSerial->begin(baud);
-	} else {
-		_serial->begin(baud);
-	}
-}
-
-bool XBee::available() {
-	if (_useNss) {
-		return _nssSerial->available();
-	} else {
-		return _serial->available();
-	}
-}
-
-uint8_t XBee::read() {
-	if (_useNss) {
-		return _nssSerial->read();
-	} else {
-		return _serial->read();
-	}
-} 
-
-void XBee::flush() {
-	if (_useNss) {
-		_nssSerial->flush();
-	} else {
-		_serial->flush();
-	}
-} 
-
-void XBee::print(uint8_t val) {
-	if (_useNss) {
-		_nssSerial->print(val, BYTE);
-	} else {
-		_serial->print(val, BYTE);
-	}
+	_serial->begin(baud);
 }
 
 void XBee::setSerial(HardwareSerial &serial) {
 	_serial = &serial;
-	_useNss = false;
 }
 
-void XBee::setNss(NewSoftSerial &nssSerial) {
-	_nssSerial = &nssSerial;
-	_useNss = true;
+bool XBee::available() {
+	return _serial->available();
+}
+
+uint8_t XBee::read() {
+	return _serial->read();
+} 
+
+void XBee::flush() {
+	_serial->flush();
+} 
+
+void XBee::write(uint8_t val) {
+	_serial->write(val);
 }
 
 XBeeResponse& XBee::getResponse() {
@@ -1473,18 +1450,18 @@ void XBee::send(XBeeRequest &request) {
 	// send checksum
 	sendByte(checksum, true);
 
-	// send packet
-	// flush does not flush the output buffer, but instead input buffer, which would be awful!
-	//flush();
+	// send packet (Note: prior to Arduino 1.0 this flushed the incoming buffer, which of course was not so great)
+	flush();
 }
 
 void XBee::sendByte(uint8_t b, bool escape) {
 
 	if (escape && (b == START_BYTE || b == ESCAPE || b == XON || b == XOFF)) {
 //		std::cout << "escaping byte [" << toHexString(b) << "] " << std::endl;
-		print(ESCAPE);
-		print(b ^ 0x20);
+		write(ESCAPE);
+		write(b ^ 0x20);
 	} else {
-		print(b);
+		write(b);
 	}
 }
+

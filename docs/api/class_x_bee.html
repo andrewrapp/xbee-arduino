@@ -32,9 +32,6 @@
 <a href="class_x_bee-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="5843b69c791eabf9b5c1e892aaa7593e"></a><!-- doxytag: member="XBee::setSerial" ref="5843b69c791eabf9b5c1e892aaa7593e" args="(HardwareSerial serial)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>setSerial</b> (HardwareSerial serial)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#7d788232f44e8b3c10dc686a0299fcc6">readPacket</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reads all available serial bytes until a packet is parsed, an error occurs, or the buffer is empty.  <a href="#7d788232f44e8b3c10dc686a0299fcc6"></a><br></td></tr>
@@ -63,6 +60,9 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#25bd226e41517e8a66a13e531d31438d">getNextFrameId</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns a sequential frame id between 1 and 255. <br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#8522ebba19c2751677131b7bb43da6c3">setSerial</a> (HardwareSerial &amp;serial)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Specify the serial port.  <a href="#8522ebba19c2751677131b7bb43da6c3"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Primary interface for communicating with an <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> Radio. 
@@ -138,10 +138,32 @@ Reads until a packet is received or an error occurs.
 Caution: use this carefully since if you don't get a response, your Arduino code will hang on this call forever!! often it's better to use a timeout: <a class="el" href="class_x_bee.html#e1c9f3b53df50564ab9aca2716792b44" title="Waits a maximum of timeout milliseconds for a response packet before timing out;...">readPacket(int)</a> 
 </div>
 </div><p>
+<a class="anchor" name="8522ebba19c2751677131b7bb43da6c3"></a><!-- doxytag: member="XBee::setSerial" ref="8522ebba19c2751677131b7bb43da6c3" args="(HardwareSerial &amp;serial)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void XBee::setSerial           </td>
+          <td>(</td>
+          <td class="paramtype">HardwareSerial &amp;&nbsp;</td>
+          <td class="paramname"> <em>serial</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Specify the serial port. 
+<p>
+Only relevant for Arduinos that support multiple serial ports (e.g. Mega) 
+</div>
+</div><p>
 <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 26 21:44:51 2009 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Dec 21 17:21:21 2011 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>
