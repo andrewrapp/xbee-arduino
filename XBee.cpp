@@ -745,10 +745,6 @@ void XBeeResponse::reset() {
 	_frameLength = 0;
 
 	_errorCode = NO_ERROR;
-
-	for (int i = 0; i < MAX_FRAME_DATA_SIZE; i++) {
-		getFrameData()[i] = 0;
-	}
 }
 
 void XBee::resetResponse() {
