@@ -754,15 +754,19 @@ void XBee::resetResponse() {
 }
 
 XBee::XBee(): _response(XBeeResponse()) {
-	_pos = 0;
-	_escape = false;
-	_checksumTotal = 0;
-	_nextFrameId = 0;
-	
-	_response.init();
-	_response.setFrameData(_responseFrameData);
-	// default
-	_serial = &Serial;
+        _pos = 0;
+        _escape = false;
+        _checksumTotal = 0;
+        _nextFrameId = 0;
+
+        _response.init();
+        _response.setFrameData(_responseFrameData);
+		// Contributed by Paul Stoffregen for Teensy support
+#if defined(__AVR_ATmega32U4__) || defined(__MK20DX128__)
+        _serial = &Serial1;
+#else
+        _serial = &Serial;
+#endif
 }
 
 uint8_t XBee::getNextFrameId() {
