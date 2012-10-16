@@ -18,7 +18,7 @@
  */
 
 #include <XBee.h>
-#include <NewSoftSerial.h>
+#include <SoftwareSerial.h>
 
 /*
 This example is for Series 1 XBee Radios only
@@ -26,19 +26,18 @@ Receives I/O samples from a remote radio with 16-bit addressing.
 The remote radio must have IR > 0, at least one digital or analog input enabled
 and DL set to the 16-bit address of the receiving XBee (the one connected to the Arduino).
  
-This example uses the NewSoftSerial library to view the XBee communication.  I am using a 
+This example uses the SoftSerial library to view the XBee communication.  I am using a 
 Modern Device USB BUB board (http://moderndevice.com/connect) and viewing the output
 with the Arduino Serial Monitor.    
-You can obtain the NewSoftSerial library here http://arduiniana.org/libraries/NewSoftSerial/
 */
 
 // Define NewSoftSerial TX/RX pins
-// Connect Arduino pin 9 to TX of usb-serial device
-uint8_t ssRX = 9;
-// Connect Arduino pin 10 to RX of usb-serial device
-uint8_t ssTX = 10;
+// Connect Arduino pin 8 to TX of usb-serial device
+uint8_t ssRX = 8;
+// Connect Arduino pin 9 to RX of usb-serial device
+uint8_t ssTX = 9;
 // Remember to connect all devices to a common Ground: XBee, Arduino and USB-Serial device
-NewSoftSerial nss(ssRX, ssTX);
+SoftwareSerial nss(ssRX, ssTX);
 
 XBee xbee = XBee();
 
@@ -47,7 +46,8 @@ Rx16IoSampleResponse ioSample = Rx16IoSampleResponse();
 //Rx64IoSampleResponse ioSample = Rx64IoSampleResponse();
 
 void setup() { 
-  xbee.begin(9600);
+  Serial.begin(9600);
+  xbee.setSerial(Serial);
   // start soft serial
   nss.begin(9600);
 }

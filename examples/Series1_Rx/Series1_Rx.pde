@@ -18,7 +18,6 @@
  */
 
 #include <XBee.h>
-#include <NewSoftSerial.h>
 
 /*
 This example is for Series 1 XBee (802.15.4)
@@ -58,7 +57,8 @@ void setup() {
   pinMode(dataLed,  OUTPUT);
   
   // start serial
-  xbee.begin(9600);
+  Serial.begin(9600);
+  xbee.setSerial(Serial);
   
   flashLed(statusLed, 3, 50);
 }

@@ -699,9 +699,9 @@ public:
 	 */
 	void readPacketUntilAvailable();
 	/**
-	 * Starts the serial connection at the supplied baud rate
+	 * Starts the serial connection on the specified serial port
 	 */
-	void begin(long baud);
+	void begin(Stream &serial);
 	void getResponse(XBeeResponse &response);
 	/**
 	 * Returns a reference to the current response
@@ -720,7 +720,7 @@ public:
 	/**
 	 * Specify the serial port.  Only relevant for Arduinos that support multiple serial ports (e.g. Mega)
 	 */
-	void setSerial(HardwareSerial &serial);
+	void setSerial(Stream &serial);
 private:
 	bool available();
 	uint8_t read();
@@ -738,7 +738,7 @@ private:
 	uint8_t _nextFrameId;
 	// buffer for incoming RX packets.  holds only the api specific frame data, starting after the api id byte and prior to checksum
 	uint8_t _responseFrameData[MAX_FRAME_DATA_SIZE];
-	HardwareSerial* _serial;
+	Stream* _serial;
 };
 
 /**

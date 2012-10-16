@@ -18,7 +18,7 @@
  */
 
 #include <XBee.h>
-#include <NewSoftSerial.h>
+#include <SoftwareSerial.h>
 
 /*
 This example is for Series 2 (ZigBee) XBee Radios only, though Series 1 also support sleep mode.
@@ -29,7 +29,7 @@ The end device sleep mode must be set to 1 (SM=1), to enable pin sleep.
 Set SP=AF0 (28 seconds) on the coordinator.  This will instruct the coordinator to buffer any packets, for up to 28 seconds,
 while the end device is sleeping.  When the end device wakes, it will poll the coordinator and receive the packet.
 
-Note: I'm using the NewSoftSerial library to communicate with the Arduino since the Arduino's Serial is being used by the XBee
+Note: I'm using the SoftSerial library to communicate with the Arduino since the Arduino's Serial is being used by the XBee
 
 How it works:
 When you send a "1", the Arduino will sleep the XBee.
@@ -43,9 +43,6 @@ end device receives the packet when it wakes from sleep.
 Remember to connect all devices to a common Ground: XBee, Arduino and USB-Serial device
 */
 
-// TODO: monitor XBee current consumption while sleeping
-// TODO: send packets while sleeping
-
 // create the XBee object
 XBee xbee = XBee();
 
@@ -58,16 +55,16 @@ ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 ZBRxResponse rx = ZBRxResponse();
 
-// note: xbee sleep pin doesn't need 3.3. to sleep -- open circuit also will sleep it, but of course needs 0V to wake!
-// connect Arduino digital 8 to XBee sleep pin (9) through a voltage divider.  I'm using 10K resistors. 
-uint8_t sleepPin = 8;
+// note: xbee sleep pin doesn't need 3.3. to sleep -- open circuit also will sleep it, but of course it needs 0V to wake!
+// connect Arduino digital 7 to XBee sleep pin (9) through a voltage divider.  I'm using a 10K resistor. 
+uint8_t sleepPin = 7;
 
-// SoftSerial RX: connect Arduino digitial 9 to the TX of of usb-serial device.  note: I'm using Modern Device's USB BUB (set to 5V).  You can use a 3.3V usb-serial with a voltage divider on RX (TX does not require since Arduino is 3.3V tolerant)
-uint8_t ssRX = 9;
-// SoftSerial TX: connect Arduino digital 10 to RX of usb-serial device
-uint8_t ssTX = 10;
+// SoftSerial RX: connect Arduino digitial 8 to the TX of of usb-serial device.  note: I'm using Modern Device's USB BUB (set to 5V).  You can use a 3.3V usb-serial with a voltage divider on RX (TX does not require since Arduino is 3.3V tolerant)
+uint8_t ssRX = 8;
+// SoftSerial TX: connect Arduino digital 9 to RX of usb-serial device
+uint8_t ssTX = 9;
 
-NewSoftSerial nss(ssRX, ssTX);
+SoftwareSerial nss(ssRX, ssTX);
 
 void setup() {
   pinMode(sleepPin, OUTPUT);
@@ -75,7 +72,8 @@ void setup() {
   digitalWrite(sleepPin, LOW);
   
   // start XBee communication
-  xbee.begin(9600);
+  Serial.begin(9600);
+  xbee.setSerial(Serial);
   // start soft serial
   nss.begin(9600);
 }

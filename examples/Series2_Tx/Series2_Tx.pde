@@ -18,7 +18,6 @@
  */
 
 #include <XBee.h>
-#include <NewSoftSerial.h>
 
 /*
 This example is for Series 2 XBee
@@ -57,7 +56,8 @@ void setup() {
   pinMode(statusLed, OUTPUT);
   pinMode(errorLed, OUTPUT);
 
-  xbee.begin(9600);
+  Serial.begin(9600);
+  xbee.setSerial(Serial);
 }
 
 void loop() {   

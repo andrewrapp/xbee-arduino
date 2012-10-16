@@ -2,7 +2,7 @@
 <project default="dist" name="XBee-Arduino">
 	<property file="build.properties"/>
 	<property name="dist.dir" value="dist"/>
-	<property name="release" value="0.2.1"/>
+	<property name="release" value="0.4-softserial-beta"/>
 	
 	<target name="init">
 		<mkdir dir="${dist.dir}/XBee"/>
@@ -16,6 +16,7 @@
 			<fileset dir=".">
 				<include name="XBee.h"/>
 				<include name="XBee.cpp"/>
+				<include name="keywords.txt"/>
 				<include name="COPYING"/>
 			</fileset>
 		</copy>
@@ -28,6 +29,7 @@
 			</fileset>
 		</copy>
 				
+
 		<zip basedir="${dist.dir}" destfile="xbee-arduino-${release}.zip"/>
 	</target>
 	

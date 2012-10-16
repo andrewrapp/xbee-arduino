@@ -781,11 +781,12 @@ uint8_t XBee::getNextFrameId() {
 	return _nextFrameId;
 }
 
-void XBee::begin(long baud) {
-	_serial->begin(baud);
+// Support for SoftwareSerial. Contributed by Paul Stoffregen
+void XBee::begin(Stream &serial) {
+	_serial = &serial;
 }
 
-void XBee::setSerial(HardwareSerial &serial) {
+void XBee::setSerial(Stream &serial) {
 	_serial = &serial;
 }
 

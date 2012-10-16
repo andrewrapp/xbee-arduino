@@ -18,7 +18,6 @@
  */
  
 #include <XBee.h>
-#include <NewSoftSerial.h>
 
 /*
 This example is for Series 1 XBee
@@ -66,8 +65,8 @@ void flashLed(int pin, int times, int wait) {
 void setup() {
   pinMode(statusLed, OUTPUT);
   pinMode(errorLed, OUTPUT);
-  
-  xbee.begin(9600);
+  Serial.begin(9600);
+  xbee.setSerial(Serial);
 }
 
 void loop() {

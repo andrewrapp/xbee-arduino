@@ -18,25 +18,24 @@
  */
 
 #include <XBee.h>
-#include <NewSoftSerial.h>
+#include <SoftwareSerial.h>
 
 /*
 This example is for Series 1 (10C8 or later firmware) or Series 2 XBee radios
 Sends a few AT command queries to the radio and checks the status response for success
 
-This example uses the NewSoftSerial library to view the XBee communication.  I am using a 
+This example uses the SoftSerial library to view the XBee communication.  I am using a 
 Modern Device USB BUB board (http://moderndevice.com/connect) and viewing the output
-with the Arduino Serial Monitor.    
-You can obtain the NewSoftSerial library here http://arduiniana.org/libraries/NewSoftSerial/
+with the Arduino Serial Monitor.
 */
 
-// Define NewSoftSerial TX/RX pins
-// Connect Arduino pin 9 to TX of usb-serial device
-uint8_t ssRX = 9;
-// Connect Arduino pin 10 to RX of usb-serial device
-uint8_t ssTX = 10;
+// Define SoftSerial TX/RX pins
+// Connect Arduino pin 8 to TX of usb-serial device
+uint8_t ssRX = 8;
+// Connect Arduino pin 9 to RX of usb-serial device
+uint8_t ssTX = 9;
 // Remember to connect all devices to a common Ground: XBee, Arduino and USB-Serial device
-NewSoftSerial nss(ssRX, ssTX);
+SoftwareSerial nss(ssRX, ssTX);
 
 XBee xbee = XBee();
 
@@ -52,7 +51,8 @@ AtCommandRequest atRequest = AtCommandRequest(shCmd);
 AtCommandResponse atResponse = AtCommandResponse();
 
 void setup() { 
-  xbee.begin(9600);
+  Serial.begin(9600);
+  xbee.begin(Serial);
   // start soft serial
   nss.begin(9600);
   
