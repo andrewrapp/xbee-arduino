@@ -41,10 +41,10 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#594e2bb2ccb7b3fe7a2278b9324b4083">readPacketUntilAvailable</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Reads until a packet is received or an error occurs.  <a href="#594e2bb2ccb7b3fe7a2278b9324b4083"></a><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="847a36fa06c9567496a7ec140cb72586"></a><!-- doxytag: member="XBee::begin" ref="847a36fa06c9567496a7ec140cb72586" args="(long baud)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#847a36fa06c9567496a7ec140cb72586">begin</a> (long baud)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="2d170fc3f2412712adee0af794dc6263"></a><!-- doxytag: member="XBee::begin" ref="2d170fc3f2412712adee0af794dc6263" args="(Stream &amp;serial)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#2d170fc3f2412712adee0af794dc6263">begin</a> (Stream &amp;serial)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Starts the serial connection at the supplied baud rate. <br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Starts the serial connection on the specified serial port. <br></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="anchor" name="c88079aa744d36b26a0c6a0add939898"></a><!-- doxytag: member="XBee::getResponse" ref="c88079aa744d36b26a0c6a0add939898" args="(XBeeResponse &amp;response)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>getResponse</b> (<a class="el" href="class_x_bee_response.html">XBeeResponse</a> &amp;response)</td></tr>
 
@@ -60,9 +60,9 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 uint8_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#25bd226e41517e8a66a13e531d31438d">getNextFrameId</a> ()</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns a sequential frame id between 1 and 255. <br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#8522ebba19c2751677131b7bb43da6c3">setSerial</a> (HardwareSerial &amp;serial)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_x_bee.html#58ff19e5342060ca91aea247db99b927">setSerial</a> (Stream &amp;serial)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Specify the serial port.  <a href="#8522ebba19c2751677131b7bb43da6c3"></a><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Specify the serial port.  <a href="#58ff19e5342060ca91aea247db99b927"></a><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Primary interface for communicating with an <a class="el" href="class_x_bee.html" title="Primary interface for communicating with an XBee Radio.">XBee</a> Radio. 
@@ -138,14 +138,14 @@ Reads until a packet is received or an error occurs.
 Caution: use this carefully since if you don't get a response, your Arduino code will hang on this call forever!! often it's better to use a timeout: <a class="el" href="class_x_bee.html#e1c9f3b53df50564ab9aca2716792b44" title="Waits a maximum of timeout milliseconds for a response packet before timing out;...">readPacket(int)</a> 
 </div>
 </div><p>
-<a class="anchor" name="8522ebba19c2751677131b7bb43da6c3"></a><!-- doxytag: member="XBee::setSerial" ref="8522ebba19c2751677131b7bb43da6c3" args="(HardwareSerial &amp;serial)" -->
+<a class="anchor" name="58ff19e5342060ca91aea247db99b927"></a><!-- doxytag: member="XBee::setSerial" ref="58ff19e5342060ca91aea247db99b927" args="(Stream &amp;serial)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">void XBee::setSerial           </td>
           <td>(</td>
-          <td class="paramtype">HardwareSerial &amp;&nbsp;</td>
+          <td class="paramtype">Stream &amp;&nbsp;</td>
           <td class="paramname"> <em>serial</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -163,7 +163,7 @@ Only relevant for Arduinos that support multiple serial ports (e.g. Mega)
 <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_x_bee_8h-source.html">XBee.h</a><li>XBee.cpp</ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Dec 21 17:21:21 2011 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 15 21:25:26 2012 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>

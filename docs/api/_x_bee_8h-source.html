@@ -414,13 +414,13 @@
 <a name="l00689"></a>00689       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#7d788232f44e8b3c10dc686a0299fcc6" title="Reads all available serial bytes until a packet is parsed, an error occurs, or the...">readPacket</a>();
 <a name="l00694"></a>00694       <span class="keywordtype">bool</span> <a class="code" href="class_x_bee.html#7d788232f44e8b3c10dc686a0299fcc6" title="Reads all available serial bytes until a packet is parsed, an error occurs, or the...">readPacket</a>(<span class="keywordtype">int</span> timeout);
 <a name="l00700"></a>00700       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#594e2bb2ccb7b3fe7a2278b9324b4083" title="Reads until a packet is received or an error occurs.">readPacketUntilAvailable</a>();
-<a name="l00704"></a>00704       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#847a36fa06c9567496a7ec140cb72586" title="Starts the serial connection at the supplied baud rate.">begin</a>(<span class="keywordtype">long</span> baud);
+<a name="l00704"></a>00704       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#2d170fc3f2412712adee0af794dc6263" title="Starts the serial connection on the specified serial port.">begin</a>(Stream &amp;serial);
 <a name="l00705"></a>00705       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#18250def80e8b643aa1ccc15a98937f3" title="Returns a reference to the current response Note: once readPacket is called again...">getResponse</a>(<a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a> &amp;response);
 <a name="l00710"></a>00710       <a class="code" href="class_x_bee_response.html" title="The super class of all XBee responses (RX packets) Users should never attempt to...">XBeeResponse</a>&amp; <a class="code" href="class_x_bee.html#18250def80e8b643aa1ccc15a98937f3" title="Returns a reference to the current response Note: once readPacket is called again...">getResponse</a>();
 <a name="l00714"></a>00714       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#802387f468be8622941d16739ac848f2" title="Sends a XBeeRequest (TX packet) out the serial port.">send</a>(<a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> &amp;request);
 <a name="l00715"></a>00715       <span class="comment">//uint8_t sendAndWaitForResponse(XBeeRequest &amp;request, int timeout);</span>
 <a name="l00719"></a>00719 <span class="comment"></span>      uint8_t <a class="code" href="class_x_bee.html#25bd226e41517e8a66a13e531d31438d" title="Returns a sequential frame id between 1 and 255.">getNextFrameId</a>();
-<a name="l00723"></a>00723       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#8522ebba19c2751677131b7bb43da6c3" title="Specify the serial port.">setSerial</a>(HardwareSerial &amp;serial);
+<a name="l00723"></a>00723       <span class="keywordtype">void</span> <a class="code" href="class_x_bee.html#58ff19e5342060ca91aea247db99b927" title="Specify the serial port.">setSerial</a>(Stream &amp;serial);
 <a name="l00724"></a>00724 <span class="keyword">private</span>:
 <a name="l00725"></a>00725       <span class="keywordtype">bool</span> available();
 <a name="l00726"></a>00726       uint8_t read();
@@ -438,7 +438,7 @@
 <a name="l00738"></a>00738       uint8_t _nextFrameId;
 <a name="l00739"></a>00739       <span class="comment">// buffer for incoming RX packets.  holds only the api specific frame data, starting after the api id byte and prior to checksum</span>
 <a name="l00740"></a>00740       uint8_t _responseFrameData[MAX_FRAME_DATA_SIZE];
-<a name="l00741"></a>00741       HardwareSerial* _serial;
+<a name="l00741"></a>00741       Stream* _serial;
 <a name="l00742"></a>00742 };
 <a name="l00743"></a>00743 
 <a name="l00747"></a><a class="code" href="class_payload_request.html">00747</a> <span class="keyword">class </span><a class="code" href="class_payload_request.html" title="All TX packets that support payloads extend this class.">PayloadRequest</a> : <span class="keyword">public</span> <a class="code" href="class_x_bee_request.html" title="Super class of all XBee requests (TX packets) Users should never create an instance...">XBeeRequest</a> {
@@ -568,7 +568,7 @@
 <a name="l00961"></a>00961 
 <a name="l00962"></a>00962 <span class="preprocessor">#endif //XBee_h</span>
 </pre></div></div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Dec 21 17:21:21 2011 for XBee-Arduino by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Oct 15 21:25:26 2012 for XBee-Arduino by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.8 </small></address>
 </body>
