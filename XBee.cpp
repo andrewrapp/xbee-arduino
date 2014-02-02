@@ -750,6 +750,7 @@ void XBeeResponse::reset() {
 void XBee::resetResponse() {
 	_pos = 0;
 	_escape = false;
+	_checksumTotal = 0;
 	_response.reset();
 }
 
@@ -946,8 +947,6 @@ void XBee::readPacket() {
 					// reset state vars
 					_pos = 0;
 
-					_checksumTotal = 0;
-
 					return;
 				} else {
 					// add to packet array, starting with the fourth byte of the apiFrame
@@ -1045,6 +1044,14 @@ void XBeeAddress64::setLsb(uint32_t lsb) {
 	_lsb = lsb;
 }
 
+// contributed by user repat123 on issue tracker
+bool XBeeAddress64::operator==(XBeeAddress64 addr) {
+    return ((_lsb == addr.getLsb()) && (_msb == addr.getMsb()));
+}
+
+bool XBeeAddress64::operator!=(XBeeAddress64 addr) {
+            return !(*this == addr);
+}
 
 #ifdef SERIES_2
 
