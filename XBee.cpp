@@ -1045,13 +1045,13 @@ void XBeeAddress64::setLsb(uint32_t lsb) {
 }
 
 // contributed by user repat123 on issue tracker
-bool XBeeAddress64::operator==(XBeeAddress64 addr) {
-    return ((_lsb == addr.getLsb()) && (_msb == addr.getMsb()));
-}
+//bool XBeeAddress64::operator==(XBeeAddress64 addr) {
+//    return ((_lsb == addr.getLsb()) && (_msb == addr.getMsb()));
+//}
 
-bool XBeeAddress64::operator!=(XBeeAddress64 addr) {
-            return !(*this == addr);
-}
+//bool XBeeAddress64::operator!=(XBeeAddress64 addr) {
+//            return !(*this == addr);
+//}
 
 #ifdef SERIES_2
 
