@@ -93,7 +93,7 @@ void loop() {
       }
       }
     } else if (xbee.getResponse().isError()) {
-      nss.print("oh no!!! error code:");
+      nss.print("error code:");
       nss.println(xbee.getResponse().getErrorCode());
     }
 }
