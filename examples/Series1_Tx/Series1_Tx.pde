@@ -91,7 +91,7 @@ void loop() {
 
         // should be a znet tx status            	
     	if (xbee.getResponse().getApiId() == TX_STATUS_RESPONSE) {
-    	   xbee.getResponse().getZBTxStatusResponse(txStatus);
+    	   xbee.getResponse().getTxStatusResponse(txStatus);
     		
     	   // get the delivery status, the fifth byte
            if (txStatus.getStatus() == SUCCESS) {
