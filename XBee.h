@@ -143,6 +143,20 @@
 #define UNEXPECTED_START_BYTE 3
 
 /**
+ * C++11 introduced the constexpr as a hint to the compiler that things
+ * can be evaluated at compiletime. This can help to remove
+ * startup code for global objects, or otherwise help the compiler to
+ * optimize. Since the keyword is introduced in C++11, but supporting
+ * older compilers is a matter of removing the keyword, we use a macro
+ * for this.
+ */
+#if __cplusplus >= 201103L
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
+
+/**
  * The super class of all XBee responses (RX packets)
  * Users should never attempt to create an instance of this class; instead
  * create an instance of a subclass
@@ -287,7 +301,7 @@ private:
 
 class XBeeAddress {
 public:
-	XBeeAddress() {};
+	CONSTEXPR XBeeAddress() {};
 };
 
 /**
@@ -299,9 +313,9 @@ public:
  */
 class XBeeAddress64 : public XBeeAddress {
 public:
-	XBeeAddress64(uint64_t addr) : _msb(addr >> 32), _lsb(addr) {}
-	XBeeAddress64(uint32_t msb, uint32_t lsb) : _msb(msb), _lsb(lsb) {}
-	XBeeAddress64() {}
+	CONSTEXPR XBeeAddress64(uint64_t addr) : _msb(addr >> 32), _lsb(addr) {}
+	CONSTEXPR XBeeAddress64(uint32_t msb, uint32_t lsb) : _msb(msb), _lsb(lsb) {}
+	CONSTEXPR XBeeAddress64() : _msb(0), _lsb(0) {}
 	uint32_t getMsb() {return _msb;}
 	uint32_t getLsb() {return _lsb;}
 	uint64_t get() {return (static_cast<uint64_t>(_msb) << 32) | _lsb;}
