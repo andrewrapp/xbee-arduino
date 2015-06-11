@@ -287,7 +287,7 @@ private:
 
 class XBeeAddress {
 public:
-	XBeeAddress();
+	XBeeAddress() {};
 };
 
 /**
@@ -299,16 +299,19 @@ public:
  */
 class XBeeAddress64 : public XBeeAddress {
 public:
-	XBeeAddress64(uint64_t addr);
-	XBeeAddress64(uint32_t msb, uint32_t lsb);
-	XBeeAddress64();
-	uint32_t getMsb();
-	uint32_t getLsb();
-	uint64_t get();
-	operator uint64_t();
-	void setMsb(uint32_t msb);
-	void setLsb(uint32_t lsb);
-	void set(uint64_t addr);
+	XBeeAddress64(uint64_t addr) : _msb(addr >> 32), _lsb(addr) {}
+	XBeeAddress64(uint32_t msb, uint32_t lsb) : _msb(msb), _lsb(lsb) {}
+	XBeeAddress64() {}
+	uint32_t getMsb() {return _msb;}
+	uint32_t getLsb() {return _lsb;}
+	uint64_t get() {return (static_cast<uint64_t>(_msb) << 32) | _lsb;}
+	operator uint64_t() {return get();}
+	void setMsb(uint32_t msb) {_msb = msb;}
+	void setLsb(uint32_t lsb) {_lsb = lsb;}
+	void set(uint64_t addr) {
+		_msb = addr >> 32;
+		_lsb = addr;
+	}
 private:
 	// Once https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66511 is
 	// fixed, it might make sense to merge these into a uint64_t.

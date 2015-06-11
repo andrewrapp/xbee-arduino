@@ -1014,53 +1014,6 @@ void PayloadRequest::setPayloadLength(uint8_t payloadLength) {
 	_payloadLength = payloadLength;
 }
 
-
-XBeeAddress::XBeeAddress() {
-
-}
-
-XBeeAddress64::XBeeAddress64() : XBeeAddress() {
-
-}
-
-XBeeAddress64::XBeeAddress64(uint32_t msb, uint32_t lsb) : XBeeAddress() {
-	_msb = msb;
-	_lsb = lsb;
-}
-
-XBeeAddress64::XBeeAddress64(uint64_t addr) : XBeeAddress() {
-	set(addr);
-}
-
-uint32_t XBeeAddress64::getMsb() {
-	return _msb;
-}
-
-void XBeeAddress64::setMsb(uint32_t msb) {
-	_msb = msb;
-}
-
-uint32_t XBeeAddress64::getLsb() {
-	return _lsb;
-}
-
-void XBeeAddress64::setLsb(uint32_t lsb) {
-	_lsb = lsb;
-}
-
-uint64_t XBeeAddress64::get() {
-	return (static_cast<uint64_t>(_msb) << 32) | _lsb;
-}
-
-void XBeeAddress64::set(uint64_t addr) {
-	_msb = addr >> 32;
-	_lsb = addr;
-}
-
-XBeeAddress64::operator uint64_t() {
-	return get();
-}
-
 #ifdef SERIES_2
 
 ZBTxRequest::ZBTxRequest() : PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, NULL, 0) {
