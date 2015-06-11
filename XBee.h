@@ -292,18 +292,26 @@ public:
 
 /**
  * Represents a 64-bit XBee Address
+ *
+ * Note that avr-gcc as of 4.9 doesn't optimize uint64_t very well, so
+ * for the smallest and fastest code, use msb and lsb separately. See
+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66511
  */
 class XBeeAddress64 : public XBeeAddress {
 public:
+	XBeeAddress64(uint64_t addr);
 	XBeeAddress64(uint32_t msb, uint32_t lsb);
 	XBeeAddress64();
 	uint32_t getMsb();
 	uint32_t getLsb();
+	uint64_t get();
+	operator uint64_t();
 	void setMsb(uint32_t msb);
 	void setLsb(uint32_t lsb);
-	//bool operator==(XBeeAddress64 addr);
-	//bool operator!=(XBeeAddress64 addr);
+	void set(uint64_t addr);
 private:
+	// Once https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66511 is
+	// fixed, it might make sense to merge these into a uint64_t.
 	uint32_t _msb;
 	uint32_t _lsb;
 };
