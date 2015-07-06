@@ -1602,6 +1602,65 @@ void XBeeWithCallbacks::loop() {
 	readPacket();
 	if (getResponse().isAvailable()) {
 		_onResponse.call(getResponse());
+
+		bool called = false;
+
+		uint8_t id = getResponse().getApiId();
+
+		if (id == ZB_TX_STATUS_RESPONSE) {
+			ZBTxStatusResponse response;
+			getResponse().getZBTxStatusResponse(response);
+			called = _onZBTxStatusResponse.call(response);
+		} else if (id == ZB_RX_RESPONSE) {
+			ZBRxResponse response;
+			getResponse().getZBRxResponse(response);
+			called = _onZBRxResponse.call(response);
+		} else if (id == ZB_EXPLICIT_RX_RESPONSE) {
+			ZBExplicitRxResponse response;
+			getResponse().getZBExplicitRxResponse(response);
+			called = _onZBExplicitRxResponse.call(response);
+		} else if (id == ZB_IO_SAMPLE_RESPONSE) {
+			ZBRxIoSampleResponse response;
+			getResponse().getZBRxIoSampleResponse(response);
+			called = _onZBRxIoSampleResponse.call(response);
+		} else if (id == TX_STATUS_RESPONSE) {
+			TxStatusResponse response;
+			getResponse().getTxStatusResponse(response);
+			called = _onTxStatusResponse.call(response);
+		} else if (id == RX_16_RESPONSE) {
+			Rx16Response response;
+			getResponse().getRx16Response(response);
+			called = _onRx16Response.call(response);
+		} else if (id == RX_64_RESPONSE) {
+			Rx64Response response;
+			getResponse().getRx64Response(response);
+			called = _onRx64Response.call(response);
+		} else if (id == RX_16_IO_RESPONSE) {
+			Rx16IoSampleResponse response;
+			getResponse().getRx16IoSampleResponse(response);
+			called = _onRx16IoSampleResponse.call(response);
+		} else if (id == RX_64_IO_RESPONSE) {
+			Rx64IoSampleResponse response;
+			getResponse().getRx64IoSampleResponse(response);
+			called = _onRx64IoSampleResponse.call(response);
+		} else if (id == MODEM_STATUS_RESPONSE) {
+			ModemStatusResponse response;
+			getResponse().getModemStatusResponse(response);
+			called = _onModemStatusResponse.call(response);
+		} else if (id == AT_COMMAND_RESPONSE) {
+			AtCommandResponse response;
+			getResponse().getAtCommandResponse(response);
+			called = _onAtCommandResponse.call(response);
+		} else if (id == REMOTE_AT_COMMAND_RESPONSE) {
+			RemoteAtCommandResponse response;
+			getResponse().getRemoteAtCommandResponse(response);
+			called = _onRemoteAtCommandResponse.call(response);
+		}
+
+		if (!called)
+			_onOtherResponse.call(getResponse());
+
+
 	} else if (getResponse().isError()) {
 		_onPacketError.call(getResponse().getErrorCode());
 	}

@@ -808,19 +808,53 @@ public:
 	/**
 	 * Register a packet error callback. It is called whenever an
 	 * error occurs in the packet reading process. Arguments to the
-	 * callback will be the error code and the data parameter.
-	 * while registering the callback.
+	 * callback will be the error code (as returned by
+	 * XBeeResponse::getErrorCode()) and the data parameter.  while
+	 * registering the callback.
 	 */
 	void onPacketError(void (*func)(uint8_t, uintptr_t), uintptr_t data = 0) { _onPacketError.set(func, data); }
 
 	/**
 	 * Register a response received callback. It is called whenever
-	 * a response was succesfully received.
+	 * a response was succesfully received, before a response
+	 * specific callback (or onOtherResponse) below is called.
 	 *
 	 * Arguments to the callback will be the received response and
 	 * the data parameter passed while registering the callback.
 	 */
 	void onResponse(void (*func)(XBeeResponse&, uintptr_t), uintptr_t data = 0) { _onResponse.set(func, data); }
+
+	/**
+	 * Register an other response received callback. It is called
+	 * whenever a response was succesfully received, but no response
+	 * specific callback was registered using the functions below
+	 * (after the onResponse callback is called).
+	 *
+	 * Arguments to the callback will be the received response and
+	 * the data parameter passed while registering the callback.
+	 */
+	void onOtherResponse(void (*func)(XBeeResponse&, uintptr_t), uintptr_t data = 0) { _onOtherResponse.set(func, data); }
+
+	// These functions register a response specific callback. They
+	// are called whenever a response of the appropriate type was
+	// succesfully received (after the onResponse callback is
+	// called).
+	//
+	// Arguments to the callback will be the received response
+	// (already converted to the appropriate type) and the data
+	// parameter passed while registering the callback.
+	void onZBTxStatusResponse(void (*func)(ZBTxStatusResponse&, uintptr_t), uintptr_t data = 0) { _onZBTxStatusResponse.set(func, data); }
+	void onZBRxResponse(void (*func)(ZBRxResponse&, uintptr_t), uintptr_t data = 0) { _onZBRxResponse.set(func, data); }
+	void onZBExplicitRxResponse(void (*func)(ZBExplicitRxResponse&, uintptr_t), uintptr_t data = 0) { _onZBExplicitRxResponse.set(func, data); }
+	void onZBRxIoSampleResponse(void (*func)(ZBRxIoSampleResponse&, uintptr_t), uintptr_t data = 0) { _onZBRxIoSampleResponse.set(func, data); }
+	void onTxStatusResponse(void (*func)(TxStatusResponse&, uintptr_t), uintptr_t data = 0) { _onTxStatusResponse.set(func, data); }
+	void onRx16Response(void (*func)(Rx16Response&, uintptr_t), uintptr_t data = 0) { _onRx16Response.set(func, data); }
+	void onRx64Response(void (*func)(Rx64Response&, uintptr_t), uintptr_t data = 0) { _onRx64Response.set(func, data); }
+	void onRx16IoSampleResponse(void (*func)(Rx16IoSampleResponse&, uintptr_t), uintptr_t data = 0) { _onRx16IoSampleResponse.set(func, data); }
+	void onRx64IoSampleResponse(void (*func)(Rx64IoSampleResponse&, uintptr_t), uintptr_t data = 0) { _onRx64IoSampleResponse.set(func, data); }
+	void onModemStatusResponse(void (*func)(ModemStatusResponse&, uintptr_t), uintptr_t data = 0) { _onModemStatusResponse.set(func, data); }
+	void onAtCommandResponse(void (*func)(AtCommandResponse&, uintptr_t), uintptr_t data = 0) { _onAtCommandResponse.set(func, data); }
+	void onRemoteAtCommandResponse(void (*func)(RemoteAtCommandResponse&, uintptr_t), uintptr_t data = 0) { _onRemoteAtCommandResponse.set(func, data); }
 
 	/**
 	 * Regularly call this method, which ensures that the serial
@@ -846,6 +880,19 @@ private:
 
 	Callback<uint8_t> _onPacketError;
 	Callback<XBeeResponse&> _onResponse;
+	Callback<XBeeResponse&> _onOtherResponse;
+	Callback<ZBTxStatusResponse&> _onZBTxStatusResponse;
+	Callback<ZBRxResponse&> _onZBRxResponse;
+	Callback<ZBExplicitRxResponse&> _onZBExplicitRxResponse;
+	Callback<ZBRxIoSampleResponse&> _onZBRxIoSampleResponse;
+	Callback<TxStatusResponse&> _onTxStatusResponse;
+	Callback<Rx16Response&> _onRx16Response;
+	Callback<Rx64Response&> _onRx64Response;
+	Callback<Rx16IoSampleResponse&> _onRx16IoSampleResponse;
+	Callback<Rx64IoSampleResponse&> _onRx64IoSampleResponse;
+	Callback<ModemStatusResponse&> _onModemStatusResponse;
+	Callback<AtCommandResponse&> _onAtCommandResponse;
+	Callback<RemoteAtCommandResponse&> _onRemoteAtCommandResponse;
 };
 
 /**
