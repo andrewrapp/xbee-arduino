@@ -774,6 +774,80 @@ private:
 	Stream* _serial;
 };
 
+
+/**
+ * This class can be used instead of the XBee class and allows
+ * user-specified callback functions to be called when responses are
+ * received, simplifying the processing code and reducing boilerplate.
+ *
+ * To use it, first register your callback functions using the onXxx
+ * methods. Each method has a uintptr_t data argument, that can be used to
+ * pass arbitrary data to the callback (useful when using the same
+ * function for multiple callbacks, or have a generic function that can
+ * behave differently in different circumstances). Supplying the data
+ * parameter is optional, but the callback must always accept it (just
+ * ignore it if it's unused). The uintptr_t type is an integer type
+ * guaranteed to be big enough to fit a pointer (it is 16-bit on AVR,
+ * 32-bit on ARM), so it can also be used to store a pointer to access
+ * more data if required (using proper casts).
+ *
+ * There can be only one callback of each type registered at one time,
+ * so registering callback overwrites any previously registered one. To
+ * unregister a callback, pass NULL as the function.
+ *
+ * To ensure that the callbacks are actually called, call the loop()
+ * method regularly (in your loop() function, for example). This takes
+ * care of calling readPacket() and getResponse() other methods on the
+ * XBee class, so there is no need to do so directly (though it should
+ * not mess with this class if you do, it would only mean some callbacks
+ * aren't called).
+ */
+class XBeeWithCallbacks : public XBee {
+public:
+
+	/**
+	 * Register a packet error callback. It is called whenever an
+	 * error occurs in the packet reading process. Arguments to the
+	 * callback will be the error code and the data parameter.
+	 * while registering the callback.
+	 */
+	void onPacketError(void (*func)(uint8_t, uintptr_t), uintptr_t data = 0) { _onPacketError.set(func, data); }
+
+	/**
+	 * Register a response received callback. It is called whenever
+	 * a response was succesfully received.
+	 *
+	 * Arguments to the callback will be the received response and
+	 * the data parameter passed while registering the callback.
+	 */
+	void onResponse(void (*func)(XBeeResponse&, uintptr_t), uintptr_t data = 0) { _onResponse.set(func, data); }
+
+	/**
+	 * Regularly call this method, which ensures that the serial
+	 * buffer is processed and the appropriate callbacks are called.
+	 */
+	void loop();
+private:
+	template <typename Arg> struct Callback {
+		void (*func)(Arg, uintptr_t);
+		uintptr_t data;
+		void set(void (*func)(Arg, uintptr_t), uintptr_t data) {
+			this->func = func;
+			this->data = data;
+		}
+		bool call(Arg arg) {
+			if (this->func) {
+				this->func(arg, this->data);
+				return true;
+			}
+			return false;
+		}
+	};
+
+	Callback<uint8_t> _onPacketError;
+	Callback<XBeeResponse&> _onResponse;
+};
+
 /**
  * All TX packets that support payloads extend this class
  */

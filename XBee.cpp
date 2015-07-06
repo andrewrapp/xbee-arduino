@@ -1597,3 +1597,12 @@ void XBee::sendByte(uint8_t b, bool escape) {
 	}
 }
 
+
+void XBeeWithCallbacks::loop() {
+	readPacket();
+	if (getResponse().isAvailable()) {
+		_onResponse.call(getResponse());
+	} else if (getResponse().isError()) {
+		_onPacketError.call(getResponse().getErrorCode());
+	}
+}
