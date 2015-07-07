@@ -224,6 +224,11 @@ public:
 	 */
 	void getZBRxResponse(XBeeResponse &response);
 	/**
+	 * Call with instance of ZBExplicitRxResponse class only if getApiId() == ZB_EXPLICIT_RX_RESPONSE
+	 * to populate response
+	 */
+	void getZBExplicitRxResponse(XBeeResponse &response);
+	/**
 	 * Call with instance of ZBRxIoSampleResponse class only if getApiId() == ZB_IO_SAMPLE_RESPONSE
 	 * to populate response
 	 */
@@ -393,6 +398,25 @@ public:
 	uint8_t getDataOffset();
 private:
 	XBeeAddress64 _remoteAddress64;
+};
+
+/**
+ * Represents a Series 2 Explicit RX packet
+ *
+ * Note: The receive these responses, set AO=1. With the default AO=0,
+ * you will receive ZBRxResponses, not knowing exact details.
+ */
+class ZBExplicitRxResponse : public ZBRxResponse {
+public:
+	ZBExplicitRxResponse();
+	uint8_t getSrcEndpoint();
+	uint8_t getDstEndpoint();
+	uint16_t getClusterId();
+	uint16_t getProfileId();
+	uint8_t getOption();
+	uint8_t getDataLength();
+	// frame position where data starts
+	uint8_t getDataOffset();
 };
 
 /**

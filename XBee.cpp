@@ -176,6 +176,43 @@ void XBeeResponse::getZBRxResponse(XBeeResponse &rxResponse) {
 	zb->getRemoteAddress64().setLsb((uint32_t(getFrameData()[4]) << 24) + (uint32_t(getFrameData()[5]) << 16) + (uint16_t(getFrameData()[6]) << 8) + (getFrameData()[7]));
 }
 
+ZBExplicitRxResponse::ZBExplicitRxResponse(): ZBRxResponse() {
+}
+
+uint8_t ZBExplicitRxResponse::getSrcEndpoint() {
+	return getFrameData()[10];
+}
+
+uint8_t ZBExplicitRxResponse::getDstEndpoint() {
+	return getFrameData()[11];
+}
+
+uint16_t ZBExplicitRxResponse::getClusterId() {
+	return (uint16_t)(getFrameData()[12]) << 8 | getFrameData()[13];
+}
+
+uint16_t ZBExplicitRxResponse::getProfileId() {
+	return (uint16_t)(getFrameData()[14]) << 8 | getFrameData()[15];
+}
+
+uint8_t ZBExplicitRxResponse::getOption() {
+	return getFrameData()[16];
+}
+
+// markers to read data from packet array.
+uint8_t ZBExplicitRxResponse::getDataOffset() {
+	return 17;
+}
+
+uint8_t ZBExplicitRxResponse::getDataLength() {
+	return getPacketLength() - getDataOffset() - 1;
+}
+
+void XBeeResponse::getZBExplicitRxResponse(XBeeResponse &rxResponse) {
+	// Nothing to add to that
+	getZBRxResponse(rxResponse);
+}
+
 
 ZBRxIoSampleResponse::ZBRxIoSampleResponse() : ZBRxResponse() {
 
