@@ -52,6 +52,7 @@
 
 // the non-variable length of the frame data (not including frame id or api id or variable data size (e.g. payload, at command set value)
 #define ZB_TX_API_LENGTH 12
+#define ZB_EXPLICIT_TX_API_LENGTH 18
 #define TX_16_API_LENGTH 3
 #define TX_64_API_LENGTH 9
 #define AT_COMMAND_API_LENGTH 2
@@ -67,6 +68,12 @@
 
 #define DEFAULT_FRAME_ID 1
 #define NO_RESPONSE_FRAME_ID 0
+
+// These are the parameters used by the XBee ZB modules when you do a
+// regular "ZB TX request".
+#define DEFAULT_ENDPOINT 232
+#define DEFAULT_CLUSTER_ID 0x0011
+#define DEFAULT_PROFILE_ID 0xc105
 
 // TODO put in tx16 class
 #define ACK_OPTION 0
@@ -879,11 +886,63 @@ protected:
 	// declare virtual functions
 	uint8_t getFrameData(uint8_t pos);
 	uint8_t getFrameDataLength();
-private:
 	XBeeAddress64 _addr64;
 	uint16_t _addr16;
 	uint8_t _broadcastRadius;
 	uint8_t _option;
+};
+
+/**
+ * Represents a Series 2 TX packet that corresponds to Api Id: ZB_EXPLICIT_TX_REQUEST
+ *
+ * See the warning about maximum packet size for ZBTxRequest above,
+ * which probably also applies here as well.
+ *
+ * Note that to distinguish reply packets from non-XBee devices, set
+ * AO=1 to enable reception of ZBExplicitRxResponse packets.
+ */
+class ZBExplicitTxRequest : public ZBTxRequest {
+public:
+	/**
+	 * Creates a unicast ZBExplicitTxRequest with the ACK option and
+	 * DEFAULT_FRAME_ID.
+	 *
+	 * It uses the Maxstream profile (0xc105), both endpoints 232
+	 * and cluster 0x0011, resulting in the same packet as sent by a
+	 * normal ZBTxRequest.
+	 */
+	ZBExplicitTxRequest(XBeeAddress64 &addr64, uint8_t *payload, uint8_t payloadLength);
+	/**
+	 * Create a ZBExplicitTxRequest, specifying all fields.
+	 */
+	ZBExplicitTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId, uint8_t srcEndpoint, uint8_t dstEndpoint, uint16_t clusterId, uint16_t profileId);
+	/**
+	 * Creates a default instance of this class.  At a minimum you
+	 * must specify a payload, payload length and a destination
+	 * address before sending this request.
+	 *
+	 * Furthermore, it uses the Maxstream profile (0xc105), both
+	 * endpoints 232 and cluster 0x0011, resulting in the same
+	 * packet as sent by a normal ZBExplicitTxRequest.
+	 */
+	ZBExplicitTxRequest();
+	uint8_t getSrcEndpoint();
+	uint8_t getDstEndpoint();
+	uint16_t getClusterId();
+	uint16_t getProfileId();
+	void setSrcEndpoint(uint8_t endpoint);
+	void setDstEndpoint(uint8_t endpoint);
+	void setClusterId(uint16_t clusterId);
+	void setProfileId(uint16_t profileId);
+protected:
+	// declare virtual functions
+	uint8_t getFrameData(uint8_t pos);
+	uint8_t getFrameDataLength();
+private:
+	uint8_t _srcEndpoint;
+	uint8_t _dstEndpoint;
+	uint16_t _profileId;
+	uint16_t _clusterId;
 };
 
 #endif

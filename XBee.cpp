@@ -1139,6 +1139,93 @@ void ZBTxRequest::setOption(uint8_t option) {
 	_option = option;
 }
 
+
+
+ZBExplicitTxRequest::ZBExplicitTxRequest() : ZBTxRequest() {
+	_srcEndpoint = DEFAULT_ENDPOINT;
+	_dstEndpoint = DEFAULT_ENDPOINT;
+	_profileId = DEFAULT_PROFILE_ID;
+	_clusterId = DEFAULT_CLUSTER_ID;
+	setApiId(ZB_EXPLICIT_TX_REQUEST);
+}
+
+ZBExplicitTxRequest::ZBExplicitTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId, uint8_t srcEndpoint, uint8_t dstEndpoint, uint16_t clusterId, uint16_t profileId)
+: ZBTxRequest(addr64, addr16, broadcastRadius, option, payload, payloadLength, frameId) {
+	_srcEndpoint = srcEndpoint;
+	_dstEndpoint = dstEndpoint;
+	_profileId = profileId;
+	_clusterId = clusterId;
+	setApiId(ZB_EXPLICIT_TX_REQUEST);
+}
+
+ZBExplicitTxRequest::ZBExplicitTxRequest(XBeeAddress64 &addr64, uint8_t *payload, uint8_t payloadLength)
+: ZBTxRequest(addr64, payload, payloadLength) {
+	_srcEndpoint = DEFAULT_ENDPOINT;
+	_dstEndpoint = DEFAULT_ENDPOINT;
+	_profileId = DEFAULT_PROFILE_ID;
+	_clusterId = DEFAULT_CLUSTER_ID;
+	setApiId(ZB_EXPLICIT_TX_REQUEST);
+}
+
+uint8_t ZBExplicitTxRequest::getFrameData(uint8_t pos) {
+	if (pos < 10) {
+		return ZBTxRequest::getFrameData(pos);
+	} else if (pos == 10) {
+		return _srcEndpoint;
+	} else if (pos == 11) {
+		return _dstEndpoint;
+	} else if (pos == 12) {
+		return (_clusterId >> 8) & 0xff;
+	} else if (pos == 13) {
+		return _clusterId & 0xff;
+	} else if (pos == 14) {
+		return (_profileId >> 8) & 0xff;
+	} else if (pos == 15) {
+		return _profileId & 0xff;
+	} else if (pos == 16) {
+		return _broadcastRadius;
+	} else if (pos == 17) {
+		return _option;
+	} else {
+		return getPayload()[pos - ZB_EXPLICIT_TX_API_LENGTH];
+	}
+}
+
+uint8_t ZBExplicitTxRequest::getFrameDataLength() {
+	return ZB_EXPLICIT_TX_API_LENGTH + getPayloadLength();
+}
+
+uint8_t ZBExplicitTxRequest::getSrcEndpoint() {
+	return _srcEndpoint;
+}
+
+uint8_t ZBExplicitTxRequest::getDstEndpoint() {
+	return _dstEndpoint;
+}
+
+uint16_t ZBExplicitTxRequest::getClusterId() {
+	return _clusterId;
+}
+
+uint16_t ZBExplicitTxRequest::getProfileId() {
+	return _profileId;
+}
+
+void ZBExplicitTxRequest::setSrcEndpoint(uint8_t endpoint) {
+	_srcEndpoint = endpoint;
+}
+
+void ZBExplicitTxRequest::setDstEndpoint(uint8_t endpoint) {
+	_dstEndpoint = endpoint;
+}
+
+void ZBExplicitTxRequest::setClusterId(uint16_t clusterId) {
+	_clusterId = clusterId;
+}
+
+void ZBExplicitTxRequest::setProfileId(uint16_t profileId) {
+	_profileId = profileId;
+}
 #endif
 
 #ifdef SERIES_1
