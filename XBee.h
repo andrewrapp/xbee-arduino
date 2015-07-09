@@ -382,6 +382,8 @@ class ZBTxStatusResponse : public FrameIdResponse {
 		uint8_t getDeliveryStatus();
 		uint8_t getDiscoveryStatus();
 		bool isSuccess();
+
+	static const uint8_t API_ID = ZB_TX_STATUS_RESPONSE;
 };
 
 /**
@@ -396,6 +398,8 @@ public:
 	uint8_t getDataLength();
 	// frame position where data starts
 	uint8_t getDataOffset();
+
+	static const uint8_t API_ID = ZB_RX_RESPONSE;
 private:
 	XBeeAddress64 _remoteAddress64;
 };
@@ -417,6 +421,8 @@ public:
 	uint8_t getDataLength();
 	// frame position where data starts
 	uint8_t getDataOffset();
+
+	static const uint8_t API_ID = ZB_EXPLICIT_RX_RESPONSE;
 };
 
 /**
@@ -448,6 +454,8 @@ public:
 	uint8_t getDigitalMaskMsb();
 	uint8_t getDigitalMaskLsb();
 	uint8_t getAnalogMask();
+
+	static const uint8_t API_ID = ZB_IO_SAMPLE_RESPONSE;
 };
 
 #endif
@@ -461,6 +469,8 @@ class TxStatusResponse : public FrameIdResponse {
 		TxStatusResponse();
 		uint8_t getStatus();
 		bool isSuccess();
+
+	static const uint8_t API_ID = TX_STATUS_RESPONSE;
 };
 
 /**
@@ -487,6 +497,8 @@ public:
 	Rx16Response();
 	uint8_t getRssiOffset();
 	uint16_t getRemoteAddress16();
+
+	static const uint8_t API_ID = RX_16_RESPONSE;
 protected:
 	uint16_t _remoteAddress;
 };
@@ -499,6 +511,8 @@ public:
 	Rx64Response();
 	uint8_t getRssiOffset();
 	XBeeAddress64& getRemoteAddress64();
+
+	static const uint8_t API_ID = RX_64_RESPONSE;
 private:
 	XBeeAddress64 _remoteAddress;
 };
@@ -543,6 +557,7 @@ public:
 	uint16_t getRemoteAddress16();
 	uint8_t getRssiOffset();
 
+	static const uint8_t API_ID = RX_16_IO_RESPONSE;
 };
 
 class Rx64IoSampleResponse : public RxIoSampleBaseResponse {
@@ -550,6 +565,8 @@ public:
 	Rx64IoSampleResponse();
 	XBeeAddress64& getRemoteAddress64();
 	uint8_t getRssiOffset();
+
+	static const uint8_t API_ID = RX_64_IO_RESPONSE;
 private:
 	XBeeAddress64 _remoteAddress;
 };
@@ -563,6 +580,8 @@ class ModemStatusResponse : public XBeeResponse {
 public:
 	ModemStatusResponse();
 	uint8_t getStatus();
+
+	static const uint8_t API_ID = MODEM_STATUS_RESPONSE;
 };
 
 /**
@@ -593,6 +612,8 @@ class AtCommandResponse : public FrameIdResponse {
 		 * Returns true if status equals AT_OK
 		 */
 		bool isOk();
+
+		static const uint8_t API_ID = AT_COMMAND_RESPONSE;
 };
 
 /**
@@ -631,6 +652,8 @@ class RemoteAtCommandResponse : public AtCommandResponse {
 		 * Returns true if command was successful
 		 */
 		bool isOk();
+
+		static const uint8_t API_ID = REMOTE_AT_COMMAND_RESPONSE;
 	private:
 		XBeeAddress64 _remoteAddress64;
 };
