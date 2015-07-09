@@ -885,6 +885,20 @@ public:
 	 */
 	void loop();
 private:
+	/**
+	 * Top half of a typical loop(). Calls readPacket(), calls
+	 * onPacketError on error, calls onResponse when a response is
+	 * available. Returns in the true in the latter case, after
+	 * which a caller should typically call loopBottom().
+	 */
+	bool loopTop();
+
+	/**
+	 * Bottom half of a typical loop. Call only when a valid
+	 * response was read, will call all response-specific callbacks.
+	 */
+	void loopBottom();
+
 	template <typename Arg> struct Callback {
 		void (*func)(Arg, uintptr_t);
 		uintptr_t data;
