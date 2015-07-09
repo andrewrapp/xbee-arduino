@@ -888,6 +888,31 @@ public:
 	void loop();
 
 	/**
+	 * Wait for a API response of the given type, optionally
+	 * filtered by the given match function.
+	 *
+	 * If a match function is given it is called for every response
+	 * of the right type received, passing the response and the data
+	 * parameter passed to this method. If the function returns true
+	 * (or if no function was passed), waiting stops and this method
+	 * returns true. If the function returns false, waiting
+	 * continues. After the given timeout passes, this method
+	 * returns false.
+	 *
+	 * While waiting, any other responses received are passed to the
+	 * relevant callbacks, just as if calling loop() continuously
+	 * (except for the response sought, that one is only passed to
+	 * the OnResponse handler and no others).
+	 *
+	 * After this method returns, the response itself can still be
+	 * retrieved using getResponse() as normal.
+	 */
+	template <typename Response>
+	bool waitFor(Response& response, uint16_t timeout, bool (*func)(Response&, uintptr_t) = NULL, uintptr_t data = 0) {
+		return waitForInternal(Response::API_ID, &response, timeout, (void*)func, data);
+	}
+
+	/**
 	 * Sends a XBeeRequest (TX packet) out the serial port, and wait
 	 * for a status response API frame (up until the given timeout).
 	 * Essentially this just calls send() and waitForStatus().
