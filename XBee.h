@@ -123,6 +123,8 @@
 #define ADDRESS_NOT_FOUND 0x24
 #define ROUTE_NOT_FOUND 0x25
 #define PAYLOAD_TOO_LARGE 0x74
+// Returned by XBeeWithCallbacks::waitForStatus on timeout
+#define XBEE_WAIT_TIMEOUT 0xff
 
 // modem status
 #define HARDWARE_RESET 0
@@ -884,7 +886,42 @@ public:
 	 * buffer is processed and the appropriate callbacks are called.
 	 */
 	void loop();
+
+	/**
+	 * Wait for a status API response with the given frameId and
+	 * return the status from the packet (for ZB_TX_STATUS_RESPONSE,
+	 * this returns just the delivery status, not the routing
+	 * status). If the timeout is reached before reading the
+	 * response, XBEE_WAIT_TIMEOUT is returned instead.
+	 *
+	 * While waiting, any other responses received are passed to the
+	 * relevant callbacks, just as if calling loop() continuously
+	 * (except for the status response sought, that one is only
+	 * passed to the OnResponse handler and no others).
+	 *
+	 * After this method returns, the response itself can still be
+	 * retrieved using getResponse() as normal.
+	 */
+	uint8_t waitForStatus(uint8_t frameId, uint16_t timeout);
 private:
+	/**
+	 * Internal version of waitFor that does not need to be
+	 * templated (to prevent duplication the implementation for
+	 * every response type you might want to wait for). Instead of
+	 * using templates, this accepts the apiId to wait for and will
+	 * cast the given response object and the argument to the given
+	 * function to the corresponding type. This means that the
+	 * void* given must match the api id!
+	 */
+	bool waitForInternal(uint8_t apiId, void *response, uint16_t timeout, void *func, uintptr_t data);
+
+	/**
+	 * Helper that checks if the current response is a status
+	 * response with the given frame id. If so, returns the status
+	 * byte from the response, otherwise returns 0xff.
+	 */
+	uint8_t matchStatus(uint8_t frameId);
+
 	/**
 	 * Top half of a typical loop(). Calls readPacket(), calls
 	 * onPacketError on error, calls onResponse when a response is
