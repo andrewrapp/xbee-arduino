@@ -888,6 +888,18 @@ public:
 	void loop();
 
 	/**
+	 * Sends a XBeeRequest (TX packet) out the serial port, and wait
+	 * for a status response API frame (up until the given timeout).
+	 * Essentially this just calls send() and waitForStatus().
+	 * See waitForStatus for the meaning of the return value and
+	 * more details.
+	 */
+	uint8_t sendAndWait(XBeeRequest &request, uint16_t timeout) {
+		send(request);
+		return waitForStatus(request.getFrameId(), timeout);
+	}
+
+	/**
 	 * Wait for a status API response with the given frameId and
 	 * return the status from the packet (for ZB_TX_STATUS_RESPONSE,
 	 * this returns just the delivery status, not the routing
