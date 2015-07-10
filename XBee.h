@@ -895,9 +895,24 @@ public:
 	 * of the right type received, passing the response and the data
 	 * parameter passed to this method. If the function returns true
 	 * (or if no function was passed), waiting stops and this method
-	 * returns true. If the function returns false, waiting
+	 * returns 0. If the function returns false, waiting
 	 * continues. After the given timeout passes, this method
-	 * returns false.
+	 * returns XBEE_WAIT_TIMEOUT.
+	 *
+	 * If a valid frameId is passed (e.g. 0-255 inclusive) and a
+	 * status API response frame is received while waiting, that has
+	 * a *non-zero* status, waiting stops and that status is
+	 * received. This is intended for when a TX packet was sent and
+	 * you are waiting for an RX reply, which will most likely never
+	 * arrive when TX failed. However, since the status reply is not
+	 * guaranteed to arrive before the RX reply (a remote module can
+	 * send a reply before the ACK), first calling waitForStatus()
+	 * and then waitFor() can sometimes miss the reply RX packet.
+	 *
+	 * Note that when the intended response is received *before* the
+	 * status reply, the latter will not be processed by this
+	 * method and will be subsequently processed by e.g. loop()
+	 * normally.
 	 *
 	 * While waiting, any other responses received are passed to the
 	 * relevant callbacks, just as if calling loop() continuously
@@ -908,8 +923,8 @@ public:
 	 * retrieved using getResponse() as normal.
 	 */
 	template <typename Response>
-	bool waitFor(Response& response, uint16_t timeout, bool (*func)(Response&, uintptr_t) = NULL, uintptr_t data = 0) {
-		return waitForInternal(Response::API_ID, &response, timeout, (void*)func, data);
+	uint8_t waitFor(Response& response, uint16_t timeout, bool (*func)(Response&, uintptr_t) = NULL, uintptr_t data = 0, int16_t frameId = -1) {
+		return waitForInternal(Response::API_ID, &response, timeout, (void*)func, data, frameId);
 	}
 
 	/**
@@ -950,7 +965,7 @@ private:
 	 * function to the corresponding type. This means that the
 	 * void* given must match the api id!
 	 */
-	bool waitForInternal(uint8_t apiId, void *response, uint16_t timeout, void *func, uintptr_t data);
+	uint8_t waitForInternal(uint8_t apiId, void *response, uint16_t timeout, void *func, uintptr_t data, int16_t frameId);
 
 	/**
 	 * Helper that checks if the current response is a status
