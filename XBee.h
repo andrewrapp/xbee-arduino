@@ -1035,6 +1035,15 @@ public:
 	 * Sets the payload array
 	 */
 	void setPayload(uint8_t* payloadPtr);
+
+	/*
+	 * Set the payload and its length in one call.
+	 */
+	void setPayload(uint8_t* payloadPtr, uint8_t payloadLength) {
+		setPayload(payloadPtr);
+		setPayloadLength(payloadLength);
+	}
+
 	/**
 	 * Returns the length of the payload array, as specified by the user.
 	 */
