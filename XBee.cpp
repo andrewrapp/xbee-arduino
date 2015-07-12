@@ -357,9 +357,9 @@ bool RxIoSampleBaseResponse::isAnalogEnabled(uint8_t pin) {
 
 bool RxIoSampleBaseResponse::isDigitalEnabled(uint8_t pin) {
 	if (pin < 8) {
-		return ((getFrameData()[getSampleOffset() + 4] >> pin) & 1) == 1;
+		return ((getFrameData()[getSampleOffset() + 2] >> pin) & 1) == 1;
 	} else {
-		return (getFrameData()[getSampleOffset() + 3] & 1) == 1;
+		return (getFrameData()[getSampleOffset() + 1] & 1) == 1;
 	}
 }
 
@@ -454,20 +454,16 @@ bool RxIoSampleBaseResponse::isDigitalEnabled(uint8_t pin) {
 //		return (this.getProcessedPacketBytes()[startIndex] << 8) + this.getProcessedPacketBytes()[startIndex + 1];		
 //	}
 				
-// THIS IS WRONG
-uint16_t RxIoSampleBaseResponse::getAnalog(uint8_t pin, uint8_t sample) {
-
-	// analog starts 3 bytes after sample size, if no dio enabled
-	uint8_t start = 3;
+uint8_t RxIoSampleBaseResponse::getSampleStart(uint8_t sample) {
+	uint8_t spacing = 0;
 
 	if (containsDigital()) {
 		// make room for digital i/o sample (2 bytes per sample)
-		start+=2*(sample + 1);
+		spacing += 2;
 	}
 
-	uint8_t spacing = 0;
-
-	// spacing between samples depends on how many are enabled. add one for each analog that's enabled
+	// spacing between samples depends on how many are enabled. add
+	// 2 bytes for each analog that's enabled
 	for (int i = 0; i <= 5; i++) {
 		if (isAnalogEnabled(i)) {
 			// each analog is two bytes
@@ -475,29 +471,33 @@ uint16_t RxIoSampleBaseResponse::getAnalog(uint8_t pin, uint8_t sample) {
 		}
 	}
 
-//	std::cout << "spacing is " << static_cast<unsigned int>(spacing) << std::endl;
+	// Skip 3-byte header and "sample" full samples
+	return getSampleOffset() + 3 + sample * spacing;
+}
 
-	// start depends on how many pins before this pin are enabled
+uint16_t RxIoSampleBaseResponse::getAnalog(uint8_t pin, uint8_t sample) {
+	uint8_t start = getSampleStart(sample);
+
+	if (containsDigital()) {
+		// Skip digital sample info
+		start += 2;
+	}
+
+	// Skip any analog samples before this pin
 	for (int i = 0; i < pin; i++) {
 		if (isAnalogEnabled(i)) {
 			start+=2;
 		}
 	}
 
-	start+= sample * spacing;
-
-//	std::cout << "start for analog pin ["<< static_cast<unsigned int>(pin) << "]/sample " << static_cast<unsigned int>(sample) << " is " << static_cast<unsigned int>(start) << std::endl;
-
-//	std::cout << "returning index " << static_cast<unsigned int>(getSampleOffset() + start) << " and index " <<  static_cast<unsigned int>(getSampleOffset() + start + 1) << ", val is " << static_cast<unsigned int>(getFrameData()[getSampleOffset() + start] << 8) <<  " and " <<  + static_cast<unsigned int>(getFrameData()[getSampleOffset() + start + 1]) << std::endl;
-
-	return (uint16_t)((getFrameData()[getSampleOffset() + start] << 8) + getFrameData()[getSampleOffset() + start + 1]);
+	return (uint16_t)((getFrameData()[start] << 8) + getFrameData()[start + 1]);
 }
 
 bool RxIoSampleBaseResponse::isDigitalOn(uint8_t pin, uint8_t sample) {
 	if (pin < 8) {
-		return ((getFrameData()[getSampleOffset() + 4] >> pin) & 1) == 1;
+		return ((getFrameData()[getSampleStart(sample) + 1] >> pin) & 1) == 1;
 	} else {
-		return (getFrameData()[getSampleOffset() + 3] & 1) == 1;
+		return (getFrameData()[getSampleStart(sample)] & 1) == 1;
 	}
 }
 

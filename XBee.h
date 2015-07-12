@@ -550,6 +550,11 @@ class RxIoSampleBaseResponse : public RxResponse {
 		 */
 		bool isDigitalOn(uint8_t pin, uint8_t sample);
 		uint8_t getSampleOffset();
+
+		/**
+		 * Gets the offset of the start of the given sample.
+		 */
+		uint8_t getSampleStart(uint8_t sample);
 	private:
 };
 
