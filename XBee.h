@@ -826,6 +826,17 @@ private:
  * XBee class, so there is no need to do so directly (though it should
  * not mess with this class if you do, it would only mean some callbacks
  * aren't called).
+ *
+ * Inside callbacks, you should generally not be blocking / waiting.
+ * Since callbacks can be called from inside waitFor() and friends, a
+ * callback that doesn't return quickly can mess up the waitFor()
+ * timeout.
+ *
+ * Sending packets is not a problem inside a callback, but avoid
+ * receiving a packet (e.g. calling readPacket(), loop() or waitFor()
+ * and friends) inside a callback (since that would overwrite the
+ * current response, messing up any pending callbacks and waitFor() etc.
+ * methods already running).
  */
 class XBeeWithCallbacks : public XBee {
 public:
