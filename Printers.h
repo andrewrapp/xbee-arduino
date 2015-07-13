@@ -85,4 +85,43 @@ inline void printHex(Print& p, XBeeAddress64 v) {
 	printHex(p, v.getLsb());
 }
 
+// The following functions are intended to be used as callbacks, to
+// print various information about received responses. All of the
+// require a Print* to be passed as the data parameter. For example, to
+// print to Serial any TxStatusResponses that contain errors, do:
+//
+// xbee.onTxStatusResponse(printErrorCb, (uintptr_t)(Print*)&Serial);
+//
+// Most of these callbacks can either be used as a response-specific
+// callback, to only work that specific API response type, or as a
+// generic callback (onResponse or onOtherResponse), in which case the
+// relevant version of the callback will be called automatically.
+
+// printErrorCb prints any error messages in status responses.
+void printErrorCb(uint8_t code, uintptr_t data);
+void printErrorCb(ZBTxStatusResponse& r, uintptr_t data);
+void printErrorCb(TxStatusResponse& r, uintptr_t data);
+void printErrorCb(AtCommandResponse& r, uintptr_t data);
+void printErrorCb(RemoteAtCommandResponse& r, uintptr_t data);
+void printErrorCb(XBeeResponse& r, uintptr_t data);
+
+// printRawResponseCb prints the raw bytes of a response.
+void printRawResponseCb(XBeeResponse& response, uintptr_t data);
+
+// printResponseCb prints a human-readable version of a response, showing
+// the values of all fields individually.
+void printResponseCb(ZBTxStatusResponse& status, uintptr_t data);
+void printResponseCb(ZBRxResponse& rx, uintptr_t data);
+void printResponseCb(ZBExplicitRxResponse& rx, uintptr_t data);
+void printResponseCb(ZBRxIoSampleResponse& rx, uintptr_t data);
+void printResponseCb(TxStatusResponse& status, uintptr_t data);
+void printResponseCb(Rx16Response& rx, uintptr_t data);
+void printResponseCb(Rx64Response& rx, uintptr_t data);
+void printResponseCb(Rx16IoSampleResponse& rx, uintptr_t data);
+void printResponseCb(Rx64IoSampleResponse& rx, uintptr_t data);
+void printResponseCb(ModemStatusResponse& status, uintptr_t data);
+void printResponseCb(AtCommandResponse& at, uintptr_t data);
+void printResponseCb(RemoteAtCommandResponse& at, uintptr_t data);
+void printResponseCb(XBeeResponse& r, uintptr_t data);
+
 #endif // XBee_Printers_h
