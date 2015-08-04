@@ -152,6 +152,20 @@
 #define UNEXPECTED_START_BYTE 3
 
 /**
+ * C++11 introduced the constexpr as a hint to the compiler that things
+ * can be evaluated at compiletime. This can help to remove
+ * startup code for global objects, or otherwise help the compiler to
+ * optimize. Since the keyword is introduced in C++11, but supporting
+ * older compilers is a matter of removing the keyword, we use a macro
+ * for this.
+ */
+#if __cplusplus >= 201103L
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR
+#endif
+
+/**
  * The super class of all XBee responses (RX packets)
  * Users should never attempt to create an instance of this class; instead
  * create an instance of a subclass
@@ -301,23 +315,34 @@ private:
 
 class XBeeAddress {
 public:
-	XBeeAddress();
+	CONSTEXPR XBeeAddress() {};
 };
 
 /**
  * Represents a 64-bit XBee Address
+ *
+ * Note that avr-gcc as of 4.9 doesn't optimize uint64_t very well, so
+ * for the smallest and fastest code, use msb and lsb separately. See
+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66511
  */
 class XBeeAddress64 : public XBeeAddress {
 public:
-	XBeeAddress64(uint32_t msb, uint32_t lsb);
-	XBeeAddress64();
-	uint32_t getMsb();
-	uint32_t getLsb();
-	void setMsb(uint32_t msb);
-	void setLsb(uint32_t lsb);
-	//bool operator==(XBeeAddress64 addr);
-	//bool operator!=(XBeeAddress64 addr);
+	CONSTEXPR XBeeAddress64(uint64_t addr) : _msb(addr >> 32), _lsb(addr) {}
+	CONSTEXPR XBeeAddress64(uint32_t msb, uint32_t lsb) : _msb(msb), _lsb(lsb) {}
+	CONSTEXPR XBeeAddress64() : _msb(0), _lsb(0) {}
+	uint32_t getMsb() {return _msb;}
+	uint32_t getLsb() {return _lsb;}
+	uint64_t get() {return (static_cast<uint64_t>(_msb) << 32) | _lsb;}
+	operator uint64_t() {return get();}
+	void setMsb(uint32_t msb) {_msb = msb;}
+	void setLsb(uint32_t lsb) {_lsb = lsb;}
+	void set(uint64_t addr) {
+		_msb = addr >> 32;
+		_lsb = addr;
+	}
 private:
+	// Once https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66511 is
+	// fixed, it might make sense to merge these into a uint64_t.
 	uint32_t _msb;
 	uint32_t _lsb;
 };
