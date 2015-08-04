@@ -176,6 +176,43 @@ void XBeeResponse::getZBRxResponse(XBeeResponse &rxResponse) {
 	zb->getRemoteAddress64().setLsb((uint32_t(getFrameData()[4]) << 24) + (uint32_t(getFrameData()[5]) << 16) + (uint16_t(getFrameData()[6]) << 8) + (getFrameData()[7]));
 }
 
+ZBExplicitRxResponse::ZBExplicitRxResponse(): ZBRxResponse() {
+}
+
+uint8_t ZBExplicitRxResponse::getSrcEndpoint() {
+	return getFrameData()[10];
+}
+
+uint8_t ZBExplicitRxResponse::getDstEndpoint() {
+	return getFrameData()[11];
+}
+
+uint16_t ZBExplicitRxResponse::getClusterId() {
+	return (uint16_t)(getFrameData()[12]) << 8 | getFrameData()[13];
+}
+
+uint16_t ZBExplicitRxResponse::getProfileId() {
+	return (uint16_t)(getFrameData()[14]) << 8 | getFrameData()[15];
+}
+
+uint8_t ZBExplicitRxResponse::getOption() {
+	return getFrameData()[16];
+}
+
+// markers to read data from packet array.
+uint8_t ZBExplicitRxResponse::getDataOffset() {
+	return 17;
+}
+
+uint8_t ZBExplicitRxResponse::getDataLength() {
+	return getPacketLength() - getDataOffset() - 1;
+}
+
+void XBeeResponse::getZBExplicitRxResponse(XBeeResponse &rxResponse) {
+	// Nothing to add to that
+	getZBRxResponse(rxResponse);
+}
+
 
 ZBRxIoSampleResponse::ZBRxIoSampleResponse() : ZBRxResponse() {
 
@@ -320,9 +357,9 @@ bool RxIoSampleBaseResponse::isAnalogEnabled(uint8_t pin) {
 
 bool RxIoSampleBaseResponse::isDigitalEnabled(uint8_t pin) {
 	if (pin < 8) {
-		return ((getFrameData()[getSampleOffset() + 4] >> pin) & 1) == 1;
+		return ((getFrameData()[getSampleOffset() + 2] >> pin) & 1) == 1;
 	} else {
-		return (getFrameData()[getSampleOffset() + 3] & 1) == 1;
+		return (getFrameData()[getSampleOffset() + 1] & 1) == 1;
 	}
 }
 
@@ -417,20 +454,16 @@ bool RxIoSampleBaseResponse::isDigitalEnabled(uint8_t pin) {
 //		return (this.getProcessedPacketBytes()[startIndex] << 8) + this.getProcessedPacketBytes()[startIndex + 1];		
 //	}
 				
-// THIS IS WRONG
-uint16_t RxIoSampleBaseResponse::getAnalog(uint8_t pin, uint8_t sample) {
-
-	// analog starts 3 bytes after sample size, if no dio enabled
-	uint8_t start = 3;
+uint8_t RxIoSampleBaseResponse::getSampleStart(uint8_t sample) {
+	uint8_t spacing = 0;
 
 	if (containsDigital()) {
 		// make room for digital i/o sample (2 bytes per sample)
-		start+=2*(sample + 1);
+		spacing += 2;
 	}
 
-	uint8_t spacing = 0;
-
-	// spacing between samples depends on how many are enabled. add one for each analog that's enabled
+	// spacing between samples depends on how many are enabled. add
+	// 2 bytes for each analog that's enabled
 	for (int i = 0; i <= 5; i++) {
 		if (isAnalogEnabled(i)) {
 			// each analog is two bytes
@@ -438,29 +471,33 @@ uint16_t RxIoSampleBaseResponse::getAnalog(uint8_t pin, uint8_t sample) {
 		}
 	}
 
-//	std::cout << "spacing is " << static_cast<unsigned int>(spacing) << std::endl;
+	// Skip 3-byte header and "sample" full samples
+	return getSampleOffset() + 3 + sample * spacing;
+}
 
-	// start depends on how many pins before this pin are enabled
+uint16_t RxIoSampleBaseResponse::getAnalog(uint8_t pin, uint8_t sample) {
+	uint8_t start = getSampleStart(sample);
+
+	if (containsDigital()) {
+		// Skip digital sample info
+		start += 2;
+	}
+
+	// Skip any analog samples before this pin
 	for (int i = 0; i < pin; i++) {
 		if (isAnalogEnabled(i)) {
 			start+=2;
 		}
 	}
 
-	start+= sample * spacing;
-
-//	std::cout << "start for analog pin ["<< static_cast<unsigned int>(pin) << "]/sample " << static_cast<unsigned int>(sample) << " is " << static_cast<unsigned int>(start) << std::endl;
-
-//	std::cout << "returning index " << static_cast<unsigned int>(getSampleOffset() + start) << " and index " <<  static_cast<unsigned int>(getSampleOffset() + start + 1) << ", val is " << static_cast<unsigned int>(getFrameData()[getSampleOffset() + start] << 8) <<  " and " <<  + static_cast<unsigned int>(getFrameData()[getSampleOffset() + start + 1]) << std::endl;
-
-	return (uint16_t)((getFrameData()[getSampleOffset() + start] << 8) + getFrameData()[getSampleOffset() + start + 1]);
+	return (uint16_t)((getFrameData()[start] << 8) + getFrameData()[start + 1]);
 }
 
 bool RxIoSampleBaseResponse::isDigitalOn(uint8_t pin, uint8_t sample) {
 	if (pin < 8) {
-		return ((getFrameData()[getSampleOffset() + 4] >> pin) & 1) == 1;
+		return ((getFrameData()[getSampleStart(sample) + 1] >> pin) & 1) == 1;
 	} else {
-		return (getFrameData()[getSampleOffset() + 3] & 1) == 1;
+		return (getFrameData()[getSampleStart(sample)] & 1) == 1;
 	}
 }
 
@@ -1139,6 +1176,93 @@ void ZBTxRequest::setOption(uint8_t option) {
 	_option = option;
 }
 
+
+
+ZBExplicitTxRequest::ZBExplicitTxRequest() : ZBTxRequest() {
+	_srcEndpoint = DEFAULT_ENDPOINT;
+	_dstEndpoint = DEFAULT_ENDPOINT;
+	_profileId = DEFAULT_PROFILE_ID;
+	_clusterId = DEFAULT_CLUSTER_ID;
+	setApiId(ZB_EXPLICIT_TX_REQUEST);
+}
+
+ZBExplicitTxRequest::ZBExplicitTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId, uint8_t srcEndpoint, uint8_t dstEndpoint, uint16_t clusterId, uint16_t profileId)
+: ZBTxRequest(addr64, addr16, broadcastRadius, option, payload, payloadLength, frameId) {
+	_srcEndpoint = srcEndpoint;
+	_dstEndpoint = dstEndpoint;
+	_profileId = profileId;
+	_clusterId = clusterId;
+	setApiId(ZB_EXPLICIT_TX_REQUEST);
+}
+
+ZBExplicitTxRequest::ZBExplicitTxRequest(XBeeAddress64 &addr64, uint8_t *payload, uint8_t payloadLength)
+: ZBTxRequest(addr64, payload, payloadLength) {
+	_srcEndpoint = DEFAULT_ENDPOINT;
+	_dstEndpoint = DEFAULT_ENDPOINT;
+	_profileId = DEFAULT_PROFILE_ID;
+	_clusterId = DEFAULT_CLUSTER_ID;
+	setApiId(ZB_EXPLICIT_TX_REQUEST);
+}
+
+uint8_t ZBExplicitTxRequest::getFrameData(uint8_t pos) {
+	if (pos < 10) {
+		return ZBTxRequest::getFrameData(pos);
+	} else if (pos == 10) {
+		return _srcEndpoint;
+	} else if (pos == 11) {
+		return _dstEndpoint;
+	} else if (pos == 12) {
+		return (_clusterId >> 8) & 0xff;
+	} else if (pos == 13) {
+		return _clusterId & 0xff;
+	} else if (pos == 14) {
+		return (_profileId >> 8) & 0xff;
+	} else if (pos == 15) {
+		return _profileId & 0xff;
+	} else if (pos == 16) {
+		return _broadcastRadius;
+	} else if (pos == 17) {
+		return _option;
+	} else {
+		return getPayload()[pos - ZB_EXPLICIT_TX_API_LENGTH];
+	}
+}
+
+uint8_t ZBExplicitTxRequest::getFrameDataLength() {
+	return ZB_EXPLICIT_TX_API_LENGTH + getPayloadLength();
+}
+
+uint8_t ZBExplicitTxRequest::getSrcEndpoint() {
+	return _srcEndpoint;
+}
+
+uint8_t ZBExplicitTxRequest::getDstEndpoint() {
+	return _dstEndpoint;
+}
+
+uint16_t ZBExplicitTxRequest::getClusterId() {
+	return _clusterId;
+}
+
+uint16_t ZBExplicitTxRequest::getProfileId() {
+	return _profileId;
+}
+
+void ZBExplicitTxRequest::setSrcEndpoint(uint8_t endpoint) {
+	_srcEndpoint = endpoint;
+}
+
+void ZBExplicitTxRequest::setDstEndpoint(uint8_t endpoint) {
+	_dstEndpoint = endpoint;
+}
+
+void ZBExplicitTxRequest::setClusterId(uint16_t clusterId) {
+	_clusterId = clusterId;
+}
+
+void ZBExplicitTxRequest::setProfileId(uint16_t profileId) {
+	_profileId = profileId;
+}
 #endif
 
 #ifdef SERIES_1
@@ -1471,5 +1595,251 @@ void XBee::sendByte(uint8_t b, bool escape) {
 	} else {
 		write(b);
 	}
+}
+
+
+void XBeeWithCallbacks::loop() {
+	if (loopTop())
+		loopBottom();
+}
+
+bool XBeeWithCallbacks::loopTop() {
+	readPacket();
+	if (getResponse().isAvailable()) {
+		_onResponse.call(getResponse());
+		return true;
+	} else if (getResponse().isError()) {
+		_onPacketError.call(getResponse().getErrorCode());
+	}
+	return false;
+}
+
+void XBeeWithCallbacks::loopBottom() {
+	bool called = false;
+	uint8_t id = getResponse().getApiId();
+
+	if (id == ZB_TX_STATUS_RESPONSE) {
+		ZBTxStatusResponse response;
+		getResponse().getZBTxStatusResponse(response);
+		called = _onZBTxStatusResponse.call(response);
+	} else if (id == ZB_RX_RESPONSE) {
+		ZBRxResponse response;
+		getResponse().getZBRxResponse(response);
+		called = _onZBRxResponse.call(response);
+	} else if (id == ZB_EXPLICIT_RX_RESPONSE) {
+		ZBExplicitRxResponse response;
+		getResponse().getZBExplicitRxResponse(response);
+		called = _onZBExplicitRxResponse.call(response);
+	} else if (id == ZB_IO_SAMPLE_RESPONSE) {
+		ZBRxIoSampleResponse response;
+		getResponse().getZBRxIoSampleResponse(response);
+		called = _onZBRxIoSampleResponse.call(response);
+	} else if (id == TX_STATUS_RESPONSE) {
+		TxStatusResponse response;
+		getResponse().getTxStatusResponse(response);
+		called = _onTxStatusResponse.call(response);
+	} else if (id == RX_16_RESPONSE) {
+		Rx16Response response;
+		getResponse().getRx16Response(response);
+		called = _onRx16Response.call(response);
+	} else if (id == RX_64_RESPONSE) {
+		Rx64Response response;
+		getResponse().getRx64Response(response);
+		called = _onRx64Response.call(response);
+	} else if (id == RX_16_IO_RESPONSE) {
+		Rx16IoSampleResponse response;
+		getResponse().getRx16IoSampleResponse(response);
+		called = _onRx16IoSampleResponse.call(response);
+	} else if (id == RX_64_IO_RESPONSE) {
+		Rx64IoSampleResponse response;
+		getResponse().getRx64IoSampleResponse(response);
+		called = _onRx64IoSampleResponse.call(response);
+	} else if (id == MODEM_STATUS_RESPONSE) {
+		ModemStatusResponse response;
+		getResponse().getModemStatusResponse(response);
+		called = _onModemStatusResponse.call(response);
+	} else if (id == AT_COMMAND_RESPONSE) {
+		AtCommandResponse response;
+		getResponse().getAtCommandResponse(response);
+		called = _onAtCommandResponse.call(response);
+	} else if (id == REMOTE_AT_COMMAND_RESPONSE) {
+		RemoteAtCommandResponse response;
+		getResponse().getRemoteAtCommandResponse(response);
+		called = _onRemoteAtCommandResponse.call(response);
+	}
+
+	if (!called)
+		_onOtherResponse.call(getResponse());
+}
+
+uint8_t XBeeWithCallbacks::matchStatus(uint8_t frameId) {
+	uint8_t id = getResponse().getApiId();
+	uint8_t *data = getResponse().getFrameData();
+	uint8_t len = getResponse().getFrameDataLength();
+	uint8_t offset = 0;
+
+	// Figure out if this frame has a frameId and if so, where the
+	// status byte to return is located
+	if (id == AT_COMMAND_RESPONSE)
+		offset = 3;
+	else if (id == REMOTE_AT_COMMAND_RESPONSE)
+		offset = 13;
+	else if (id == TX_STATUS_RESPONSE)
+		offset = 1;
+	else if (id == ZB_TX_STATUS_RESPONSE)
+		offset = 4;
+
+	// If this is an API frame that contains a status, the frame is
+	// long enough to contain it and the frameId matches the one
+	// given, return the status byte
+	if (offset && offset < len && data[0] == frameId)
+		return data[offset];
+	return 0xff;
+}
+
+uint8_t XBeeWithCallbacks::waitForInternal(uint8_t apiId, void *response, uint16_t timeout, void *func, uintptr_t data, int16_t frameId) {
+	unsigned long start = millis();
+	do {
+		// Wait for a packet of the right type
+		if (loopTop()) {
+			if (frameId >= 0) {
+				uint8_t status = matchStatus(frameId);
+				// If a status was found, but it was not
+				// a zero success status, stop waiting
+				if (status != 0xff && status != 0)
+					return status;
+			}
+
+			if (getResponse().getApiId() == apiId) {
+				// If the type is right, call the right
+				// conversion function based on the
+				// ApiId and call the match function.
+				// Because the match function is
+				// essentially called in the same way,
+				// regardless of the subclass used, the
+				// compiler can reduce most of the below
+				// mess into a single piece of code
+				// (though for fully optimizing, the
+				// separate getXxxResponse() methods
+				// must be unified as well).
+				switch(apiId) {
+					case ZBTxStatusResponse::API_ID: {
+						ZBTxStatusResponse *r = (ZBTxStatusResponse*)response;
+						bool(*f)(ZBTxStatusResponse&,uintptr_t) = (bool(*)(ZBTxStatusResponse&,uintptr_t))func;
+						getResponse().getZBTxStatusResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case ZBRxResponse::API_ID: {
+						ZBRxResponse *r = (ZBRxResponse*)response;
+						bool(*f)(ZBRxResponse&,uintptr_t) = (bool(*)(ZBRxResponse&,uintptr_t))func;
+						getResponse().getZBRxResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case ZBExplicitRxResponse::API_ID: {
+						ZBExplicitRxResponse *r = (ZBExplicitRxResponse*)response;
+						bool(*f)(ZBExplicitRxResponse&,uintptr_t) = (bool(*)(ZBExplicitRxResponse&,uintptr_t))func;
+						getResponse().getZBExplicitRxResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case ZBRxIoSampleResponse::API_ID: {
+						ZBRxIoSampleResponse *r = (ZBRxIoSampleResponse*)response;
+						bool(*f)(ZBRxIoSampleResponse&,uintptr_t) = (bool(*)(ZBRxIoSampleResponse&,uintptr_t))func;
+						getResponse().getZBRxIoSampleResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case TxStatusResponse::API_ID: {
+						TxStatusResponse *r = (TxStatusResponse*)response;
+						bool(*f)(TxStatusResponse&,uintptr_t) = (bool(*)(TxStatusResponse&,uintptr_t))func;
+						getResponse().getTxStatusResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case Rx16Response::API_ID: {
+						Rx16Response *r = (Rx16Response*)response;
+						bool(*f)(Rx16Response&,uintptr_t) = (bool(*)(Rx16Response&,uintptr_t))func;
+						getResponse().getRx16Response(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case Rx64Response::API_ID: {
+						Rx64Response *r = (Rx64Response*)response;
+						bool(*f)(Rx64Response&,uintptr_t) = (bool(*)(Rx64Response&,uintptr_t))func;
+						getResponse().getRx64Response(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case Rx16IoSampleResponse::API_ID: {
+						Rx16IoSampleResponse *r = (Rx16IoSampleResponse*)response;
+						bool(*f)(Rx16IoSampleResponse&,uintptr_t) = (bool(*)(Rx16IoSampleResponse&,uintptr_t))func;
+						getResponse().getRx16IoSampleResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case Rx64IoSampleResponse::API_ID: {
+						Rx64IoSampleResponse *r = (Rx64IoSampleResponse*)response;
+						bool(*f)(Rx64IoSampleResponse&,uintptr_t) = (bool(*)(Rx64IoSampleResponse&,uintptr_t))func;
+						getResponse().getRx64IoSampleResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case ModemStatusResponse::API_ID: {
+						ModemStatusResponse *r = (ModemStatusResponse*)response;
+						bool(*f)(ModemStatusResponse&,uintptr_t) = (bool(*)(ModemStatusResponse&,uintptr_t))func;
+						getResponse().getModemStatusResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case AtCommandResponse::API_ID: {
+						AtCommandResponse *r = (AtCommandResponse*)response;
+						bool(*f)(AtCommandResponse&,uintptr_t) = (bool(*)(AtCommandResponse&,uintptr_t))func;
+						getResponse().getAtCommandResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+					case RemoteAtCommandResponse::API_ID: {
+						RemoteAtCommandResponse *r = (RemoteAtCommandResponse*)response;
+						bool(*f)(RemoteAtCommandResponse&,uintptr_t) = (bool(*)(RemoteAtCommandResponse&,uintptr_t))func;
+						getResponse().getRemoteAtCommandResponse(*r);
+						if(!f || f(*r, data))
+							return 0;
+						break;
+					}
+				}
+			}
+			// Call regular callbacks
+			loopBottom();
+		}
+	} while (millis() - start < timeout);
+	return XBEE_WAIT_TIMEOUT;
+}
+
+uint8_t XBeeWithCallbacks::waitForStatus(uint8_t frameId, uint16_t timeout) {
+	unsigned long start = millis();
+	do {
+		if (loopTop()) {
+			uint8_t status = matchStatus(frameId);
+			if (status != 0xff)
+				return status;
+
+			// Call regular callbacks
+			loopBottom();
+		}
+	} while (millis() - start < timeout);
+	return XBEE_WAIT_TIMEOUT ;
 }
 

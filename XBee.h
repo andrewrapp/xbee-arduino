@@ -52,6 +52,7 @@
 
 // the non-variable length of the frame data (not including frame id or api id or variable data size (e.g. payload, at command set value)
 #define ZB_TX_API_LENGTH 12
+#define ZB_EXPLICIT_TX_API_LENGTH 18
 #define TX_16_API_LENGTH 3
 #define TX_64_API_LENGTH 9
 #define AT_COMMAND_API_LENGTH 2
@@ -67,6 +68,12 @@
 
 #define DEFAULT_FRAME_ID 1
 #define NO_RESPONSE_FRAME_ID 0
+
+// These are the parameters used by the XBee ZB modules when you do a
+// regular "ZB TX request".
+#define DEFAULT_ENDPOINT 232
+#define DEFAULT_CLUSTER_ID 0x0011
+#define DEFAULT_PROFILE_ID 0xc105
 
 // TODO put in tx16 class
 #define ACK_OPTION 0
@@ -116,6 +123,8 @@
 #define ADDRESS_NOT_FOUND 0x24
 #define ROUTE_NOT_FOUND 0x25
 #define PAYLOAD_TOO_LARGE 0x74
+// Returned by XBeeWithCallbacks::waitForStatus on timeout
+#define XBEE_WAIT_TIMEOUT 0xff
 
 // modem status
 #define HARDWARE_RESET 0
@@ -216,6 +225,11 @@ public:
 	 * to populate response
 	 */
 	void getZBRxResponse(XBeeResponse &response);
+	/**
+	 * Call with instance of ZBExplicitRxResponse class only if getApiId() == ZB_EXPLICIT_RX_RESPONSE
+	 * to populate response
+	 */
+	void getZBExplicitRxResponse(XBeeResponse &response);
 	/**
 	 * Call with instance of ZBRxIoSampleResponse class only if getApiId() == ZB_IO_SAMPLE_RESPONSE
 	 * to populate response
@@ -370,6 +384,8 @@ class ZBTxStatusResponse : public FrameIdResponse {
 		uint8_t getDeliveryStatus();
 		uint8_t getDiscoveryStatus();
 		bool isSuccess();
+
+	static const uint8_t API_ID = ZB_TX_STATUS_RESPONSE;
 };
 
 /**
@@ -384,8 +400,31 @@ public:
 	uint8_t getDataLength();
 	// frame position where data starts
 	uint8_t getDataOffset();
+
+	static const uint8_t API_ID = ZB_RX_RESPONSE;
 private:
 	XBeeAddress64 _remoteAddress64;
+};
+
+/**
+ * Represents a Series 2 Explicit RX packet
+ *
+ * Note: The receive these responses, set AO=1. With the default AO=0,
+ * you will receive ZBRxResponses, not knowing exact details.
+ */
+class ZBExplicitRxResponse : public ZBRxResponse {
+public:
+	ZBExplicitRxResponse();
+	uint8_t getSrcEndpoint();
+	uint8_t getDstEndpoint();
+	uint16_t getClusterId();
+	uint16_t getProfileId();
+	uint8_t getOption();
+	uint8_t getDataLength();
+	// frame position where data starts
+	uint8_t getDataOffset();
+
+	static const uint8_t API_ID = ZB_EXPLICIT_RX_RESPONSE;
 };
 
 /**
@@ -417,6 +456,8 @@ public:
 	uint8_t getDigitalMaskMsb();
 	uint8_t getDigitalMaskLsb();
 	uint8_t getAnalogMask();
+
+	static const uint8_t API_ID = ZB_IO_SAMPLE_RESPONSE;
 };
 
 #endif
@@ -430,6 +471,8 @@ class TxStatusResponse : public FrameIdResponse {
 		TxStatusResponse();
 		uint8_t getStatus();
 		bool isSuccess();
+
+	static const uint8_t API_ID = TX_STATUS_RESPONSE;
 };
 
 /**
@@ -456,6 +499,8 @@ public:
 	Rx16Response();
 	uint8_t getRssiOffset();
 	uint16_t getRemoteAddress16();
+
+	static const uint8_t API_ID = RX_16_RESPONSE;
 protected:
 	uint16_t _remoteAddress;
 };
@@ -468,6 +513,8 @@ public:
 	Rx64Response();
 	uint8_t getRssiOffset();
 	XBeeAddress64& getRemoteAddress64();
+
+	static const uint8_t API_ID = RX_64_RESPONSE;
 private:
 	XBeeAddress64 _remoteAddress;
 };
@@ -503,6 +550,11 @@ class RxIoSampleBaseResponse : public RxResponse {
 		 */
 		bool isDigitalOn(uint8_t pin, uint8_t sample);
 		uint8_t getSampleOffset();
+
+		/**
+		 * Gets the offset of the start of the given sample.
+		 */
+		uint8_t getSampleStart(uint8_t sample);
 	private:
 };
 
@@ -512,6 +564,7 @@ public:
 	uint16_t getRemoteAddress16();
 	uint8_t getRssiOffset();
 
+	static const uint8_t API_ID = RX_16_IO_RESPONSE;
 };
 
 class Rx64IoSampleResponse : public RxIoSampleBaseResponse {
@@ -519,6 +572,8 @@ public:
 	Rx64IoSampleResponse();
 	XBeeAddress64& getRemoteAddress64();
 	uint8_t getRssiOffset();
+
+	static const uint8_t API_ID = RX_64_IO_RESPONSE;
 private:
 	XBeeAddress64 _remoteAddress;
 };
@@ -532,6 +587,8 @@ class ModemStatusResponse : public XBeeResponse {
 public:
 	ModemStatusResponse();
 	uint8_t getStatus();
+
+	static const uint8_t API_ID = MODEM_STATUS_RESPONSE;
 };
 
 /**
@@ -562,6 +619,8 @@ class AtCommandResponse : public FrameIdResponse {
 		 * Returns true if status equals AT_OK
 		 */
 		bool isOk();
+
+		static const uint8_t API_ID = AT_COMMAND_RESPONSE;
 };
 
 /**
@@ -600,6 +659,8 @@ class RemoteAtCommandResponse : public AtCommandResponse {
 		 * Returns true if command was successful
 		 */
 		bool isOk();
+
+		static const uint8_t API_ID = REMOTE_AT_COMMAND_RESPONSE;
 	private:
 		XBeeAddress64 _remoteAddress64;
 };
@@ -743,6 +804,239 @@ private:
 	Stream* _serial;
 };
 
+
+/**
+ * This class can be used instead of the XBee class and allows
+ * user-specified callback functions to be called when responses are
+ * received, simplifying the processing code and reducing boilerplate.
+ *
+ * To use it, first register your callback functions using the onXxx
+ * methods. Each method has a uintptr_t data argument, that can be used to
+ * pass arbitrary data to the callback (useful when using the same
+ * function for multiple callbacks, or have a generic function that can
+ * behave differently in different circumstances). Supplying the data
+ * parameter is optional, but the callback must always accept it (just
+ * ignore it if it's unused). The uintptr_t type is an integer type
+ * guaranteed to be big enough to fit a pointer (it is 16-bit on AVR,
+ * 32-bit on ARM), so it can also be used to store a pointer to access
+ * more data if required (using proper casts).
+ *
+ * There can be only one callback of each type registered at one time,
+ * so registering callback overwrites any previously registered one. To
+ * unregister a callback, pass NULL as the function.
+ *
+ * To ensure that the callbacks are actually called, call the loop()
+ * method regularly (in your loop() function, for example). This takes
+ * care of calling readPacket() and getResponse() other methods on the
+ * XBee class, so there is no need to do so directly (though it should
+ * not mess with this class if you do, it would only mean some callbacks
+ * aren't called).
+ *
+ * Inside callbacks, you should generally not be blocking / waiting.
+ * Since callbacks can be called from inside waitFor() and friends, a
+ * callback that doesn't return quickly can mess up the waitFor()
+ * timeout.
+ *
+ * Sending packets is not a problem inside a callback, but avoid
+ * receiving a packet (e.g. calling readPacket(), loop() or waitFor()
+ * and friends) inside a callback (since that would overwrite the
+ * current response, messing up any pending callbacks and waitFor() etc.
+ * methods already running).
+ */
+class XBeeWithCallbacks : public XBee {
+public:
+
+	/**
+	 * Register a packet error callback. It is called whenever an
+	 * error occurs in the packet reading process. Arguments to the
+	 * callback will be the error code (as returned by
+	 * XBeeResponse::getErrorCode()) and the data parameter.  while
+	 * registering the callback.
+	 */
+	void onPacketError(void (*func)(uint8_t, uintptr_t), uintptr_t data = 0) { _onPacketError.set(func, data); }
+
+	/**
+	 * Register a response received callback. It is called whenever
+	 * a response was succesfully received, before a response
+	 * specific callback (or onOtherResponse) below is called.
+	 *
+	 * Arguments to the callback will be the received response and
+	 * the data parameter passed while registering the callback.
+	 */
+	void onResponse(void (*func)(XBeeResponse&, uintptr_t), uintptr_t data = 0) { _onResponse.set(func, data); }
+
+	/**
+	 * Register an other response received callback. It is called
+	 * whenever a response was succesfully received, but no response
+	 * specific callback was registered using the functions below
+	 * (after the onResponse callback is called).
+	 *
+	 * Arguments to the callback will be the received response and
+	 * the data parameter passed while registering the callback.
+	 */
+	void onOtherResponse(void (*func)(XBeeResponse&, uintptr_t), uintptr_t data = 0) { _onOtherResponse.set(func, data); }
+
+	// These functions register a response specific callback. They
+	// are called whenever a response of the appropriate type was
+	// succesfully received (after the onResponse callback is
+	// called).
+	//
+	// Arguments to the callback will be the received response
+	// (already converted to the appropriate type) and the data
+	// parameter passed while registering the callback.
+	void onZBTxStatusResponse(void (*func)(ZBTxStatusResponse&, uintptr_t), uintptr_t data = 0) { _onZBTxStatusResponse.set(func, data); }
+	void onZBRxResponse(void (*func)(ZBRxResponse&, uintptr_t), uintptr_t data = 0) { _onZBRxResponse.set(func, data); }
+	void onZBExplicitRxResponse(void (*func)(ZBExplicitRxResponse&, uintptr_t), uintptr_t data = 0) { _onZBExplicitRxResponse.set(func, data); }
+	void onZBRxIoSampleResponse(void (*func)(ZBRxIoSampleResponse&, uintptr_t), uintptr_t data = 0) { _onZBRxIoSampleResponse.set(func, data); }
+	void onTxStatusResponse(void (*func)(TxStatusResponse&, uintptr_t), uintptr_t data = 0) { _onTxStatusResponse.set(func, data); }
+	void onRx16Response(void (*func)(Rx16Response&, uintptr_t), uintptr_t data = 0) { _onRx16Response.set(func, data); }
+	void onRx64Response(void (*func)(Rx64Response&, uintptr_t), uintptr_t data = 0) { _onRx64Response.set(func, data); }
+	void onRx16IoSampleResponse(void (*func)(Rx16IoSampleResponse&, uintptr_t), uintptr_t data = 0) { _onRx16IoSampleResponse.set(func, data); }
+	void onRx64IoSampleResponse(void (*func)(Rx64IoSampleResponse&, uintptr_t), uintptr_t data = 0) { _onRx64IoSampleResponse.set(func, data); }
+	void onModemStatusResponse(void (*func)(ModemStatusResponse&, uintptr_t), uintptr_t data = 0) { _onModemStatusResponse.set(func, data); }
+	void onAtCommandResponse(void (*func)(AtCommandResponse&, uintptr_t), uintptr_t data = 0) { _onAtCommandResponse.set(func, data); }
+	void onRemoteAtCommandResponse(void (*func)(RemoteAtCommandResponse&, uintptr_t), uintptr_t data = 0) { _onRemoteAtCommandResponse.set(func, data); }
+
+	/**
+	 * Regularly call this method, which ensures that the serial
+	 * buffer is processed and the appropriate callbacks are called.
+	 */
+	void loop();
+
+	/**
+	 * Wait for a API response of the given type, optionally
+	 * filtered by the given match function.
+	 *
+	 * If a match function is given it is called for every response
+	 * of the right type received, passing the response and the data
+	 * parameter passed to this method. If the function returns true
+	 * (or if no function was passed), waiting stops and this method
+	 * returns 0. If the function returns false, waiting
+	 * continues. After the given timeout passes, this method
+	 * returns XBEE_WAIT_TIMEOUT.
+	 *
+	 * If a valid frameId is passed (e.g. 0-255 inclusive) and a
+	 * status API response frame is received while waiting, that has
+	 * a *non-zero* status, waiting stops and that status is
+	 * received. This is intended for when a TX packet was sent and
+	 * you are waiting for an RX reply, which will most likely never
+	 * arrive when TX failed. However, since the status reply is not
+	 * guaranteed to arrive before the RX reply (a remote module can
+	 * send a reply before the ACK), first calling waitForStatus()
+	 * and then waitFor() can sometimes miss the reply RX packet.
+	 *
+	 * Note that when the intended response is received *before* the
+	 * status reply, the latter will not be processed by this
+	 * method and will be subsequently processed by e.g. loop()
+	 * normally.
+	 *
+	 * While waiting, any other responses received are passed to the
+	 * relevant callbacks, just as if calling loop() continuously
+	 * (except for the response sought, that one is only passed to
+	 * the OnResponse handler and no others).
+	 *
+	 * After this method returns, the response itself can still be
+	 * retrieved using getResponse() as normal.
+	 */
+	template <typename Response>
+	uint8_t waitFor(Response& response, uint16_t timeout, bool (*func)(Response&, uintptr_t) = NULL, uintptr_t data = 0, int16_t frameId = -1) {
+		return waitForInternal(Response::API_ID, &response, timeout, (void*)func, data, frameId);
+	}
+
+	/**
+	 * Sends a XBeeRequest (TX packet) out the serial port, and wait
+	 * for a status response API frame (up until the given timeout).
+	 * Essentially this just calls send() and waitForStatus().
+	 * See waitForStatus for the meaning of the return value and
+	 * more details.
+	 */
+	uint8_t sendAndWait(XBeeRequest &request, uint16_t timeout) {
+		send(request);
+		return waitForStatus(request.getFrameId(), timeout);
+	}
+
+	/**
+	 * Wait for a status API response with the given frameId and
+	 * return the status from the packet (for ZB_TX_STATUS_RESPONSE,
+	 * this returns just the delivery status, not the routing
+	 * status). If the timeout is reached before reading the
+	 * response, XBEE_WAIT_TIMEOUT is returned instead.
+	 *
+	 * While waiting, any other responses received are passed to the
+	 * relevant callbacks, just as if calling loop() continuously
+	 * (except for the status response sought, that one is only
+	 * passed to the OnResponse handler and no others).
+	 *
+	 * After this method returns, the response itself can still be
+	 * retrieved using getResponse() as normal.
+	 */
+	uint8_t waitForStatus(uint8_t frameId, uint16_t timeout);
+private:
+	/**
+	 * Internal version of waitFor that does not need to be
+	 * templated (to prevent duplication the implementation for
+	 * every response type you might want to wait for). Instead of
+	 * using templates, this accepts the apiId to wait for and will
+	 * cast the given response object and the argument to the given
+	 * function to the corresponding type. This means that the
+	 * void* given must match the api id!
+	 */
+	uint8_t waitForInternal(uint8_t apiId, void *response, uint16_t timeout, void *func, uintptr_t data, int16_t frameId);
+
+	/**
+	 * Helper that checks if the current response is a status
+	 * response with the given frame id. If so, returns the status
+	 * byte from the response, otherwise returns 0xff.
+	 */
+	uint8_t matchStatus(uint8_t frameId);
+
+	/**
+	 * Top half of a typical loop(). Calls readPacket(), calls
+	 * onPacketError on error, calls onResponse when a response is
+	 * available. Returns in the true in the latter case, after
+	 * which a caller should typically call loopBottom().
+	 */
+	bool loopTop();
+
+	/**
+	 * Bottom half of a typical loop. Call only when a valid
+	 * response was read, will call all response-specific callbacks.
+	 */
+	void loopBottom();
+
+	template <typename Arg> struct Callback {
+		void (*func)(Arg, uintptr_t);
+		uintptr_t data;
+		void set(void (*func)(Arg, uintptr_t), uintptr_t data) {
+			this->func = func;
+			this->data = data;
+		}
+		bool call(Arg arg) {
+			if (this->func) {
+				this->func(arg, this->data);
+				return true;
+			}
+			return false;
+		}
+	};
+
+	Callback<uint8_t> _onPacketError;
+	Callback<XBeeResponse&> _onResponse;
+	Callback<XBeeResponse&> _onOtherResponse;
+	Callback<ZBTxStatusResponse&> _onZBTxStatusResponse;
+	Callback<ZBRxResponse&> _onZBRxResponse;
+	Callback<ZBExplicitRxResponse&> _onZBExplicitRxResponse;
+	Callback<ZBRxIoSampleResponse&> _onZBRxIoSampleResponse;
+	Callback<TxStatusResponse&> _onTxStatusResponse;
+	Callback<Rx16Response&> _onRx16Response;
+	Callback<Rx64Response&> _onRx64Response;
+	Callback<Rx16IoSampleResponse&> _onRx16IoSampleResponse;
+	Callback<Rx64IoSampleResponse&> _onRx64IoSampleResponse;
+	Callback<ModemStatusResponse&> _onModemStatusResponse;
+	Callback<AtCommandResponse&> _onAtCommandResponse;
+	Callback<RemoteAtCommandResponse&> _onRemoteAtCommandResponse;
+};
+
 /**
  * All TX packets that support payloads extend this class
  */
@@ -757,6 +1051,15 @@ public:
 	 * Sets the payload array
 	 */
 	void setPayload(uint8_t* payloadPtr);
+
+	/*
+	 * Set the payload and its length in one call.
+	 */
+	void setPayload(uint8_t* payloadPtr, uint8_t payloadLength) {
+		setPayload(payloadPtr);
+		setPayloadLength(payloadLength);
+	}
+
 	/**
 	 * Returns the length of the payload array, as specified by the user.
 	 */
@@ -879,11 +1182,63 @@ protected:
 	// declare virtual functions
 	uint8_t getFrameData(uint8_t pos);
 	uint8_t getFrameDataLength();
-private:
 	XBeeAddress64 _addr64;
 	uint16_t _addr16;
 	uint8_t _broadcastRadius;
 	uint8_t _option;
+};
+
+/**
+ * Represents a Series 2 TX packet that corresponds to Api Id: ZB_EXPLICIT_TX_REQUEST
+ *
+ * See the warning about maximum packet size for ZBTxRequest above,
+ * which probably also applies here as well.
+ *
+ * Note that to distinguish reply packets from non-XBee devices, set
+ * AO=1 to enable reception of ZBExplicitRxResponse packets.
+ */
+class ZBExplicitTxRequest : public ZBTxRequest {
+public:
+	/**
+	 * Creates a unicast ZBExplicitTxRequest with the ACK option and
+	 * DEFAULT_FRAME_ID.
+	 *
+	 * It uses the Maxstream profile (0xc105), both endpoints 232
+	 * and cluster 0x0011, resulting in the same packet as sent by a
+	 * normal ZBTxRequest.
+	 */
+	ZBExplicitTxRequest(XBeeAddress64 &addr64, uint8_t *payload, uint8_t payloadLength);
+	/**
+	 * Create a ZBExplicitTxRequest, specifying all fields.
+	 */
+	ZBExplicitTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId, uint8_t srcEndpoint, uint8_t dstEndpoint, uint16_t clusterId, uint16_t profileId);
+	/**
+	 * Creates a default instance of this class.  At a minimum you
+	 * must specify a payload, payload length and a destination
+	 * address before sending this request.
+	 *
+	 * Furthermore, it uses the Maxstream profile (0xc105), both
+	 * endpoints 232 and cluster 0x0011, resulting in the same
+	 * packet as sent by a normal ZBExplicitTxRequest.
+	 */
+	ZBExplicitTxRequest();
+	uint8_t getSrcEndpoint();
+	uint8_t getDstEndpoint();
+	uint16_t getClusterId();
+	uint16_t getProfileId();
+	void setSrcEndpoint(uint8_t endpoint);
+	void setDstEndpoint(uint8_t endpoint);
+	void setClusterId(uint16_t clusterId);
+	void setProfileId(uint16_t profileId);
+protected:
+	// declare virtual functions
+	uint8_t getFrameData(uint8_t pos);
+	uint8_t getFrameDataLength();
+private:
+	uint8_t _srcEndpoint;
+	uint8_t _dstEndpoint;
+	uint16_t _profileId;
+	uint16_t _clusterId;
 };
 
 #endif
