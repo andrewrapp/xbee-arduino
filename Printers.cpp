@@ -303,7 +303,7 @@ void printResponseCb(RemoteAtCommandResponse& at, uintptr_t data) {
 
 void printResponseCb(XBeeResponse& r, uintptr_t data) {
 	uint8_t id = r.getApiId();
-	// Figure out the API type and call the corresonding function
+	// Figure out the API type and call the corresponding function
 	if (id == ZB_TX_STATUS_RESPONSE) {
 		ZBTxStatusResponse response;
 		r.getZBTxStatusResponse(response);
