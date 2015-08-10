@@ -90,7 +90,7 @@ void printErrorCb(XBeeResponse& r, uintptr_t data) {
 
 void printRawResponseCb(XBeeResponse& response, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->print("Response received: ");
+	p->print("Response: ");
 	// Reconstruct the original packet
 	uint8_t header[] = {START_BYTE, response.getMsbLength(), response.getLsbLength(), response.getApiId()};
 	printHex(*p, header, sizeof(header), F(" "), NULL);
@@ -114,7 +114,7 @@ static void printField(Print* p, const __FlashStringHelper *prefix, T data) {
 
 void printResponseCb(ZBTxStatusResponse& status, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println(F("ZBTxStatusResponse received:"));
+	p->println(F("ZBTxStatusResponse:"));
 	printField(p, F("  FrameId: 0x"), status.getFrameId());
 	printField(p, F("  To: 0x"), status.getRemoteAddress());
 	printField(p, F("  Delivery status: 0x"), status.getDeliveryStatus());
@@ -123,7 +123,7 @@ void printResponseCb(ZBTxStatusResponse& status, uintptr_t data) {
 
 void printResponseCb(ZBRxResponse& rx, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println(F("ZBRxResponse received:"));
+	p->println(F("ZBRxResponse:"));
 	printField(p, F("  From: 0x"), rx.getRemoteAddress64());
 	printField(p, F("  From: 0x"), rx.getRemoteAddress16());
 	printField(p, F("  Receive options: 0x"), rx.getOption());
@@ -137,7 +137,7 @@ void printResponseCb(ZBRxResponse& rx, uintptr_t data) {
 
 void printResponseCb(ZBExplicitRxResponse& rx, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println(F("ZBExplicitRxResponse received:"));
+	p->println(F("ZBExplicitRxResponse:"));
 	printField(p, F("  From: 0x"), rx.getRemoteAddress64());
 	printField(p, F("  From: 0x"), rx.getRemoteAddress16());
 	printField(p, F("  Receive options: 0x"), rx.getOption());
@@ -155,7 +155,7 @@ void printResponseCb(ZBExplicitRxResponse& rx, uintptr_t data) {
 
 void printResponseCb(ZBRxIoSampleResponse& rx, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println(F("ZBRxIoSampleResponse received:"));
+	p->println(F("ZBRxIoSampleResponse:"));
 	printField(p, F("  From: 0x"), rx.getRemoteAddress64());
 	printField(p, F("  From: 0x"), rx.getRemoteAddress16());
 	printField(p, F("  Receive options: 0x"), rx.getOption());
@@ -181,14 +181,14 @@ void printResponseCb(ZBRxIoSampleResponse& rx, uintptr_t data) {
 
 void printResponseCb(TxStatusResponse& status, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println(F("TxStatusResponse received:"));
+	p->println(F("TxStatusResponse:"));
 	printField(p, F("  FrameId: 0x"), status.getFrameId());
 	printField(p, F("  Status: 0x"), status.getStatus());
 }
 
 void printResponseCb(Rx16Response& rx, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println("Rx16Response received:");
+	p->println("Rx16Response:");
 	printField(p, F("  From: 0x"), rx.getRemoteAddress16());
 	printField(p, F("  Rssi: 0x"), rx.getRssi());
 	printField(p, F("  Receive options: 0x"), rx.getOption());
@@ -202,7 +202,7 @@ void printResponseCb(Rx16Response& rx, uintptr_t data) {
 
 void printResponseCb(Rx64Response& rx, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println("Rx64Response received:");
+	p->println("Rx64Response:");
 	printField(p, F("  From: 0x"), rx.getRemoteAddress64());
 	printField(p, F("  Rssi: 0x"), rx.getRssi());
 	printField(p, F("  Receive options: 0x"), rx.getOption());
@@ -247,7 +247,7 @@ static void printSamples(Print* p, RxIoSampleBaseResponse& rx) {
 
 void printResponseCb(Rx16IoSampleResponse& rx, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println("Rx16IoSampleResponse received:");
+	p->println("Rx16IoSampleResponse:");
 	printField(p, F("  From: 0x"), rx.getRemoteAddress16());
 	printField(p, F("  Rssi: 0x"), rx.getRssi());
 	printField(p, F("  Receive options: 0x"), rx.getOption());
@@ -257,7 +257,7 @@ void printResponseCb(Rx16IoSampleResponse& rx, uintptr_t data) {
 
 void printResponseCb(Rx64IoSampleResponse& rx, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println("Rx64IoSampleResponse received:");
+	p->println("Rx64IoSampleResponse:");
 	printField(p, F("  From: 0x"), rx.getRemoteAddress64());
 	printField(p, F("  Rssi: 0x"), rx.getRssi());
 	printField(p, F("  Receive options: 0x"), rx.getOption());
@@ -267,13 +267,13 @@ void printResponseCb(Rx64IoSampleResponse& rx, uintptr_t data) {
 
 void printResponseCb(ModemStatusResponse& status, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println("ModemStatusResponse received:");
+	p->println("ModemStatusResponse:");
 	printField(p, F("  Status: 0x"), status.getStatus());
 }
 
 void printResponseCb(AtCommandResponse& at, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println("AtCommandResponse received:");
+	p->println("AtCommandResponse:");
 	p->print(F("  Command: "));
 	p->write(at.getCommand(), 2);
 	p->println();
@@ -287,7 +287,7 @@ void printResponseCb(AtCommandResponse& at, uintptr_t data) {
 
 void printResponseCb(RemoteAtCommandResponse& at, uintptr_t data) {
 	Print *p = (Print*)data;
-	p->println("AtRemoteCommandResponse received:");
+	p->println("AtRemoteCommandResponse:");
 	printField(p, F("  To: 0x"), at.getRemoteAddress64());
 	printField(p, F("  To: 0x"), at.getRemoteAddress16());
 	p->print(F("  Command: "));
