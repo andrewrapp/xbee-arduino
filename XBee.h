@@ -1188,8 +1188,8 @@ public:
 	/**
 	 * Creates a unicast ZBTxRequest with the ACK option and DEFAULT_FRAME_ID
 	 */
-	ZBTxRequest(XBeeAddress64 &addr64, uint8_t *payload, uint8_t payloadLength);
-	ZBTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId);
+	ZBTxRequest(const XBeeAddress64 &addr64, uint8_t *payload, uint8_t payloadLength);
+	ZBTxRequest(const XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *payload, uint8_t payloadLength, uint8_t frameId);
 	/**
 	 * Creates a default instance of this class.  At a minimum you must specify
 	 * a payload, payload length and a 64-bit destination address before sending
@@ -1200,7 +1200,7 @@ public:
 	uint16_t getAddress16();
 	uint8_t getBroadcastRadius();
 	uint8_t getOption();
-	void setAddress64(XBeeAddress64& addr64);
+	void setAddress64(const XBeeAddress64& addr64);
 	void setAddress16(uint16_t addr16);
 	void setBroadcastRadius(uint8_t broadcastRadius);
 	void setOption(uint8_t option);

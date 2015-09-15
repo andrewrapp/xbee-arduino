@@ -1059,14 +1059,14 @@ ZBTxRequest::ZBTxRequest() : PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, NUL
 	_option = ZB_TX_UNICAST;
 }
 
-ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId): PayloadRequest(ZB_TX_REQUEST, frameId, data, dataLength) {
+ZBTxRequest::ZBTxRequest(const XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId): PayloadRequest(ZB_TX_REQUEST, frameId, data, dataLength) {
 	_addr64 = addr64;
 	_addr16 = addr16;
 	_broadcastRadius = broadcastRadius;
 	_option = option;
 }
 
-ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength): PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, data, dataLength) {
+ZBTxRequest::ZBTxRequest(const XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength): PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, data, dataLength) {
 	_addr64 = addr64;
 	_addr16 = ZB_BROADCAST_ADDRESS;
 	_broadcastRadius = ZB_BROADCAST_RADIUS_MAX_HOPS;
@@ -1123,7 +1123,7 @@ uint8_t ZBTxRequest::getOption() {
 	return _option;
 }
 
-void ZBTxRequest::setAddress64(XBeeAddress64& addr64) {
+void ZBTxRequest::setAddress64(const XBeeAddress64& addr64) {
 	_addr64 = addr64;
 }
 
