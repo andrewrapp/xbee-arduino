@@ -25,16 +25,16 @@ void printHex(Print& p, const uint8_t* buf, size_t len, const __FlashStringHelpe
 void printErrorCb(uint8_t code, uintptr_t data) {
 	Print *p = (Print*)data;
 	if (!p) return;
-	p->print(F("Error reading API packet. Error code: "));
-	p->println(code);
+	p->print(F("Error reading API packet. Error code: 0x"));
+	p->println(code, HEX);
 }
 
 void printErrorCb(ZBTxStatusResponse& r, uintptr_t data) {
 	Print *p = (Print*)data;
 	if (!p) return;
 	if (!r.isSuccess()) {
-		p->print(F("Error sending Zigbee packet. Delivery status: "));
-		p->println(r.getDeliveryStatus());
+		p->print(F("Error sending Zigbee packet. Delivery status: 0x"));
+		p->println(r.getDeliveryStatus(), HEX);
 	}
 }
 
@@ -42,8 +42,8 @@ void printErrorCb(TxStatusResponse& r, uintptr_t data) {
 	Print *p = (Print*)data;
 	if (!p) return;
 	if (!r.isSuccess()) {
-		p->print(F("Error sending packet. Delivery status: "));
-		p->println(r.getStatus());
+		p->print(F("Error sending packet. Delivery status: 0x"));
+		p->println(r.getStatus(), HEX);
 	}
 }
 
@@ -53,8 +53,8 @@ void printErrorCb(AtCommandResponse& r, uintptr_t data) {
 	if (!r.isOk()) {
 		p->print(F("Error sending "));
 		p->write(r.getCommand(), 2);
-		p->print(F(" command. Status: "));
-		p->println(r.getStatus());
+		p->print(F(" command. Status: 0x"));
+		p->println(r.getStatus(), HEX);
 	}
 }
 
@@ -64,8 +64,8 @@ void printErrorCb(RemoteAtCommandResponse& r, uintptr_t data) {
 	if (!r.isOk()) {
 		p->print(F("Error sending remote "));
 		p->write(r.getCommand(), 2);
-		p->print(F(" command. Status: "));
-		p->println(r.getStatus());
+		p->print(F(" command. Status: 0x"));
+		p->println(r.getStatus(), HEX);
 	}
 }
 
