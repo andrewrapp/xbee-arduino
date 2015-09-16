@@ -124,4 +124,33 @@ void printResponseCb(AtCommandResponse& at, uintptr_t data);
 void printResponseCb(RemoteAtCommandResponse& at, uintptr_t data);
 void printResponseCb(XBeeResponse& r, uintptr_t data);
 
+// The following functions are non-callback version of the above,
+// intended to be called with Print instance (such as Serial) directly,
+// saving the casts.
+
+// Print any error in these status response (prints nothing when the
+// status is ok).
+inline void printError(ZBTxStatusResponse& r, Print& print) { printErrorCb(r, (uintptr_t)(Print*)&print); }
+inline void printError(TxStatusResponse& r, Print& print) { printErrorCb(r, (uintptr_t)(Print*)&print); }
+inline void printError(AtCommandResponse& r, Print& print) { printErrorCb(r, (uintptr_t)(Print*)&print); }
+inline void printError(RemoteAtCommandResponse& r, Print& print) { printErrorCb(r, (uintptr_t)(Print*)&print); }
+inline void printError(XBeeResponse& r, Print& print) { printErrorCb(r, (uintptr_t)(Print*)&print); }
+
+// Print the raw bytes of a response
+inline void printRawResponse(XBeeResponse& r, Print& print) { printRawResponseCb(r, (uintptr_t)(Print*)&print); }
+
+// Print a human-readable version of a response
+inline void printResponse(ZBTxStatusResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(ZBRxResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(ZBExplicitRxResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(ZBRxIoSampleResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(TxStatusResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(Rx16Response& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(Rx64Response& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(Rx16IoSampleResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(Rx64IoSampleResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(ModemStatusResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(AtCommandResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(RemoteAtCommandResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(XBeeResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
 #endif // XBee_Printers_h

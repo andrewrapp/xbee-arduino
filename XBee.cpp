@@ -1054,17 +1054,19 @@ void PayloadRequest::setPayloadLength(uint8_t payloadLength) {
 #ifdef SERIES_2
 
 ZBTxRequest::ZBTxRequest() : PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, NULL, 0) {
-
+	_addr16 = ZB_BROADCAST_ADDRESS;
+	_broadcastRadius = ZB_BROADCAST_RADIUS_MAX_HOPS;
+	_option = ZB_TX_UNICAST;
 }
 
-ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId): PayloadRequest(ZB_TX_REQUEST, frameId, data, dataLength) {
+ZBTxRequest::ZBTxRequest(const XBeeAddress64 &addr64, uint16_t addr16, uint8_t broadcastRadius, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId): PayloadRequest(ZB_TX_REQUEST, frameId, data, dataLength) {
 	_addr64 = addr64;
 	_addr16 = addr16;
 	_broadcastRadius = broadcastRadius;
 	_option = option;
 }
 
-ZBTxRequest::ZBTxRequest(XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength): PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, data, dataLength) {
+ZBTxRequest::ZBTxRequest(const XBeeAddress64 &addr64, uint8_t *data, uint8_t dataLength): PayloadRequest(ZB_TX_REQUEST, DEFAULT_FRAME_ID, data, dataLength) {
 	_addr64 = addr64;
 	_addr16 = ZB_BROADCAST_ADDRESS;
 	_broadcastRadius = ZB_BROADCAST_RADIUS_MAX_HOPS;
@@ -1121,7 +1123,7 @@ uint8_t ZBTxRequest::getOption() {
 	return _option;
 }
 
-void ZBTxRequest::setAddress64(XBeeAddress64& addr64) {
+void ZBTxRequest::setAddress64(const XBeeAddress64& addr64) {
 	_addr64 = addr64;
 }
 
@@ -1229,7 +1231,7 @@ void ZBExplicitTxRequest::setProfileId(uint16_t profileId) {
 #ifdef SERIES_1
 
 Tx16Request::Tx16Request() : PayloadRequest(TX_16_REQUEST, DEFAULT_FRAME_ID, NULL, 0) {
-
+	_option = ACK_OPTION;
 }
 
 Tx16Request::Tx16Request(uint16_t addr16, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId) : PayloadRequest(TX_16_REQUEST, frameId, data, dataLength) {
@@ -1276,7 +1278,7 @@ void Tx16Request::setOption(uint8_t option) {
 }
 
 Tx64Request::Tx64Request() : PayloadRequest(TX_64_REQUEST, DEFAULT_FRAME_ID, NULL, 0) {
-
+	_option = ACK_OPTION;
 }
 
 Tx64Request::Tx64Request(XBeeAddress64 &addr64, uint8_t option, uint8_t *data, uint8_t dataLength, uint8_t frameId) : PayloadRequest(TX_64_REQUEST, frameId, data, dataLength) {

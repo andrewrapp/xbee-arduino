@@ -2,7 +2,7 @@
 <project default="dist" name="XBee-Arduino">
 	<property file="build.properties"/>
 	<property name="dist.dir" value="dist"/>
-	<property name="release" value="0.5"/>
+	<property name="release" value="0.6.0"/>
 	
 	<target name="init">
 		<mkdir dir="${dist.dir}/XBee"/>
