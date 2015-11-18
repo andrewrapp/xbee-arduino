@@ -5,7 +5,7 @@ Arduino library for communicating with XBees in API mode, with support for both 
 
 ## News
 
-* 11/18/15 Matthijs Kooijman new book, [Building Wireless Sensor Networks Using Arduino](http://www.amazon.com/gp/product/1784395587/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1784395587&linkCode=as2&tag=xbapra-20&linkId=CEH23GT6ZPOT4ZH4) is now available. He covers the fundamentals of working with XBees in API mode, including some advanced topics (encryption, security, sleep), as well as creating projects with this library.
+* 11/18/15 Matthijs Kooijman's new book, [Building Wireless Sensor Networks Using Arduino](http://www.amazon.com/gp/product/1784395587/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1784395587&linkCode=as2&tag=xbapra-20&linkId=CEH23GT6ZPOT4ZH4) is now available. He covers the fundamentals of working with XBees in API mode, including some advanced topics (encryption, security, sleep), as well as creating projects with this library.
 * 9/15/15 Matthijs Kooijman has contributed numerous enhancements to the library, including callbacks, enhanced debugging, added features and bug fixes! These can be found in the 0.6.0 release.
 * 2/28/15 The code is now on github, although some documentation is still on googlecode https://code.google.com/p/xbee-arduino/
 * 2/1/14 Release 0.5 is available. This is essentially the 0.4 Software Serial release with a bug fix or two. If upgrading from a version prior to 0.4, please note that the method for specifying the serial port has changed; see See SoftwareSerialReleaseNotes. Along with this release I have converted the repository from Subversion to Git
