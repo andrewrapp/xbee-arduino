@@ -1,0 +1,26 @@
+# Feature Support #
+
+#### Series 1 and 2 ####
+
+  * AT\_COMMAND\_REQUEST 0x8
+  * AT\_COMMAND\_RESPONSE 0x88
+  * REMOTE\_AT\_REQUEST 0x17
+  * REMOTE\_AT\_COMMAND\_RESPONSE 0x97
+  * MODEM\_STATUS\_RESPONSE 0x8a
+
+#### Series 1 (802.15.4) ####
+
+  * TX\_64\_REQUEST 0x0
+  * TX\_16\_REQUEST 0x1
+  * TX\_STATUS\_RESPONSE 0x89
+  * RX\_64\_RESPONSE 0x80
+  * RX\_16\_RESPONSE 0x81
+  * RX\_64\_IO\_RESPONSE 0x82
+  * RX\_16\_IO\_RESPONSE 0x83
+
+#### Series 2 (ZB Pro/ZNet) ####
+
+  * ZB\_TX\_REQUEST 0x10
+  * ZB\_RX\_RESPONSE 0x90
+  * ZB\_TX\_STATUS\_RESPONSE 0x8b
+  * ZB\_IO\_SAMPLE\_RESPONSE 0x92
