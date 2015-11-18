@@ -21,6 +21,7 @@ Arduino library for communicating with XBees in API mode, with support for both 
 ## Documentation
 Doxygen API documentation is available in the downloads. Unfortunately it is not available online anymore as Git does not support the html mime type as Subversion does
 
+[Developer's Guide](https://github.com/andrewrapp/xbee-arduino/blob/wiki/DevelopersGuide.md)
 
 ## Example
 I have created several sketches of sending/receiving packets with Series 1 and 2 XBee radios. You can find these in the examples folder. Here's an example of sending a packet with a Series 2 radio:
