@@ -59,11 +59,12 @@ To add XBee support to a new sketch, add "#include <XBee.h>" (without quotes) to
 ## Learning/Books
 Check out these books to learn more about Arduino and XBee:
 
-* Wireless Sensor Networks: with ZigBee, XBee, Arduino, and Processing (Available in Kindle)
-* Programming Arduino Getting Started with Sketches
-* Making Things Talk
-* Getting Started with Arduino (Make: Projects (Available in Kindle)
-* Arduino Cookbook (Oreilly Cookbooks) (Available in Kindle)
+  * [Building Wireless Sensor Networks Using Arduino](http://www.amazon.com/gp/product/1784395587/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1784395587&linkCode=as2&tag=xbapra-20&linkId=CEH23GT6ZPOT4ZH4) (Kindle version available)
+  * [Wireless Sensor Networks: with ZigBee, XBee, Arduino, and Processing](http://www.amazon.com/gp/product/0596807732?ie=UTF8&tag=xbapra-20&linkCode=as2&camp=1789&creative=9325&creativeASIN=0596807732Building) (Kindle version available)
+  * Programming Arduino Getting Started with Sketches
+  * Making Things Talk
+  * Getting Started with Arduino (Make: Projects (Available in Kindle)
+  * Arduino Cookbook (Oreilly Cookbooks) (Available in Kindle)
 
 ## Hardware
 
