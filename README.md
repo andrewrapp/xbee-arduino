@@ -23,6 +23,8 @@ Doxygen API documentation is available in the downloads. Unfortunately it is not
 
 [Developer's Guide](https://github.com/andrewrapp/xbee-arduino/blob/wiki/DevelopersGuide.md)
 
+[XBee API (Java) Project](https://github.com/andrewrapp/xbee-api) Although this project is a Java implementation, it contains a few wikis relevant to this project, including xbee configuration and use cases.
+
 ## Example
 I have created several sketches of sending/receiving packets with Series 1 and 2 XBee radios. You can find these in the examples folder. Here's an example of sending a packet with a Series 2 radio:
 
