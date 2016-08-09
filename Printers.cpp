@@ -189,6 +189,53 @@ void printResponseCb(ZBRxIoSampleResponse& rx, uintptr_t data) {
 	}
 }
 
+void printResponseCb(NodeIdentifierResponse& ni, uintptr_t data) {
+    Print *p = (Print*)data;
+    if (!p) return;
+    p->println(F("NodeIdentifierResponse:"));
+    printField(p, F("  Source: 0x"), ni.getSourceAddress64());
+    printField(p, F("  Source: 0x"), ni.getSourceAddress16());
+    printField(p, F("  Receive options: 0x"), ni.getReceiveOptions());
+    uint8_t ro = ni.getReceiveOptions();
+    p->print(F("    "));
+    if(ro & 0x01)
+        p->print(F("ack "));
+    if(ro & 0x02)
+        p->print(F("bcast "));
+    if(ro & 0x20)
+        p->print(F("encrypted "));
+    if(ro & 0x40)
+        p->print(F("end_device"));
+    printField(p, F("\n  Remote: 0x"), ni.getRemoteAddress64());
+    printField(p, F("  Remote: 0x"), ni.getRemoteAddress16());
+    p->print(F("  NI: "));
+    if(ni.getNodeIdentifierStringLength())
+        p->write(ni.getNodeIdentifierString(), ni.getNodeIdentifierStringLength());
+    printField(p, F("\n  Parent: 0x"), ni.getParentAddress16());
+    p->print(F("  Device Type: "));
+    if (ni.getDeviceType() == 0)
+        p->print(F("Coordinator"));
+    else if (ni.getDeviceType() == 1)
+        p->print(F("Router"));
+    else if (ni.getDeviceType() == 2)
+        p->print(F("End Device"));
+    else
+        printField(p, F("Unknown: 0x"), ni.getDeviceType());
+    p->print(F("\n  Source Event: "));
+    if (ni.getSourceEvent() == 1)
+        p->print(F("pushbutton"));
+    else if (ni.getSourceEvent() == 2)
+        p->print(F("join"));
+    else if (ni.getSourceEvent() == 3)
+        p->print(F("power cycle"));
+    else
+        printField(p, F("Unknown: 0x"), ni.getSourceEvent());
+    printField(p, F("\n  Digi Profile ID: 0x"), ni.getDigiProfileID());
+    printField(p, F("  Manufacturer ID: 0x"), ni.getManufacturerID());
+    
+}
+
+
 void printResponseCb(TxStatusResponse& status, uintptr_t data) {
 	Print *p = (Print*)data;
 	if (!p) return;
@@ -366,7 +413,11 @@ void printResponseCb(XBeeResponse& r, uintptr_t data) {
 		AtCommandResponse response;
 		r.getAtCommandResponse(response);
 		printResponseCb(response, data);
-	} else if (id == REMOTE_AT_COMMAND_RESPONSE) {
+	} else if (id == ZB_IO_NODE_IDENTIFIER_RESPONSE) {
+        NodeIdentifierResponse response;
+        r.getNodeIdentifierResponse(response);
+        printResponseCb(response, data);
+    } else if (id == REMOTE_AT_COMMAND_RESPONSE) {
 		RemoteAtCommandResponse response;
 		r.getRemoteAtCommandResponse(response);
 		printResponseCb(response, data);
