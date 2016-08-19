@@ -768,7 +768,7 @@ XBeeAddress64& NodeIdentifierResponse::getSourceAddress64() {
 }
 
 uint16_t NodeIdentifierResponse::getSourceAddress16() {
-    return uint16_t((getFrameData()[10] << 8) + getFrameData()[11]);
+    return uint16_t((getFrameData()[8] << 8) + getFrameData()[9]);
 }
 
 uint8_t NodeIdentifierResponse::getReceiveOptions() {
@@ -780,7 +780,7 @@ XBeeAddress64& NodeIdentifierResponse::getRemoteAddress64() {
 }
 
 uint16_t NodeIdentifierResponse::getRemoteAddress16() {
-    return uint16_t((getFrameData()[19] << 8) + getFrameData()[20]);
+    return uint16_t((getFrameData()[11] << 8) + getFrameData()[12]);
 }
 
 char* NodeIdentifierResponse::getNodeIdentifierString() {
