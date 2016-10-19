@@ -792,7 +792,7 @@ XBee::XBee(): _response(XBeeResponse()) {
         _response.init();
         _response.setFrameData(_responseFrameData);
 		// Contributed by Paul Stoffregen for Teensy support
-#if defined(__AVR_ATmega32U4__) || defined(__MK20DX128__)
+#if defined(__AVR_ATmega32U4__) || (defined(TEENSYDUINO) && (defined(KINETISK) || defined(KINETISL)))
         _serial = &Serial1;
 #else
         _serial = &Serial;
