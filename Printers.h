@@ -122,6 +122,7 @@ void printResponseCb(Rx64IoSampleResponse& rx, uintptr_t data);
 void printResponseCb(ModemStatusResponse& status, uintptr_t data);
 void printResponseCb(AtCommandResponse& at, uintptr_t data);
 void printResponseCb(RemoteAtCommandResponse& at, uintptr_t data);
+void printResponseCb(NodeIdentifierResponse& ni, uintptr_t data);
 void printResponseCb(XBeeResponse& r, uintptr_t data);
 
 // The following functions are non-callback version of the above,
@@ -152,5 +153,6 @@ inline void printResponse(Rx64IoSampleResponse& r, Print& print) { printResponse
 inline void printResponse(ModemStatusResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
 inline void printResponse(AtCommandResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
 inline void printResponse(RemoteAtCommandResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
+inline void printResponse(NodeIdentifierResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
 inline void printResponse(XBeeResponse& r, Print& print) { printResponseCb(r, (uintptr_t)(Print*)&print); }
 #endif // XBee_Printers_h

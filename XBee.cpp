@@ -709,6 +709,25 @@ void XBeeResponse::getModemStatusResponse(XBeeResponse &modemStatusResponse) {
 
 }
 
+void XBeeResponse::getNodeIdentifierResponse(XBeeResponse &response) {
+    
+    NodeIdentifierResponse* at = static_cast<NodeIdentifierResponse*>(&response);
+    
+    // pass pointer array to subclass
+    at->setFrameData(getFrameData());
+    setCommon(response);
+    
+    at->getSourceAddress64().setMsb((uint32_t(getFrameData()[1]) << 24) + (uint32_t(getFrameData()[2]) << 16) + (uint16_t(getFrameData()[3]) << 8) + getFrameData()[4]);
+    at->getSourceAddress64().setLsb((uint32_t(getFrameData()[5]) << 24) + (uint32_t(getFrameData()[6]) << 16) + (uint16_t(getFrameData()[7]) << 8) + (getFrameData()[8]));
+    
+    at->getRemoteAddress64().setMsb((uint32_t(getFrameData()[13]) << 24) + (uint32_t(getFrameData()[14]) << 16) + (uint16_t(getFrameData()[15]) << 8) + getFrameData()[16]);
+    at->getRemoteAddress64().setLsb((uint32_t(getFrameData()[17]) << 24) + (uint32_t(getFrameData()[18]) << 16) + (uint16_t(getFrameData()[19]) << 8) + (getFrameData()[20]));
+    
+    uint8_t niStringLength = 0;
+    while(getFrameData()[21 + niStringLength++]);
+    at->setNIStringLength(niStringLength);
+}
+
 AtCommandResponse::AtCommandResponse() {
 
 }
@@ -736,6 +755,71 @@ uint8_t* AtCommandResponse::getValue() {
 
 bool AtCommandResponse::isOk() {
 	return getStatus() == AT_OK;
+}
+
+
+NodeIdentifierResponse::NodeIdentifierResponse() : XBeeResponse() {
+    _sourceAddress64 = XBeeAddress64();
+    _remoteAddress64 = XBeeAddress64();
+}
+
+XBeeAddress64& NodeIdentifierResponse::getSourceAddress64() {
+    return _sourceAddress64;
+}
+
+uint16_t NodeIdentifierResponse::getSourceAddress16() {
+    return uint16_t((getFrameData()[8] << 8) + getFrameData()[9]);
+}
+
+uint8_t NodeIdentifierResponse::getReceiveOptions() {
+    return getFrameData()[10];
+}
+
+XBeeAddress64& NodeIdentifierResponse::getRemoteAddress64() {
+    return _remoteAddress64;
+}
+
+uint16_t NodeIdentifierResponse::getRemoteAddress16() {
+    return uint16_t((getFrameData()[11] << 8) + getFrameData()[12]);
+}
+
+char* NodeIdentifierResponse::getNodeIdentifierString() {
+    return getFrameData() + 21;
+}
+
+uint16_t NodeIdentifierResponse::getParentAddress16() {
+    uint8_t pao = _getParentAddress16Offset();
+    return uint16_t((getFrameData()[pao] << 8) + getFrameData()[pao+1]);
+}
+
+uint8_t NodeIdentifierResponse::getDeviceType() {
+    return getFrameData()[_getParentAddress16Offset() + 2];
+}
+
+uint8_t NodeIdentifierResponse::getSourceEvent() {
+    return getFrameData()[_getParentAddress16Offset() + 3];
+}
+
+uint16_t NodeIdentifierResponse::getDigiProfileID() {
+    uint8_t pao = _getParentAddress16Offset();
+    return uint16_t((getFrameData()[pao + 4] << 8) + getFrameData()[pao+5]);
+}
+
+uint16_t NodeIdentifierResponse::getManufacturerID() {
+    uint8_t pao = _getParentAddress16Offset();
+    return uint16_t((getFrameData()[pao + 6] << 8) + getFrameData()[pao+7]);
+}
+
+uint8_t NodeIdentifierResponse::_getParentAddress16Offset() {
+    return 21 + _NIStringLength;
+}
+
+void NodeIdentifierResponse::setNIStringLength(uint8_t len) {
+    _NIStringLength = len;
+}
+
+uint8_t NodeIdentifierResponse::getNodeIdentifierStringLength() {
+    return _NIStringLength;
 }
 
 void XBeeResponse::getAtCommandResponse(XBeeResponse &atCommandResponse) {
