@@ -285,10 +285,6 @@ public:
 	 */
 	void getModemStatusResponse(XBeeResponse &response);
 	/**
-	 * Call with instance of NodeIdentifierResponse only if getApiId() == ZB_IO_NODE_IDENTIFIER_RESPONSE
-	 */
-	void getNodeIdentifierResponse(XBeeResponse &response);
-	/**
 	 * Returns true if the response has been successfully parsed and is complete and ready for use
 	 */
 	bool isAvailable();
@@ -651,71 +647,6 @@ class AtCommandResponse : public FrameIdResponse {
 
 		static const uint8_t API_ID = AT_COMMAND_RESPONSE;
 };
-/**
- * Represents a Node Identifier Response
- */
-class NodeIdentifierResponse : public XBeeResponse {
-    public:
-        NodeIdentifierResponse();
-        /**
-         * Returns 64-bit address of sender
-         */
-        XBeeAddress64& getSourceAddress64();
-        /**
-         * Returns the 16-bit address of sender
-         */
-        uint16_t getSourceAddress16();
-        /**
-         * Returns the receive options
-         */
-        uint8_t getReceiveOptions();
-        /**
-         * Returns the 64-bit address of the remote module that transmitted the frame
-         */
-        XBeeAddress64& getRemoteAddress64();
-        /**
-         * Returns the 16 bit address of the remote module
-         */
-        uint16_t getRemoteAddress16();
-        /**
-         * Returns the string node identifier
-         */
-        char* getNodeIdentifierString();
-        /**
-         * Return the identifier string length
-         */
-        uint8_t getNodeIdentifierStringLength();
-        /**
-         * Returns the parent 16-bit address
-         */
-        uint16_t getParentAddress16();
-        /**
-         * Returns the device type
-         */
-        uint8_t getDeviceType();
-        /**
-         * Returns the source event
-         */
-        uint8_t getSourceEvent();
-        /**
-         * Returns the application profile Id
-         */
-        uint16_t getDigiProfileID();
-        /**
-         * Returns the manufacturer ID
-         */
-        uint16_t getManufacturerID();
-        
-        static const uint8_t API_ID = ZB_IO_NODE_IDENTIFIER_RESPONSE;
-        void setNIStringLength(uint8_t len);
-    
-    private:
-        XBeeAddress64 _sourceAddress64;
-        XBeeAddress64 _remoteAddress64;
-        uint8_t _NIStringLength;
-        uint8_t _getParentAddress16Offset();
-};
-
 
 /**
  * Represents a Remote AT Command RX packet
@@ -989,7 +920,6 @@ public:
 	void onRx64IoSampleResponse(void (*func)(Rx64IoSampleResponse&, uintptr_t), uintptr_t data = 0) { _onRx64IoSampleResponse.set(func, data); }
 	void onModemStatusResponse(void (*func)(ModemStatusResponse&, uintptr_t), uintptr_t data = 0) { _onModemStatusResponse.set(func, data); }
 	void onAtCommandResponse(void (*func)(AtCommandResponse&, uintptr_t), uintptr_t data = 0) { _onAtCommandResponse.set(func, data); }
-	void onNodeIdentifierResponse(void (*func)(NodeIdentifierResponse&, uintptr_t), uintptr_t data = 0) { _onNodeIdentifierResponse.set(func, data); }
 	void onRemoteAtCommandResponse(void (*func)(RemoteAtCommandResponse&, uintptr_t), uintptr_t data = 0) { _onRemoteAtCommandResponse.set(func, data); }
 
 	/**
@@ -1129,7 +1059,6 @@ private:
 	Callback<Rx64IoSampleResponse&> _onRx64IoSampleResponse;
 	Callback<ModemStatusResponse&> _onModemStatusResponse;
 	Callback<AtCommandResponse&> _onAtCommandResponse;
-	Callback<NodeIdentifierResponse&> _onNodeIdentifierResponse;
 	Callback<RemoteAtCommandResponse&> _onRemoteAtCommandResponse;
 };
 
