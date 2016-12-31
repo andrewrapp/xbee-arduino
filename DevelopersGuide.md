@@ -154,8 +154,8 @@ It's always a good idea to check if an error occurred after a packet read attemp
 
 ```
 if (xbee.getResponse().isError()) {
-// get the error code
-xbee.getResponse().getErrorCode()
+  // get the error code
+  xbee.getResponse().getErrorCode()
 } 
 ```
 
