@@ -16,11 +16,12 @@ Then, before setup and loop functions, create an XBee object.  The XBee object p
 XBee xbee = XBee();
 ```
 
-In the setup function, call the begin function with the baud rate, for example:
+In the setup function, initialize a serial port with a baud rate and provide to the library, for example:
 
 ```
 void setup() {
-  xbee.begin(9600);
+  Serial.begin(9600);
+  xbee.setSerial(Serial);
 }
 ```
 
