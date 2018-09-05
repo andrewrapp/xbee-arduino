@@ -1,6 +1,6 @@
 # Developers Guide #
 
-Before getting started, you should understand the difference between AT (Transparent), and API (Packet) mode.  This software is designed for, and only supports API mode!  Refer to [WhyApiMode](http://code.google.com/p/xbee-api/wiki/WhyApiMode) to understand the difference.
+Before getting started, you should understand the difference between AT (Transparent), and API (Packet) mode.  This software is designed for, and only supports API mode!  Refer to [WhyApiMode](https://github.com/andrewrapp/xbee-api/wiki/WhyApiMode) to understand the difference.
 
 This guide assumes you have already configured at least two radios and have one of them connected to an Arduino.
 
